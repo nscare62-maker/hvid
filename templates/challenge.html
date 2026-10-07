@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Challenge Report — HVID</title>
+  <meta name="description" content="Challenge a report filed against your HVID identity. Submit counter-evidence for review.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f; color: #e2e8f0;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 32px 20px;
+    }
+
+    .page-wrap { width: 100%; max-width: 520px; }
+
+    /* ── Header ── */
+    .page-logo {
+      font-size: 12px; font-weight: 800; letter-spacing: .12em;
+      color: rgba(129,140,248,.6); margin-bottom: 32px; display: block;
+      text-decoration: none;
+    }
+    .page-logo:hover { color: #818cf8; }
+
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; }
+    .page-header p  { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.6; }
+
+    /* ── Target pill ── */
+    .target-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 4px 12px;
+      border-radius: 99px; border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.04); color: rgba(255,255,255,.6);
+      margin-bottom: 24px; max-width: 100%; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* ── Form card ── */
+    .form-card {
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px; padding: 28px 24px;
+    }
+
+    /* ── Field groups ── */
+    .field { margin-bottom: 20px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-label {
+      display: block; font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,.5); margin-bottom: 7px; letter-spacing: .04em;
+    }
+    .field-label .req { color: #f87171; }
+
+    .field-textarea, .field-input {
+      width: 100%; background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1); border-radius: 10px;
+      color: #e2e8f0; font-family: inherit; font-size: 13px;
+      padding: 10px 14px; outline: none;
+      transition: border-color .2s;
+    }
+    .field-textarea:focus, .field-input:focus { border-color: rgba(129,140,248,.4); }
+    .field-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+    .field-hint  { font-size: 11px; color: rgba(255,255,255,.3); margin-top: 5px; }
+    .field-error { font-size: 11px; color: #f87171; margin-top: 5px; display: none; }
+    .field-error.visible { display: block; }
+
+    /* ── Evidence list ── */
+    .evidence-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+    .evidence-item { display: flex; align-items: center; gap: 8px; }
+    .evidence-item .field-input { flex: 1; margin: 0; }
+    .evidence-remove {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+      border: 1px solid rgba(248,113,113,.2); background: rgba(248,113,113,.06);
+      color: #f87171; cursor: pointer; font-size: 14px; font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .evidence-remove:hover { background: rgba(248,113,113,.12); }
+    .add-url-btn {
+      font-size: 12px; font-weight: 600; color: #818cf8;
+      background: rgba(129,140,248,.07); border: 1px dashed rgba(129,140,248,.25);
+      border-radius: 8px; padding: 7px 14px; cursor: pointer;
+      font-family: inherit; width: 100%; text-align: center;
+      transition: background .15s;
+    }
+    .add-url-btn:hover { background: rgba(129,140,248,.12); }
+    .add-url-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ── Notice (warning) ── */
+    .notice {
+      border-radius: 10px; padding: 12px 14px;
+      background: rgba(251,191,36,.05); border: 1px solid rgba(251,191,36,.15);
+      font-size: 12px; color: rgba(251,191,36,.75); line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .notice strong { color: #fbbf24; }
+
+    /* ── Auth warning (not logged in) ── */
+    .auth-warning {
+      border-radius: 10px; padding: 12px 14px;
+      background: rgba(248,113,113,.05); border: 1px solid rgba(248,113,113,.15);
+      font-size: 12px; color: rgba(248,113,113,.8); line-height: 1.6;
+      margin-bottom: 24px; display: none;
+    }
+    .auth-warning.show { display: block; }
+    .auth-warning a { color: #f87171; font-weight: 600; }
+
+    /* ── Payment section ── */
+    .payment-info {
+      border-radius: 10px; padding: 14px 16px;
+      background: rgba(129,140,248,.05); border: 1px solid rgba(129,140,248,.12);
+      font-size: 12px; line-height: 1.7; color: rgba(255,255,255,.5);
+      margin-bottom: 20px;
+    }
+    .payment-info strong { color: #818cf8; }
+    .payment-fee {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 10px; padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,.7);
+    }
+    .payment-fee span { color: #818cf8; font-size: 16px; font-weight: 800; }
+
+    /* ── Submit button ── */
+    .submit-btn {
+      width: 100%; padding: 13px;
+      border-radius: 12px; border: 1px solid rgba(129,140,248,.3);
+      background: rgba(129,140,248,.1); color: #818cf8;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: opacity .15s, transform .1s;
+      letter-spacing: .01em;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: .8; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+    /* ── States ── */
+    .state-success, .state-error, .state-auth { display: none; text-align: center; padding: 40px 0; }
+    .state-success.show, .state-error.show, .state-auth.show { display: block; }
+    .state-icon  { font-size: 40px; margin-bottom: 16px; }
+    .state-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+    .state-desc  { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.6; }
+    .state-success .state-icon { color: #34d399; }
+    .state-error   .state-icon { color: #f87171; }
+    .state-auth    .state-icon { color: #818cf8; }
+
+    .back-link {
+      display: inline-block; margin-top: 20px; font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,.4); text-decoration: none;
+    }
+    .back-link:hover { color: rgba(255,255,255,.7); }
+
+    .char-counter { font-size: 11px; color: rgba(255,255,255,.25); float: right; }
+
+    @media (max-width: 540px) {
+      .form-card { padding: 20px 16px; }
+    }
+
+    /* ── Challenge status box ── */
+    .status-box {
+      border-radius: 14px; padding: 20px 22px;
+      border: 1px solid rgba(129,140,248,.22);
+      background: rgba(129,140,248,.05);
+      margin-bottom: 20px;
+      box-shadow: 0 0 0 1px rgba(129,140,248,.08) inset;
+    }
+    .status-box-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: rgba(129,140,248,.6);
+      margin-bottom: 12px;
+    }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 700; margin-bottom: 8px;
+    }
+    .status-dot {
+      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .4; }
+    }
+    .status-desc {
+      font-size: 12px; color: rgba(255,255,255,.5); line-height: 1.65;
+    }
+    .refresh-btn {
+      margin-top: 14px; padding: 7px 16px;
+      border-radius: 8px; border: 1px solid rgba(129,140,248,.2);
+      background: rgba(129,140,248,.08); color: rgba(129,140,248,.8);
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: background .15s, color .15s;
+    }
+    .refresh-btn:hover { background: rgba(129,140,248,.16); color: #818cf8; }
+    .refresh-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+    /* ── Challenge context ── */
+    .challenge-context {
+      font-size: 11px; color: rgba(255,255,255,.3);
+      margin-bottom: 6px; font-family: monospace;
+    }
+
+    /* ── Empty state ── */
+    .state-empty {
+      font-size: 13px; color: rgba(255,255,255,.3);
+      text-align: center; padding: 20px 0;
+      display: none;
+    }
+    .state-empty.show { display: block; }
+
+</head>
+<body>
+
+<div class="page-wrap">
+  <a href="/" class="page-logo">HVID</a>
+
+  <div class="page-header">
+    <h1>Challenge a report</h1>
+    <p>If you believe a report filed against your identity is incorrect,<br>
+       you may submit a formal challenge with counter-evidence.</p>
+  </div>
+
+  <!-- Not logged in warning -->
+  <div class="auth-warning" id="auth-warning" style="display:flex;align-items:center;gap:8px">
+    <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    <div>You must be <a href="/auth/login">signed in</a> to challenge a report.
+    Only the identity named in the report may file a challenge.</div>
+  </div>
+
+  <!-- Report ID pill (populated by JS) -->
+  <div id="report-pill-wrap" style="display:none">
+    <div class="target-pill" id="report-pill">
+      <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+      Report: <span id="report-pill-text"></span>
+    </div>
+  </div>
+
+  <!-- Legal notice -->
+  <div class="notice" id="challenge-notice">
+    <strong>Important:</strong> Challenges are reviewed manually and require a non-refundable fee.
+    Filing a false challenge may result in action against your own account.
+    Only the identity named in the report may file a challenge.
+  </div>
+
+  <!-- Success state -->
+  <div class="state-success" id="state-success">
+    <div class="state-icon">
+      <svg class="hvid-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981"><circle cx="12" cy="12" r="10"></circle><polyline points="16 9 10 15 7 12"></polyline></svg>
+    </div>
+    <div class="state-title">Challenge submitted</div>
+    <div class="state-desc">
+      Your challenge has been received. A review fee will be requested to proceed.<br>
+      You will be notified of the outcome. This process is confidential.
+    </div>
+    <a href="/" class="back-link">← Back to search</a>
+  </div>
+
+  <!-- Error state -->
+  <div class="state-error" id="state-error">
+    <div class="state-icon">
+      <svg class="hvid-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fbbf24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    </div>
+    <div class="state-title" id="error-title">Submission failed</div>
+    <div class="state-desc"  id="error-desc">Something went wrong. Please try again.</div>
+    <a href="#" class="back-link" onclick="resetError()">← Try again</a>
+  </div>
+
+  <!-- Auth state (not logged in) -->
+  <div class="state-auth" id="state-auth">
+    <div class="state-icon">
+      <svg class="hvid-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+    </div>
+    <div class="state-title">Sign in required</div>
+    <div class="state-desc">
+      You must be signed in as the identity named in the report to file a challenge.
+    </div>
+    <a href="/auth/login" class="back-link">Sign in →</a>
+  </div>
+
+  <!-- Challenge status tracking box (shown when a prior challenge exists) -->
+  <!-- challenge-context: shows report ID snippet above the box -->
+  <div class="challenge-context" id="challenge-context" style="display:none"></div>
+  <!-- empty-state: shown when user is logged in but no challenge exists yet -->
+  <div class="state-empty" id="state-empty">No active challenge found for your account.</div>
+  <div class="status-box" id="challenge-status-box" style="display:none">
+    <div class="status-box-label">Your challenge status</div>
+    <div class="status-badge" id="status-badge">
+      <span class="status-dot" id="status-dot" style="background:#818cf8"></span>
+      <span id="status-label">Loading…</span>
+    </div>
+    <div class="status-desc" id="status-desc"></div>
+    <button class="refresh-btn" id="refresh-btn" onclick="refreshStatus()">↻ Refresh status</button>
+  </div>
+
+  <!-- Form -->
+  <form class="form-card" id="challenge-form" novalidate>
+
+    <!-- Challenge reason -->
+    <div class="field">
+      <label class="field-label" for="challenge-reason">
+        Reason for challenge
+        <span class="char-counter"><span id="char-count">0</span>/1000</span>
+      </label>
+      <textarea
+        class="field-textarea"
+        id="challenge-reason"
+        placeholder="Explain clearly why this report is incorrect. Describe the factual basis for your challenge."
+        maxlength="1000"
+        oninput="updateCharCount()"
+      ></textarea>
+      <div class="field-hint">Optional but strongly recommended. Neutral, factual language only.</div>
+      <div class="field-error" id="err-reason">Reason exceeds 1000 characters.</div>
+    </div>
+
+    <!-- Counter-evidence URLs -->
+    <div class="field">
+      <label class="field-label" for="evidence-url-0">Counter-evidence links (optional)</label>
+      <div class="evidence-list" id="evidence-list">
+        <div class="evidence-item" id="evidence-row-0">
+          <input
+            class="field-input"
+            id="evidence-url-0"
+            type="url"
+            placeholder="https://example.com/counter-evidence.png"
+            autocomplete="off"
+          >
+        </div>
+      </div>
+      <button type="button" class="add-url-btn" id="add-url-btn" onclick="addUrlRow()">
+        + Add another link
+      </button>
+      <div class="field-hint">URLs to screenshots or public references only. Max 5 links.</div>
+      <div class="field-error" id="err-urls">One or more URLs are invalid (must start with https://).</div>
+    </div>
+
+    <!-- Payment info -->
+    <div class="payment-info">
+      <strong>Challenge fee</strong><br>
+      A non-refundable review fee is required to process your challenge.
+      You will be redirected to complete payment after submission.
+      If the challenge succeeds, your enforcement level will be reviewed.
+      <div class="payment-fee">
+        Review fee <span>₹499</span>
+      </div>
+    </div>
+
+    <!-- Legal confirmation -->
+    <div style="
+      margin-top:4px; padding:14px 16px;
+      background:rgba(129,140,248,.05);
+      border:1px solid rgba(129,140,248,.12);
+      border-radius:12px; margin-bottom:16px;
+    ">
+      <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin:0 0 12px">
+        Challenges are reviewed by HVID staff. Submitting false or misleading counter-evidence
+        may result in action against your account. The challenge outcome is final.
+      </p>
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+        <input type="checkbox" id="confirm-truthful" required
+          style="margin-top:2px;accent-color:#818cf8;flex-shrink:0;width:15px;height:15px"
+          onchange="document.getElementById('submit-btn').disabled=!this.checked">
+        <span style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.5">
+          I confirm this challenge is truthful and I am the identity named in the report.
+        </span>
+      </label>
+      <div class="field-error" id="err-confirm" style="margin-top:8px">Please confirm before submitting.</div>
+    </div>
+
+    <!-- Submit -->
+    <div>
+      <button type="submit" class="submit-btn" id="submit-btn" disabled>
+        Submit challenge
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<script src="/static/js/api.js"></script>
+<script>
+'use strict';
+
+// ── Read URL params ──────────────────────────────────────────
+const params   = new URLSearchParams(window.location.search);
+const reportId = params.get('reportId') || null;
+
+// Show report pill
+if (reportId) {
+  const pillText = document.getElementById('report-pill-text');
+  if (pillText) pillText.textContent = reportId.slice(-8).toUpperCase();
+  const pillWrap = document.getElementById('report-pill-wrap');
+  if (pillWrap) pillWrap.style.display = 'block';
+}
+
+// ── Auth guard ───────────────────────────────────────────────
+// Challenge requires authentication — display only; server enforces ownership.
+const myId = (typeof HVID_API !== 'undefined') ? HVID_API.auth.identityId() : null;
+const isLoggedIn = !!(myId && localStorage.getItem('hvid_token'));
+
+if (!isLoggedIn) {
+  // Hide form, show auth state
+  document.getElementById('challenge-form').style.display    = 'none';
+  document.getElementById('challenge-notice').style.display  = 'none';
+  const pillWrap = document.getElementById('report-pill-wrap');
+  if (pillWrap) pillWrap.style.display = 'none';
+  document.getElementById('state-auth').classList.add('show');
+}
+
+if (!reportId && isLoggedIn) {
+  // No reportId in URL — show auth warning
+  document.getElementById('auth-warning').classList.add('show');
+}
+
+// ── Status tracking: load prior challenge on page open ────────
+// If the user previously submitted a challenge (stored in localStorage),
+// show the current status automatically without requiring re-submission.
+// If no challenge exists, show the empty state so user knows nothing is active.
+(async function checkExistingChallenge() {
+  if (!isLoggedIn) return;
+
+  const storedId = localStorage.getItem('last_challenge_id');
+
+  // ── Report context: show report ID snippet above status box ──
+  const ctxEl = document.getElementById('challenge-context');
+  if (ctxEl && reportId) {
+    ctxEl.textContent = `Report: …${reportId.slice(-8).toUpperCase()}`;
+    ctxEl.style.display = '';
+  }
+
+  if (!storedId) {
+    // No prior challenge — show empty state instead of a blank page
+    document.getElementById('state-empty').classList.add('show');
+    return;
+  }
+
+  await loadChallengeStatus(storedId);
+})();
+
+// ── Evidence URL rows (max 5) ─────────────────────────────────
+let urlRowCount = 1;
+const MAX_URLS  = 5;
+
+function addUrlRow() {
+  if (urlRowCount >= MAX_URLS) return;
+  const list = document.getElementById('evidence-list');
+  const row  = document.createElement('div');
+  row.className = 'evidence-item';
+  row.id = `evidence-row-${urlRowCount}`;
+  row.innerHTML = `
+    <input class="field-input" id="evidence-url-${urlRowCount}" type="url"
+      placeholder="https://example.com/evidence.png" autocomplete="off">
+    <button type="button" class="evidence-remove" onclick="removeUrlRow(${urlRowCount})" aria-label="Remove">✕</button>`;
+  list.appendChild(row);
+  urlRowCount++;
+  document.getElementById('add-url-btn').disabled = urlRowCount >= MAX_URLS;
+}
+
+function removeUrlRow(idx) {
+  const row = document.getElementById(`evidence-row-${idx}`);
+  if (row) row.remove();
+  document.getElementById('add-url-btn').disabled = false;
+}
+
+// ── Char counter ─────────────────────────────────────────────
+function updateCharCount() {
+  const v = document.getElementById('challenge-reason').value;
+  document.getElementById('char-count').textContent = v.length;
+}
+
+// ── Validation helpers ────────────────────────────────────────
+function showErr(id) { document.getElementById(id).classList.add('visible'); }
+function hideErr(id) { document.getElementById(id).classList.remove('visible'); }
+
+function collectUrls() {
+  const inputs = document.querySelectorAll('#evidence-list .field-input');
+  return Array.from(inputs)
+    .map(i => i.value.trim())
+    .filter(v => v.length > 0);
+}
+
+function validateUrls(urls) {
+  return urls.every(u => /^https?:\/\/.{3,}/.test(u));
+}
+
+// ── Submit ────────────────────────────────────────────────────
+document.getElementById('challenge-form').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  // Reset errors
+  ['err-reason', 'err-urls'].forEach(hideErr);
+
+  const reason = document.getElementById('challenge-reason').value.trim();
+  const urls   = collectUrls();
+
+  let valid = true;
+  if (reason.length > 1000)                   { showErr('err-reason'); valid = false; }
+  if (urls.length && !validateUrls(urls))      { showErr('err-urls');   valid = false; }
+  if (!valid) return;
+
+  if (!reportId) {
+    document.getElementById('error-desc').textContent = 'No report ID found. Please return to the report and try again.';
+    document.getElementById('challenge-form').style.display = 'none';
+    document.getElementById('state-error').classList.add('show');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled    = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    // challengerIdentityId resolved from JWT on server — never sent in body
+    const data = await HVID_API.challenge.submit(reportId, {
+      challengeReason: reason || undefined,
+      evidenceUrls:    urls.length ? urls : undefined,
+    });
+
+    if (HVID_API.isError(data)) {
+      if (data.__rateLimit)    throw new Error('Too many requests. Please try again later.');
+      if (data.__enforced)     { HVID_API.handleEnforcement(data); return; }
+      if (data.__unauthorized) return; // redirected by HVID_API
+      throw new Error(HVID_API.errorMessage(data));
+    }
+
+    // ── Success ──────────────────────────────────────────────
+    // Store challengeId so status can be tracked on return visits.
+    if (data && data.id) {
+      localStorage.setItem('last_challenge_id', data.id);
+    }
+
+    document.getElementById('challenge-form').style.display    = 'none';
+    document.getElementById('challenge-notice').style.display  = 'none';
+    const pillWrap = document.getElementById('report-pill-wrap');
+    if (pillWrap) pillWrap.style.display = 'none';
+    document.getElementById('state-success').classList.add('show');
+
+    // Show status box immediately after submission
+    if (data && data.id) renderStatus(data.status || 'INITIATED');
+
+  } catch (err) {
+    btn.disabled    = false;
+    btn.textContent = 'Submit challenge';
+    document.getElementById('error-desc').textContent =
+      err?.message || 'Something went wrong. Please try again.';
+    document.getElementById('challenge-form').style.display = 'none';
+    document.getElementById('state-error').classList.add('show');
+  }
+});
+
+function resetError() {
+  document.getElementById('state-error').classList.remove('show');
+  document.getElementById('challenge-form').style.display = 'block';
+}
+
+// ── Challenge status functions ────────────────────────────────
+
+/**
+ * STATUS_CONFIG — maps ChallengeStatus enum values to display properties.
+ * Mirrors backend ChallengeStatus enum exactly.
+ */
+const STATUS_CONFIG = {
+  INITIATED:         { label: 'Awaiting payment',    desc: 'Challenge created. Please complete payment to proceed.',                                           dot: '#818cf8' },
+  PAYMENT_PENDING:   { label: 'Payment processing',  desc: 'Payment is being processed. Please wait — do not close this page.',                              dot: '#fbbf24' },
+  PAYMENT_COMPLETED: { label: 'Payment confirmed',   desc: 'Payment received. Your challenge is queued for admin review.',                                    dot: '#34d399' },
+  UNDER_REVIEW:      { label: 'Under review',        desc: 'An HVID reviewer is examining your challenge and counter-evidence. This may take several days.',  dot: '#818cf8' },
+  RESOLVED_SUCCESS:  { label: 'Challenge successful', desc: '✔ Your challenge was successful. Your enforcement level has been reviewed and trust restored.',    dot: '#34d399' },
+  RESOLVED_FAILED:   { label: 'Challenge rejected',  desc: 'Your challenge was reviewed and rejected. The original enforcement remains active.',               dot: '#f87171' },
+};
+
+/**
+ * renderStatus(status)
+ * Updates the #challenge-status-box with the current ChallengeStatus value.
+ * Always safe to call — silently returns if box element is missing.
+ */
+function renderStatus(status) {
+  const box   = document.getElementById('challenge-status-box');
+  const label = document.getElementById('status-label');
+  const desc  = document.getElementById('status-desc');
+  const dot   = document.getElementById('status-dot');
+  if (!box) return;
+
+  const cfg = STATUS_CONFIG[status] || {
+    label: status || 'Unknown',
+    desc:  'Status not recognised. Please refresh.',
+    dot:   '#808080',
+  };
+
+  if (label) label.textContent = cfg.label;
+  if (desc)  desc.textContent  = cfg.desc;
+  if (dot)   dot.style.background = cfg.dot;
+  box.style.display = '';
+}
+
+/**
+ * loadChallengeStatus(challengeId)
+ * Fetches the current challenge status from the API and calls renderStatus().
+ * Silently handles errors — does not throw.
+ */
+async function loadChallengeStatus(challengeId) {
+  const refreshBtn = document.getElementById('refresh-btn');
+  if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = '↻ Refreshing…'; }
+
+  try {
+    const res = await HVID_API.challenge.getStatus(challengeId);
+
+    if (HVID_API.isError(res)) {
+      // Stored challengeId may be stale or belong to a different identity
+      if (res.__unauthorized || res.__enforced) {
+        localStorage.removeItem('last_challenge_id');
+        return;
+      }
+      // Other errors: show status box with error text
+      const box = document.getElementById('challenge-status-box');
+      if (box) {
+        const label = document.getElementById('status-label');
+        const desc  = document.getElementById('status-desc');
+        if (label) label.textContent = 'Status unavailable';
+        if (desc)  desc.textContent  = HVID_API.errorMessage(res);
+        box.style.display = '';
+      }
+      return;
+    }
+
+    renderStatus(res.status);
+  } catch {
+    // Silent fail — status box stays hidden
+  } finally {
+    if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = '↻ Refresh status'; }
+  }
+}
+
+/**
+ * refreshStatus()
+ * Called by the Refresh button — reloads status from API using stored challengeId.
+ */
+async function refreshStatus() {
+  const storedId = localStorage.getItem('last_challenge_id');
+  if (!storedId) return;
+  await loadChallengeStatus(storedId);
+}
+</script>
+<script src="/static/js/components/disclaimer-banner.js?v=layout-2"></script>
+</body>
+</html>

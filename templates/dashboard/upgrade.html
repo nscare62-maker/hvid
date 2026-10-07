@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upgrade — HVID</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <!-- Razorpay Checkout SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    .plans-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:32px; }
+    @media(max-width:680px){ .plans-grid{grid-template-columns:1fr;} }
+
+    .plan-card {
+      background:rgba(255,255,255,0.03); border:1.5px solid rgba(255,255,255,0.08);
+      border-radius:18px; padding:28px 24px; position:relative;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    .plan-card:hover { border-color:rgba(91,95,239,0.4); box-shadow:0 8px 32px rgba(91,95,239,0.1); }
+    .plan-card.popular { border-color:rgba(91,95,239,0.5); }
+    .popular-badge {
+      position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+      background:var(--color-primary); color:#fff; font-size:11px; font-weight:700;
+      padding:4px 14px; border-radius:99px; letter-spacing:.05em;
+    }
+    .plan-name { font-size:18px; font-weight:700; color:var(--color-text-primary); margin-bottom:6px; }
+    .plan-price { font-size:36px; font-weight:800; color:var(--color-text-primary); margin-bottom:4px; }
+    .plan-price span { font-size:14px; font-weight:400; color:var(--color-text-muted); }
+    .plan-desc { font-size:13px; color:var(--color-text-muted); margin-bottom:20px; line-height:1.6; }
+    .plan-features { list-style:none; padding:0; margin:0 0 24px; }
+    .plan-features li { font-size:13px; color:var(--color-text-secondary); padding:5px 0; display:flex; align-items:center; gap:8px; }
+    .plan-features li::before { content:'✓'; color:#34d399; font-weight:700; flex-shrink:0; }
+
+    .btn-upgrade {
+      width:100%; background:var(--color-primary); color:#fff; border:none;
+      border-radius:12px; padding:13px; font-size:14px; font-weight:700;
+      cursor:pointer; font-family:inherit; transition:opacity .15s;
+    }
+    .btn-upgrade:disabled { opacity:0.4; cursor:not-allowed; }
+    .btn-upgrade:not(:disabled):hover { opacity:.88; }
+    .btn-upgrade.current { background:rgba(52,211,153,0.1); color:#34d399; border:1px solid rgba(52,211,153,0.3); cursor:default; }
+
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(10px); background:rgba(20,20,35,0.95); border:1px solid rgba(255,255,255,0.1); color:var(--color-text-primary); font-size:13px; font-weight:600; padding:12px 22px; border-radius:12px; z-index:9999; opacity:0; transition:opacity .25s, transform .25s; pointer-events:none; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(52,211,153,0.3); color:#34d399; }
+    .toast.error   { border-color:rgba(248,113,113,0.3); color:#f87171; }
+  </style>
+</head>
+<body>
+<div class="dashboard-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="/" class="sidebar-logo">
+        <div class="sidebar-logo-mark">HV</div>
+        <span class="nav-logo-divider" style="color:rgba(255,255,255,0.25)">|</span>
+        <span>HVID</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <a href="/dashboard" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </span>
+          Dashboard
+        </a>
+        <a href="/dashboard/identity" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </span>
+          My Identity
+        </a>
+        <a href="/dashboard/verification" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </span>
+          Verification
+        </a>
+        <a href="/dashboard/linked-accounts" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          </span>
+          Linked Accounts
+        </a>
+        <a href="/dashboard/security" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          Security
+        </a>
+        <a href="/dashboard/timeline" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </span>
+          Activity
+        </a>
+        <a href="/dashboard/reports" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </span>
+          Reports &amp; Alerts
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebar-user-initial">R</div>
+        <div style="flex:1;min-width:0">
+          <div class="sidebar-user-name" id="sidebar-user-name">Rahul Kumar</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981"></span>
+            <span style="font-size:10px;color:#10b981;font-weight:700">Verified</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:var(--space-2);display:flex;align-items:center;justify-content:space-between">
+        <a href="/dashboard/settings" class="sidebar-link" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+        <a href="#" class="sidebar-link" id="logout-btn" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Sign Out
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-search-wrap">
+        <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search anything..." aria-label="Search" />
+      </div>
+      <div class="topbar-right">
+        <button class="topbar-icon-btn" aria-label="Notifications" title="Notifications">
+          <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </button>
+        <div class="topbar-profile-pill">
+          <div class="topbar-avatar" id="db-avatar">R</div>
+          <span class="topbar-name" id="db-display-name">Rahul Kumar</span>
+          <span class="badge-verified-inline" style="background:#10b981">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+        </div>
+        <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace;display:none" id="topbar-hvid"></span>
+      </div>
+    </header>
+    <main class="page-content">
+      <div class="page-header animate-fadeUp">
+        <h1 class="page-title">Choose your plan</h1>
+        <p class="page-subtitle">Upgrade to unlock higher verification tiers and trust signals.</p>
+      </div>
+
+      <div id="business-kyc-notice" style="display:none;margin-bottom:var(--space-5);padding:14px 16px;border:1px solid rgba(247,185,85,.25);border-radius:12px;background:rgba(247,185,85,.07);color:#f7c978;font-size:13px;line-height:1.6">
+        <strong id="payment-notice-title">Government ID verification requires payment.</strong><br>
+        Choose the Verified Plan below. After Razorpay confirms payment, you will be redirected straight to the KYC form.
+      </div>
+
+      <div class="plans-grid animate-fadeUp" id="plans-grid">
+        <div style="text-align:center;padding:40px;color:var(--color-text-muted)">Loading plans…</div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px 24px;font-size:12px;color:var(--color-text-muted);line-height:1.8;display:flex;align-items:center;gap:10px">
+        <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <div>Payments are processed securely by <strong style="color:var(--color-text-secondary)">Razorpay</strong>. HVID never stores your card details.
+        All prices are in INR and include GST. Refunds are not available for digital services.</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/static/js/app.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/auth-context.js"></script>
+<script src="/static/js/protected-route.js"></script>
+<script src="/static/js/dashboard.js"></script>
+<script>
+'use strict';
+
+const token = localStorage.getItem('hvid_token') || '';
+const sess  = (() => { try { return JSON.parse(localStorage.getItem('hvid_session') || '{}'); } catch(_){return{};} })();
+const iid   = sess.identity_id || sess.identityId || '';
+
+const paymentParams = new URLSearchParams(window.location.search);
+const paymentReason = paymentParams.get('reason');
+const isBusinessAccount = (sess.identity_type || sess.identityType || sess.account_type) === 'BUSINESS';
+if (!isBusinessAccount) {
+  sessionStorage.removeItem('hvid_payment_intent');
+  window.location.replace('/dashboard');
+}
+const isKycPayment = isBusinessAccount && (paymentReason === 'kyc' || sessionStorage.getItem('hvid_payment_intent') === 'KYC');
+if (isKycPayment) sessionStorage.setItem('hvid_payment_intent', 'KYC');
+if (paymentReason === 'business-kyc' || isKycPayment) {
+  document.getElementById('business-kyc-notice').style.display = 'block';
+}
+
+  if (!isBusinessAccount) {
+    document.getElementById('plans-grid').innerHTML = '<div style="color:var(--color-text-muted);padding:20px">Upgrade plans are available only for Business accounts.</div>';
+  }
+
+async function loadPlans() {
+  if ((sess.identity_type || sess.identityType || 'PERSONAL') !== 'BUSINESS') return;
+  try {
+    const [plansResponse, identityResponse, purchasesResponse] = await Promise.all([
+      fetch('/api/payment/plans'),
+      iid ? fetch('/api/identity/' + encodeURIComponent(iid)) : Promise.resolve(null),
+      fetch('/api/payment/purchases', { headers: { 'Authorization': 'Bearer ' + token } }),
+    ]);
+    const d = await plansResponse.json();
+    if (identityResponse && identityResponse.ok) {
+      const identity = await identityResponse.json();
+      if (identity.tier) {
+        sess.tier = identity.tier;
+        try {
+          const stored = JSON.parse(localStorage.getItem('hvid_session') || '{}');
+          stored.tier = identity.tier;
+          localStorage.setItem('hvid_session', JSON.stringify(stored));
+        } catch (_) {}
+      }
+    }
+    const fallbackPlans = sess.tier === 'PREMIUM'
+      ? ['VERIFIED', 'PREMIUM']
+      : sess.tier === 'VERIFIED' ? ['VERIFIED'] : [];
+    const purchases = purchasesResponse && purchasesResponse.ok
+      ? await purchasesResponse.json()
+      : { plan_ids: fallbackPlans };
+    renderPlans(d.plans || [], purchases.plan_ids || []);
+  } catch(e) {
+    document.getElementById('plans-grid').innerHTML =
+      '<div style="color:#f87171;padding:20px">Failed to load plans. Please refresh.</div>';
+  }
+}
+
+function renderPlans(plans, purchasedPlanIds) {
+  const currentTier = sess.tier || 'FREE';
+  const purchasedPlans = new Set(purchasedPlanIds);
+  const grid        = document.getElementById('plans-grid');
+  grid.innerHTML    = '';
+
+  // Add free plan card
+  const freeCard = document.createElement('div');
+  freeCard.className = 'plan-card' + (currentTier === 'FREE' ? '' : '');
+  freeCard.innerHTML = `
+    <div class="plan-name">Free</div>
+    <div class="plan-price">₹0 <span>/ forever</span></div>
+    <div class="plan-desc">Basic identity registration with phone verification.</div>
+    <ul class="plan-features">
+      <li>Phone number verification</li>
+      <li>Basic HVID identity</li>
+      <li>Public identity lookup</li>
+    </ul>
+    <button class="btn-upgrade current" disabled>${currentTier === 'FREE' ? '✓ Current Plan' : 'Included in your plan'}</button>
+  `;
+  grid.appendChild(freeCard);
+
+  plans.forEach((plan, i) => {
+    const isPurchased = purchasedPlans.has(plan.id);
+    const card      = document.createElement('div');
+    card.className  = 'plan-card' + (i === 0 ? ' popular' : '');
+    card.innerHTML  = `
+      ${i === 0 ? '<div class="popular-badge">Most Popular</div>' : ''}
+      <div class="plan-name">${plan.name}</div>
+      <div class="plan-price">${plan.amount_display} <span>/ one-time</span></div>
+      <div class="plan-desc">${plan.description}</div>
+      <ul class="plan-features">
+        ${plan.tier === 'VERIFIED'
+          ? '<li>KYC document verification</li><li>Verified badge on profile</li><li>Higher trust signal</li>'
+          : '<li>Independent Premium upgrade</li><li>Face biometric verification</li><li>Premium trust badge</li><li>Highest trust level</li>'}
+      </ul>
+      <button class="btn-upgrade ${isPurchased ? 'current' : ''}" ${isPurchased ? 'disabled' : ''}
+        onclick="startPayment('${plan.id}', '${plan.name}', ${plan.amount}, '${plan.id === 'PREMIUM' ? 'PREMIUM' : 'KYC'}')">
+        ${isPurchased ? '✓ Purchased' : 'Upgrade for ' + plan.amount_display}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+async function startPayment(planId, planName, amount, purpose = 'UPGRADE') {
+  if (!token) { showToast('Please sign in first', true); return; }
+
+  const paymentPurpose = planId === 'VERIFIED' ? 'KYC' : planId === 'PREMIUM' ? 'PREMIUM' : purpose;
+
+  showToast('Creating order…', false, '#818cf8');
+
+  try {
+    const r = await fetch('/api/payment/create-order', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body:    JSON.stringify({ plan_id: planId, purpose: paymentPurpose }),
+    });
+    const d = await r.json();
+
+    if (!r.ok) {
+      showToast(d.error || 'Failed to create order', true);
+      return;
+    }
+
+    // Open Razorpay checkout
+    const options = {
+      key:         d.key_id,
+      amount:      d.amount,
+      currency:    d.currency,
+      name:        'HVID',
+      description: d.description,
+      order_id:    d.order_id,
+      prefill:     d.prefill || {},
+      method:      { card: true },
+      theme:       { color: '#5b5fef' },
+      handler: async function(response) {
+        // Payment completed — verify on backend
+        showToast('Verifying payment…', false, '#818cf8');
+        try {
+          const vr = await fetch('/api/payment/verify', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body:    JSON.stringify({
+              razorpay_order_id:   response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature:  response.razorpay_signature,
+              plan_id:             planId,
+              purpose: paymentPurpose,
+            }),
+          });
+          const vd = await vr.json();
+          if (vd.success) {
+            // Update local session tier
+            try {
+              const s = JSON.parse(localStorage.getItem('hvid_session') || '{}');
+              s.tier = vd.tier;
+              localStorage.setItem('hvid_session', JSON.stringify(s));
+            } catch(_) {}
+            showToast('🎉 ' + vd.message, false, '#34d399');
+            setTimeout(() => {
+              const kycRedirect = vd.redirect_url || (paymentPurpose === 'KYC' ? '/dashboard/verification?payment=success&start=kyc' : null);
+              sessionStorage.removeItem('hvid_payment_intent');
+              window.location.href = kycRedirect || '/dashboard/verification?payment=success';
+            }, paymentPurpose === 'KYC' ? 500 : 2000);
+          } else {
+            showToast(vd.error || 'Payment verification failed', true);
+          }
+        } catch(e) {
+          showToast('Network error during verification', true);
+        }
+      },
+      modal: {
+        ondismiss: function() {
+          showToast('Payment cancelled', true);
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(response) {
+      showToast('Payment failed: ' + (response.error.description || 'Unknown error'), true);
+    });
+    rzp.open();
+
+  } catch(e) {
+    showToast('Error: ' + e.message, true);
+  }
+}
+
+function showToast(msg, isError = false, color = null) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (isError ? ' error' : (color ? '' : ' success'));
+  if (color) t.style.color = color;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.classList.remove('show'); }, 3500);
+}
+
+// ── Logout ────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) logoutBtn.addEventListener('click', e => {
+    e.preventDefault();
+    if (window.Auth) Auth.logout();
+    window.location.href = '/auth/login';
+  });
+  loadPlans();
+});
+</script>
+</body>
+</html>

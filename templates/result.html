@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identity Check Result — HVID</title>
+  <meta name="description" content="HVID identity check result — see whether this account is owned by a verified human." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/public.css?v=identity-search-5" />
+  <link rel="stylesheet" href="/static/css/result.css?v=identity-search-5" />
+</head>
+<body>
+
+  <!-- ── Nav ── -->
+  <nav class="nav scrolled" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-mark">HV</div>
+        HVID
+      </a>
+      <div class="nav-links">
+        <a href="/how-it-works" class="nav-link">How It Works</a>
+        <a href="/for-businesses" class="nav-link">For Business</a>
+        <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
+      </div>
+      <div class="nav-actions">
+        <a href="auth/login.html" class="btn btn-ghost btn-sm" id="nav-login-btn">Sign In</a>
+        <a href="auth/login.html" class="btn btn-primary btn-sm" id="nav-signup-btn">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="result-page">
+
+    <!-- ── Compact search bar ── -->
+    <div class="result-search-bar">
+      <div class="result-search-inner">
+        <form class="result-search-box" id="result-search-form" role="search" autocomplete="off">
+          <span class="result-search-icon">🔍</span>
+          <input
+            type="text"
+            class="result-search-input"
+            id="result-search-input"
+            name="q"
+            placeholder="Enter phone, email, username, or link"
+            aria-label="Search identity"
+            spellcheck="false"
+          />
+          <button type="submit" class="result-search-submit" id="result-search-submit-btn">Check</button>
+          <div class="result-account-switch" role="group" aria-label="Profile type">
+            <button type="button" class="result-account-btn active" data-account-type="INDIVIDUAL" aria-pressed="true">Individual</button>
+            <button type="button" class="result-account-btn" data-account-type="BUSINESS" aria-pressed="false">Business</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Result stage ── -->
+    <div class="result-stage">
+      <div class="result-stage-inner">
+
+        <!-- Query label -->
+        <div class="result-query-label animate-fadeIn">
+          Showing result for
+          <span class="result-query-value" id="query-value-label">—</span>
+        </div>
+
+        <!-- Dynamic result container -->
+        <div id="result-container">
+          <!-- Populated by result.js -->
+          <div class="result-card no-match">
+            <div class="result-loading">
+              <div class="spinner"></div>
+              <div class="result-loading-text">Analyzing identity…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disclaimer strip (spec: minimal but visible) -->
+        <div class="result-privacy-strip animate-fadeUp delay-3" style="margin-top:var(--space-6);display:flex;align-items:center;gap:8px">
+          <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <div>
+            <strong style="color:var(--color-text-primary)">HVID confirms identity linkage signals.</strong>
+            It does not evaluate behavior, intent, or trustworthiness.
+            Results show only verification signals — no personal information is ever revealed.
+            <a href="/trust-safety" style="color:var(--color-primary);font-weight:500;margin-left:6px">What HVID guarantees →</a>
+          </div>
+        </div>
+
+
+        <!-- Actions row -->
+        <div class="result-actions" style="margin-top:var(--space-6)" id="result-actions-row">
+          <div class="result-check-another">
+            Not what you were looking for? <a href="/" id="check-another-link">Search again</a>
+          </div>
+          <div class="flex gap-3">
+            <a href="/dashboard/reports" class="btn btn-ghost btn-sm" id="result-report-link">Report this identity</a>
+            <!-- Challenge entry point — shown only when result identity matches logged-in user -->
+            <a href="#" class="btn btn-ghost btn-sm" id="result-challenge-link" style="display:none">Challenge Report</a>
+            <a href="auth/login.html" class="btn btn-primary btn-sm" id="result-signup-link">Verify Your Identity</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /result-page -->
+
+  <!-- ── Result state reference (hidden, for documentation) ──
+       States rendered dynamically by result.js:
+       - confirmed    : Match Confirmed — verified identity owns this account
+       - partial      : Partial Match  — HVID exists, verification incomplete
+       - under-review : Under Review   — claims pending internal review
+       - no-match     : No Match       — no HVID record found for this query
+  ── -->
+
+  <footer style="border-top: 1px solid var(--color-border); padding: var(--space-6) 0; margin-top: auto;">
+    <div class="container">
+      <div class="footer-bottom">
+        <a href="/" style="font-size:13px;font-weight:600;color:var(--color-text-secondary)">HVID</a>
+        <span class="footer-copy">Identity confirmation infrastructure. Not a safety rating. Not a scam detector.</span>
+        <div class="flex gap-4">
+          <a href="/legal" class="footer-link">Privacy</a>
+          <a href="/trust-safety" class="footer-link">Trust &amp; Safety</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/components/disclaimer-banner.js?v=layout-2"></script>
+  <script src="/static/js/api.js"></script>
+<script src="/static/js/app.js"></script>
+  <script src="/static/js/trust.js"></script>
+  <script src="/static/js/tier.js"></script>
+  <script src="/static/js/growth.js"></script>
+  <script src="/static/js/match-ui.js?v=identity-search-6"></script>
+  <script src="/static/js/result.js"></script>
+  <script src="/static/js/smart-input.js"></script>
+  <script>
+    // Pass current query to report page so the form pre-fills the target identity
+    (function() {
+      const q   = new URLSearchParams(location.search).get('q') || '';
+      const lnk = document.getElementById('result-report-link');
+      if (lnk && q) lnk.href = 'reports.html?q=' + encodeURIComponent(q);
+
+      // ── Challenge Report button ────────────────────────────────
+      // Shown only when the logged-in user is the identity being searched.
+      // myId from localStorage — set by HVID_API.auth.verifyOtp() on login.
+      // Security: server enforces ownership — this is display-only gating.
+      // Real reportId navigation wired in next module step (challenge.html).
+      const challengeLink = document.getElementById('result-challenge-link');
+      if (challengeLink) {
+        const myId = (typeof HVID_API !== 'undefined')
+          ? HVID_API.auth.identityId()
+          : localStorage.getItem('hvid_identity_id') || null;
+        // Note: q is the search query (phone/email/handle), not identity_id.
+        // Full identity_id comparison requires match result — deferred to match-ui.js integration.
+        // For now: show button only when logged in (conservative — server enforces access).
+        if (myId) {
+          challengeLink.style.display = '';
+           challengeLink.onclick = async function(e) {
+             e.preventDefault();
+             challengeLink.textContent = 'Loading…';
+             try {
+               const token = localStorage.getItem('hvid_token') || '';
+               const res = await fetch(`/api/report/target/${encodeURIComponent(myId)}`, {
+                 headers: {
+                   'Content-Type': 'application/json',
+                   ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                 },
+               });
+               if (res.ok) {
+                 const reports = await res.json();
+                 const reportId = reports?.[0]?.id || null;
+                 if (reportId) {
+                   window.location.href = 'challenge.html?reportId=' + encodeURIComponent(reportId);
+                   return;
+                 }
+               }
+             } catch (_) {}
+             challengeLink.textContent = 'Challenge Report';
+             alert('No report available to challenge.');
+           };
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

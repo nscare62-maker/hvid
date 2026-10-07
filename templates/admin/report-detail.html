@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Detail — HVID Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    .admin-badge { display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.06em;color:#a78bfa;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:999px;padding:3px 10px; }
+
+    /* Sections */
+    .detail-section { margin-bottom: var(--space-6); }
+    .detail-section-title { font-size:11px;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:var(--space-4); }
+
+    /* Key-value rows */
+    .kv-row { display:flex;gap:var(--space-3);padding:var(--space-3) 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:flex-start; }
+    .kv-key { font-size:12px;color:var(--color-text-muted);min-width:160px;flex-shrink:0; }
+    .kv-val { font-size:13px;color:var(--color-text-primary); }
+
+    /* Description box */
+    .description-box { font-size:13px;color:var(--color-text-secondary);background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);max-height:200px;overflow-y:auto;line-height:1.7;white-space:pre-wrap; }
+
+    /* Evidence */
+    .evidence-label { font-size:11px;font-weight:600;color:#f59e0b;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:3px 8px;display:inline-block;margin-bottom:var(--space-3); }
+    .evidence-link { display:block;font-size:13px;padding:var(--space-2) 0;color:var(--color-primary);word-break:break-all; }
+    .evidence-link:hover { text-decoration:underline; }
+
+    /* Status badge */
+    .status-pill { display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;border:1px solid; }
+    .status-PENDING      { color:#f59e0b;background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2); }
+    .status-UNDER_REVIEW { color:#818cf8;background:rgba(129,140,248,.08);border-color:rgba(129,140,248,.2); }
+    .status-RESOLVED_VALID   { color:#34d399;background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2); }
+    .status-RESOLVED_INVALID { color:var(--color-text-muted);background:var(--color-surface-2);border-color:var(--color-border); }
+
+    /* Decision buttons */
+    .decision-panel { display:flex;gap:var(--space-4);margin-top:var(--space-4);flex-wrap:wrap; }
+    .btn-valid   { background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);border-radius:var(--radius-md);padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition-fast); }
+    .btn-valid:hover:not(:disabled)   { background:rgba(52,211,153,.2); }
+    .btn-invalid { background:var(--color-surface-2);color:var(--color-text-secondary);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition-fast); }
+    .btn-invalid:hover:not(:disabled) { background:var(--color-surface-3,rgba(255,255,255,.06)); }
+    .btn-valid:disabled,.btn-invalid:disabled { opacity:.35;cursor:not-allowed; }
+
+    /* Future placeholders */
+    .future-placeholder { display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-2); }
+    .future-pill { font-size:11px;font-weight:600;color:var(--color-text-muted);background:var(--color-surface-2);border:1px dashed var(--color-border);border-radius:6px;padding:4px 12px;opacity:.6; }
+
+    /* Modal */
+    .modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:var(--space-4); }
+    .modal-box { background:var(--color-surface-1,#1a1a2e);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-7);width:100%;max-width:480px; }
+    .modal-title { font-size:16px;font-weight:700;color:var(--color-text-primary);margin-bottom:var(--space-3); }
+    .modal-warning { font-size:12px;color:#f59e0b;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-5);line-height:1.6; }
+    .modal-actions { display:flex;gap:var(--space-3);justify-content:flex-end;margin-top:var(--space-5); }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo" style="cursor:default">
+        <div class="sidebar-logo-mark">HV</div>
+        HVID Admin
+      </div>
+      <div style="margin-top:var(--space-3)"><span class="admin-badge">⚑ Internal</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Review</div>
+        <a href="/admin/kyc-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg></span> KYC Review</a>
+        <a href="/admin/asset-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span> Asset Review</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Reports</div>
+        <a href="/admin/reports" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span> Report Queue</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Future — placeholder</div>
+        <a href="#" class="sidebar-link" style="opacity:.4;pointer-events:none"><span class="sidebar-link-icon">📁</span> Cases <em style="font-size:10px">(soon)</em></a>
+        <a href="#" class="sidebar-link" style="opacity:.4;pointer-events:none"><span class="sidebar-link-icon">🚩</span> Escalations <em style="font-size:10px">(soon)</em></a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <a href="/admin/reports" class="sidebar-link" style="color:var(--color-text-muted)"><span class="sidebar-link-icon">←</span> Back to Queue</a>
+    </div>
+  </aside>
+
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title" id="topbar-title">Report Detail</div>
+      <div class="topbar-right"><span class="admin-badge">⚑ Admin View</span></div>
+    </header>
+
+    <main class="page-content">
+
+      <div id="detail-loading" style="text-align:center;padding:var(--space-10);color:var(--color-text-muted);font-size:13px">Loading…</div>
+      <div id="detail-not-found" style="display:none;text-align:center;padding:var(--space-10);color:var(--color-text-muted)">Report not found</div>
+
+      <div id="detail-root" style="display:none">
+
+        <!-- 1. Report summary -->
+        <div class="card animate-fadeUp">
+          <div class="detail-section-title">Report Summary</div>
+          <div class="kv-row"><span class="kv-key">Report ID</span><span class="kv-val" id="d-id" style="font-family:monospace;font-size:12px"></span></div>
+          <div class="kv-row"><span class="kv-key">Type</span><span class="kv-val" id="d-type"></span></div>
+          <div class="kv-row"><span class="kv-key">Status</span><span class="kv-val" id="d-status"></span></div>
+          <div class="kv-row"><span class="kv-key">Created</span><span class="kv-val" id="d-created"></span></div>
+        </div>
+
+        <!-- 2. Target info -->
+        <div class="card animate-fadeUp delay-1">
+          <div class="detail-section-title">Target Information</div>
+          <div id="d-target-identity" style="display:none">
+            <div class="kv-row"><span class="kv-key">Target Type</span><span class="kv-val">Identity</span></div>
+            <div class="kv-row"><span class="kv-key">Identity ID</span><span class="kv-val" id="d-identity-id" style="font-family:monospace;font-size:12px"></span></div>
+          </div>
+          <div id="d-target-asset" style="display:none">
+            <div class="kv-row"><span class="kv-key">Target Type</span><span class="kv-val">Asset</span></div>
+            <div class="kv-row"><span class="kv-key">Asset ID</span><span class="kv-val" id="d-asset-id" style="font-family:monospace;font-size:12px"></span></div>
+          </div>
+        </div>
+
+        <!-- 3. Description -->
+        <div class="card animate-fadeUp delay-1" id="d-desc-card">
+          <div class="detail-section-title">Description</div>
+          <div class="description-box" id="d-description">—</div>
+        </div>
+
+        <!-- 4. Evidence -->
+        <div class="card animate-fadeUp delay-2" id="d-evidence-card">
+          <div class="detail-section-title">Evidence</div>
+          <div class="evidence-label">⚠ User-submitted evidence (not verified)</div>
+          <div id="d-evidence-list"></div>
+          <div id="d-evidence-empty" style="font-size:13px;color:var(--color-text-muted)">No evidence submitted</div>
+        </div>
+
+        <!-- 5. Decision panel -->
+        <div class="card animate-fadeUp delay-2" id="d-decision-card">
+          <div class="detail-section-title">Admin Decision</div>
+          <div id="d-decision-resolved" style="display:none;font-size:13px;color:var(--color-text-secondary)">This report has been resolved.</div>
+          <div id="d-decision-panel">
+            <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:var(--space-4)">
+              Review the report carefully before making a decision. Decisions are logged and impact system behavior.
+            </p>
+            <div class="decision-panel">
+              <button class="btn-valid"   id="btn-valid"        onclick="openModal('VALID')">✓ Mark as Valid</button>
+              <button class="btn-invalid" id="btn-invalid"      onclick="openModal('INVALID')">✕ Mark as Invalid</button>
+              <button class="btn-invalid" id="btn-insufficient" onclick="openModal('INSUFFICIENT')" style="background:rgba(251,191,36,.07);color:#fbbf24;border-color:rgba(251,191,36,.22)">⚠ Insufficient Evidence</button>
+            </div>
+          </div>
+
+          <!-- Future placeholders -->
+          <div style="margin-top:var(--space-6);border-top:1px solid rgba(255,255,255,0.05);padding-top:var(--space-5)">
+            <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:var(--space-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Future — not yet active</div>
+            <div class="future-placeholder">
+              <span class="future-pill">📁 Case grouping <em>(soon)</em></span>
+              <span class="future-pill">🚩 Escalation flag <em>(soon)</em></span>
+              <span class="future-pill">📝 Admin notes <em>(soon)</em></span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- #detail-root -->
+
+    </main>
+  </div>
+</div>
+
+<!-- Decision modal -->
+<div class="modal-overlay" id="decision-modal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Confirm Decision</div>
+    <div class="modal-warning">
+      ⚑ Decisions impact system behavior. This action will be permanently logged. Proceed carefully.
+    </div>
+    <div class="input-group">
+      <label class="input-label" for="modal-reason">Reason for decision <span style="color:var(--color-error,#f87171)">*</span></label>
+      <textarea
+        id="modal-reason"
+        class="input"
+        rows="4"
+        placeholder="Enter a clear reason (minimum 20 characters)…"
+        style="resize:vertical"
+        oninput="validateReason()"
+      ></textarea>
+      <span id="modal-reason-error" style="font-size:12px;color:#f87171;display:none">Reason must be at least 20 characters.</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="modal-confirm-btn" onclick="submitDecision()" disabled style="opacity:.4;cursor:not-allowed">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const API_BASE = '/api';
+const reportId = new URLSearchParams(location.search).get('id');
+let   pendingDecision = null;
+let   isSubmitting    = false;
+
+// ── Auth helpers ─────────────────────────────────────────────
+function getAdminHeaders(extra) {
+  const token    = localStorage.getItem('hvid_token')    || '';
+  const adminKey = localStorage.getItem('hvid_admin_key') || '';
+  return Object.assign({
+    'Content-Type':  'application/json',
+    'Authorization': `Bearer ${token}`,
+    'X-Admin-Key':   adminKey,
+  }, extra || {});
+}
+
+function showDetailError(message) {
+  document.getElementById('detail-loading').style.display   = 'none';
+  document.getElementById('detail-root').style.display      = 'none';
+  document.getElementById('detail-not-found').style.display = 'block';
+  document.getElementById('detail-not-found').textContent   = message;
+}
+
+// ── Load detail ───────────────────────────────────────────────
+async function loadDetail() {
+  if (!reportId) { showDetailError('No report ID specified.'); return; }
+
+  const token    = localStorage.getItem('hvid_token');
+  const adminKey = localStorage.getItem('hvid_admin_key');
+  if (!token || !adminKey) {
+    showDetailError('Admin authentication required. Please set your token and admin key in localStorage.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/reports/${reportId}`, {
+      headers: getAdminHeaders(),
+    });
+
+    if (res.status === 401) { showDetailError('Admin authentication required — invalid or expired token (401).'); return; }
+    if (res.status === 403) { showDetailError('Admin access denied — X-Admin-Key incorrect or not configured (403).'); return; }
+    if (res.status === 404) { showNotFound(); return; }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const body = await res.json();
+    render(body.data || body);
+  } catch (err) {
+    showDetailError(`Could not load report: ${err.message || 'Network error'}`);
+  }
+}
+
+function showNotFound() {
+  document.getElementById('detail-loading').style.display   = 'none';
+  document.getElementById('detail-not-found').style.display = 'block';
+  document.getElementById('detail-not-found').textContent   = 'Report not found';
+}
+
+function render(r) {
+  document.getElementById('detail-loading').style.display = 'none';
+  document.getElementById('detail-root').style.display    = 'block';
+  document.getElementById('topbar-title').textContent = `Report · ${r.report_id.slice(0,8)}…`;
+
+  // Summary
+  document.getElementById('d-id').textContent      = r.report_id;
+  document.getElementById('d-type').textContent    = formatType(r.report_type);
+  document.getElementById('d-status').innerHTML    = renderStatus(r.status);
+  document.getElementById('d-created').textContent = new Date(r.created_at).toLocaleString();
+
+  // Target
+  if (r.target_identity_id) {
+    document.getElementById('d-target-identity').style.display = 'block';
+    document.getElementById('d-identity-id').textContent = r.target_identity_id;
+  }
+  if (r.target_asset_id) {
+    document.getElementById('d-target-asset').style.display = 'block';
+    document.getElementById('d-asset-id').textContent = r.target_asset_id;
+  }
+
+  // Description
+  document.getElementById('d-description').textContent = r.description || '(no description provided)';
+
+  // Evidence
+  const urls = r.evidence_urls || [];
+  if (urls.length > 0) {
+    document.getElementById('d-evidence-empty').style.display = 'none';
+    const list = document.getElementById('d-evidence-list');
+    urls.forEach(url => {
+      const a = document.createElement('a');
+      a.href = url; a.textContent = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.className = 'evidence-link';
+      list.appendChild(a);
+    });
+  }
+
+  // Decision panel state
+  const resolved = r.status === 'RESOLVED_VALID' || r.status === 'RESOLVED_INVALID';
+  if (resolved) {
+    document.getElementById('d-decision-panel').style.display   = 'none';
+    document.getElementById('d-decision-resolved').style.display = 'block';
+    document.getElementById('d-decision-resolved').textContent  =
+      `This report was resolved as ${r.status.replace('RESOLVED_', '').toLowerCase()}.`;
+  }
+}
+
+function formatType(t) {
+  return {
+    IMPERSONATION:'Impersonation', SCAM:'Scam', FAKE_ACCOUNT:'Fake Account',
+    OWNERSHIP_DISPUTE:'Ownership Dispute', OTHER:'Other'
+  }[t] || t;
+}
+function renderStatus(s) {
+  const labels = { PENDING:'Pending', UNDER_REVIEW:'Under Review', RESOLVED:'Resolved', RESOLVED_VALID:'Resolved', REJECTED:'Rejected', RESOLVED_INVALID:'Rejected' };
+  const cls    = { PENDING:'status-PENDING', UNDER_REVIEW:'status-UNDER_REVIEW', RESOLVED:'status-RESOLVED_VALID', RESOLVED_VALID:'status-RESOLVED_VALID', REJECTED:'status-RESOLVED_INVALID', RESOLVED_INVALID:'status-RESOLVED_INVALID' };
+  return `<span class="status-pill ${cls[s]||'status-PENDING'}">● ${labels[s]||s}</span>`;
+}
+
+// ── Modal ─────────────────────────────────────────────────────
+function openModal(decision) {
+  pendingDecision = decision;
+  const LABELS = { VALID:'Mark as Valid — apply enforcement', INVALID:'Mark as Invalid — reject report', INSUFFICIENT:'Insufficient Evidence — keep under review' };
+  document.getElementById('modal-title').textContent = LABELS[decision] || decision;
+  document.getElementById('modal-reason').value = '';
+  document.getElementById('modal-reason-error').style.display = 'none';
+  const btn = document.getElementById('modal-confirm-btn');
+  btn.disabled = true; btn.style.opacity = '.4'; btn.style.cursor = 'not-allowed';
+  document.getElementById('decision-modal').style.display = 'flex';
+}
+function closeModal() {
+  document.getElementById('decision-modal').style.display = 'none';
+  pendingDecision = null;
+}
+function validateReason() {
+  const val = document.getElementById('modal-reason').value.trim();
+  const ok  = val.length >= 20;
+  const btn = document.getElementById('modal-confirm-btn');
+  btn.disabled = !ok; btn.style.opacity = ok ? '1' : '.4'; btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+  document.getElementById('modal-reason-error').style.display = (!ok && val.length > 0) ? 'block' : 'none';
+}
+
+// ── Submit decision ───────────────────────────────────────────
+async function submitDecision() {
+  if (!pendingDecision || isSubmitting) return;
+  isSubmitting = true;
+  const btn = document.getElementById('modal-confirm-btn');
+  btn.textContent = 'Submitting…'; btn.disabled = true;
+
+  const decisionMap = { RESOLVED_VALID:'VALID', RESOLVED_INVALID:'INVALID' };
+  const decision    = decisionMap[pendingDecision] || pendingDecision;
+
+  try {
+    const res = await fetch(`/api/report/${reportId}/resolve`, {
+      method:  'PATCH',
+      headers: getAdminHeaders(),
+      body:    JSON.stringify({ decision }),
+    });
+
+    closeModal();
+
+    if (res.status === 401) {
+      document.getElementById('d-decision-resolved').textContent = 'Decision failed: admin authentication required (401).';
+      document.getElementById('d-decision-resolved').style.display = 'block';
+      isSubmitting = false;
+      return;
+    }
+    if (res.status === 403) {
+      document.getElementById('d-decision-resolved').textContent = 'Decision failed: admin key incorrect or missing (403).';
+      document.getElementById('d-decision-resolved').style.display = 'block';
+      isSubmitting = false;
+      return;
+    }
+
+    let resolvedStatus, resolvedLabel;
+    if (decision === 'VALID')        { resolvedStatus = 'RESOLVED';     resolvedLabel = 'valid (enforcement applied)'; }
+    else if (decision === 'INVALID') { resolvedStatus = 'REJECTED';     resolvedLabel = 'invalid'; }
+    else                             { resolvedStatus = 'UNDER_REVIEW'; resolvedLabel = 'under review (more evidence needed)'; }
+
+    if (res.ok) {
+      const data = await res.json();
+      resolvedStatus = data.status || resolvedStatus;
+      if (data.violationCountAtResolution) {
+        resolvedLabel += ` — violation #${data.violationCountAtResolution}`;
+      }
+    } else {
+      // Non-auth HTTP error — show status code
+      document.getElementById('d-decision-resolved').textContent = `Decision failed: HTTP ${res.status}`;
+      document.getElementById('d-decision-resolved').style.display = 'block';
+      isSubmitting = false;
+      return;
+    }
+
+    // Success — update UI
+    if (decision !== 'INSUFFICIENT') {
+      document.getElementById('d-decision-panel').style.display   = 'none';
+      document.getElementById('d-decision-resolved').style.display = 'block';
+    }
+    document.getElementById('d-decision-resolved').textContent = `Decision recorded: ${resolvedLabel}.`;
+    document.getElementById('d-status').innerHTML = renderStatus(resolvedStatus);
+
+  } catch (err) {
+    closeModal();
+    document.getElementById('d-decision-resolved').textContent =
+      `Decision failed: ${err.message || 'Network error'}. Please retry.`;
+    document.getElementById('d-decision-resolved').style.display = 'block';
+    isSubmitting = false;
+  }
+}
+
+loadDetail();
+</script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asset Review — HVID Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    .admin-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:11px; font-weight:700; letter-spacing:.06em;
+      color:#a78bfa; background:rgba(167,139,250,0.1);
+      border:1px solid rgba(167,139,250,0.2);
+      border-radius:999px; padding:3px 10px;
+    }
+    .asset-grid { display:grid; grid-template-columns:1fr; gap:16px; }
+    @media(min-width:920px){ .asset-grid{grid-template-columns:1fr 1fr;} }
+    .asset-card {
+      background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+      border-radius:14px; padding:22px; cursor:pointer;
+      transition:border-color .2s, background .2s;
+    }
+    .asset-card:hover { border-color:rgba(91,95,239,0.4); background:rgba(91,95,239,0.04); }
+    .asset-type { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#818cf8; margin-bottom:8px; }
+    .asset-line { display:flex; align-items:center; gap:10px; justify-content:space-between; }
+    .asset-value { font-size:14px; font-weight:600; color:var(--color-text-primary); word-break:break-word; }
+    .asset-meta { font-size:12px; color:var(--color-text-muted); margin-top:8px; }
+    .status-pill {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:11px; font-weight:600; border-radius:999px; padding:4px 12px; border:1px solid;
+    }
+    .status-PENDING_REVIEW { color:#818cf8; background:rgba(129,140,248,.08); border-color:rgba(129,140,248,.2); }
+    .status-PENDING  { color:#f59e0b; background:rgba(245,158,11,.08); border-color:rgba(245,158,11,.2); }
+    .status-VERIFIED { color:#34d399; background:rgba(52,211,153,.08); border-color:rgba(52,211,153,.2); }
+    .status-REJECTED { color:#f87171; background:rgba(248,113,113,.08); border-color:rgba(248,113,113,.2); }
+    .asset-actions { display:flex; gap:12px; margin-top:18px; }
+    .btn-approve {
+      flex:1; background:#059669; color:#fff; border:none; border-radius:10px;
+      padding:12px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;
+    }
+    .btn-reject {
+      flex:1; background:rgba(248,113,113,0.1); color:#f87171;
+      border:1px solid rgba(248,113,113,0.3); border-radius:10px;
+      padding:12px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;
+    }
+    .modal-backdrop {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75);
+      z-index:1000; align-items:center; justify-content:center;
+    }
+    .modal-backdrop.open { display:flex; }
+    .modal-card {
+      background:rgba(18,18,30,0.98); border:1px solid rgba(255,255,255,0.1);
+      border-radius:20px; width:100%; max-width:700px; max-height:90vh;
+      overflow-y:auto; padding:32px; margin:20px;
+      box-shadow:0 32px 80px rgba(0,0,0,0.6);
+    }
+    .modal-card h2 { font-size:20px; font-weight:700; color:var(--color-text-primary); margin-bottom:6px; }
+    .modal-card .meta { font-size:12px; color:var(--color-text-muted); margin-bottom:22px; }
+    .modal-card .doc-preview {
+      width:100%; border-radius:12px; overflow:hidden;
+      border:1px solid rgba(255,255,255,0.08); margin-bottom:20px;
+      background:#0a0a14; min-height:120px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .modal-card .doc-preview img { width:100%; max-height:340px; object-fit:contain; display:block; }
+    .modal-card .action-row { display:flex; gap:12px; margin-top:22px; }
+    .modal-card .btn-close { flex:1; background:transparent; color:var(--color-text-muted); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 18px; font-size:14px; cursor:pointer; }
+    .reject-form { display:none; margin-top:16px; }
+    .reject-form textarea {
+      width:100%; box-sizing:border-box; background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.1); border-radius:10px;
+      color:var(--color-text-primary); font-family:inherit; font-size:13px;
+      padding:12px 14px; resize:vertical; min-height:100px; outline:none;
+    }
+    .reject-form textarea:focus { border-color:rgba(248,113,113,0.4); }
+    .reject-form .btn-confirm-reject {
+      margin-top:10px; background:#dc2626; color:#fff; border:none;
+      border-radius:10px; padding:12px 20px; font-size:13px; font-weight:700;
+      cursor:pointer; font-family:inherit;
+    }
+    .toast {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(10px);
+      background:rgba(52,211,153,0.15); border:1px solid rgba(52,211,153,0.3);
+      color:#34d399; font-size:13px; font-weight:600;
+      padding:10px 20px; border-radius:12px; z-index:9999;
+      opacity:0; transition:opacity .25s, transform .25s; pointer-events:none;
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .toast.error { background:rgba(248,113,113,0.12); border-color:rgba(248,113,113,0.3); color:#f87171; }
+    .filter-tabs { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+    .filter-tab {
+      font-size:12px; font-weight:600; padding:6px 14px; border-radius:99px;
+      border:1px solid rgba(255,255,255,0.1); background:transparent;
+      color:var(--color-text-muted); cursor:pointer; font-family:inherit;
+      transition:all .15s;
+    }
+    .filter-tab.active { background:rgba(91,95,239,0.15); border-color:rgba(91,95,239,0.4); color:#818cf8; }
+    .filter-tab:hover:not(.active) { border-color:rgba(255,255,255,0.2); color:var(--color-text-primary); }
+    .empty { text-align:center; padding:60px 20px; color:var(--color-text-muted); font-size:14px; }
+  </style>
+</head>
+<body>
+<div class="dashboard-shell">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo" style="cursor:default">
+        <div class="sidebar-logo-mark">HV</div>
+        HVID Admin
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Review</div>
+        <a href="/admin/kyc-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg></span> KYC Review</a>
+        <a href="/admin/asset-review" class="sidebar-link active"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span> Asset Review</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Reports</div>
+        <a href="/admin/reports" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span> Report Queue</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Identities</div>
+        <a href="/admin/identity-search" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Identity Search</a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <a href="/admin/reports" class="sidebar-link" style="color:var(--color-text-muted)"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg></span> Back to Reports</a>
+    </div>
+  </aside>
+
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">Asset Review</div>
+      <div class="topbar-right"><span class="admin-badge">⚑ Admin View</span></div>
+    </header>
+
+    <main class="page-content">
+      <div id="login-gate" style="display:none">
+        <div class="admin-login">
+          <h2>Admin Authentication</h2>
+          <p>Enter your admin key to access asset review.</p>
+          <input type="password" id="admin-key-input" placeholder="Admin key" />
+          <button class="btn btn-primary btn-sm" style="width:100%" onclick="doAdminLogin()">Access Panel</button>
+        </div>
+      </div>
+
+      <div id="main-panel" style="display:none">
+        <div class="page-header animate-fadeUp">
+          <h1 class="page-title">Pending Asset Claims</h1>
+          <p class="page-subtitle">Approve or reject linked account and website ownership claims.</p>
+        </div>
+
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="loadAssets('PENDING_REVIEW', this)">🔍 Under Review</button>
+          <button class="filter-tab" onclick="loadAssets('PENDING', this)">⏳ Pending</button>
+          <button class="filter-tab" onclick="loadAssets('VERIFIED', this)">✓ Verified</button>
+          <button class="filter-tab" onclick="loadAssets('REJECTED', this)">✕ Rejected</button>
+          <button class="filter-tab" onclick="loadAssets('ALL', this)">○ All</button>
+        </div>
+
+        <div id="assets-wrap">
+          <div class="empty"><div class="empty-icon"><svg class="hvid-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>Loading assets…</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModalOnBackdrop(event)">
+  <div class="modal-card" id="modal-card">
+    <h2 id="modal-title">Asset Claim</h2>
+    <div class="meta" id="modal-meta"></div>
+    <div style="margin-bottom:20px" id="doc-preview"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px">Asset Type</div>
+        <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)" id="modal-asset-type">—</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px">
+        <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:4px">Status</div>
+        <div id="modal-status">—</div>
+      </div>
+    </div>
+
+    <div id="modal-instructions" style="display:none"></div>
+
+    <div class="action-row" id="action-row">
+      <button class="btn-approve" onclick="approveAsset()">✓ Approve</button>
+      <button class="btn-reject" onclick="showRejectForm()">✕ Reject</button>
+      <button class="btn-close" onclick="closeModal()">Close</button>
+    </div>
+
+    <div class="reject-form" id="reject-form">
+      <textarea id="reject-reason" placeholder="Rejection reason (optional)"></textarea>
+      <button class="btn-confirm-reject" onclick="confirmReject()">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+let adminKey = localStorage.getItem('hvid_') || '';
+let currentAssetId = null;
+let currentStatus = 'PENDING_REVIEW';
+
+function checkAdminKey() {
+  if (adminKey) {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('main-panel').style.display = 'block';
+    loadAssets('PENDING_REVIEW');
+  } else {
+    document.getElementById('login-gate').style.display = 'block';
+    document.getElementById('main-panel').style.display = 'none';
+  }
+}
+
+function doAdminLogin() {
+  const key = document.getElementById('admin-key-input').value.trim();
+  if (!key) return;
+  adminKey = key;
+  localStorage.setItem('hvid_', key);
+  checkAdminKey();
+}
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.classList.remove('show'); }, 3200);
+}
+
+async function loadAssets(status, tabEl) {
+  currentStatus = status || currentStatus;
+  if (tabEl) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+  }
+
+  const wrap = document.getElementById('assets-wrap');
+  wrap.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div>Loading…</div>';
+
+  try {
+    const r = await fetch(`/api/asset/admin/pending?status=${encodeURIComponent(currentStatus)}`, {
+      headers: { 'X-Admin-Key': adminKey, 'Authorization': 'Bearer ' + (localStorage.getItem('hvid_token') || '') }
+    });
+    if (r.status === 403) {
+      adminKey = '';
+      localStorage.removeItem('hvid_');
+      showToast('Invalid or expired admin key. Please log in again.', true);
+      checkAdminKey();
+      return;
+    }
+    if (!r.ok) {
+      throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+    }
+    const d = await r.json();
+    console.log(`Loaded ${d.assets?.length || 0} assets with status: ${currentStatus}`, d.assets);
+    renderAssets(d.assets || []);
+  } catch (e) {
+    console.error('Failed to load assets:', e);
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon"><svg class="hvid-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fbbf24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>Failed to load assets: ${e.message}<br><span style="font-size:11px;color:var(--color-text-muted);margin-top:8px;display:block">Check browser console for details</span></div>`;
+  }
+}
+
+function renderAssets(items) {
+  const wrap = document.getElementById('assets-wrap');
+  if (!items.length) {
+    const statusLabels = {
+      PENDING_REVIEW: 'under review',
+      PENDING: 'pending',
+      VERIFIED: 'verified',
+      REJECTED: 'rejected',
+      ALL: 'in any status'
+    };
+    const statusLabel = statusLabels[currentStatus] || currentStatus.toLowerCase();
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon"><svg class="hvid-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>No asset claims found ${statusLabel}
+      <div style="font-size:12px;color:var(--color-text-muted);margin-top:12px">
+        Try selecting a different filter tab above
+      </div></div>`;
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'asset-grid';
+
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'asset-card';
+    card.onclick = () => openDetail(item.assetId);
+    const status      = (item.verificationStatus || 'pending').toUpperCase();
+    const statusClass = `status-${status}`;
+    const statusLabels = {
+      PENDING_REVIEW: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Under Review',
+      PENDING:        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Pending',
+      VERIFIED:       '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="20 6 9 17 4 12"></polyline></svg> Verified',
+      REJECTED:       '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Rejected',
+    };
+    const statusLabel = statusLabels[status] || status;
+    const typeIcons = {
+      instagram: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>',
+      twitter:   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>',
+      linkedin:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>',
+      website:   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>',
+      storefront:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>',
+      custom:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>',
+    };
+    const typeIcon  = typeIcons[(item.type||'').toLowerCase()] || typeIcons.custom;
+
+    card.innerHTML = `
+      <div class="asset-type">${typeIcon} ${(item.type || 'Asset').toUpperCase()}</div>
+      <div class="asset-line">
+        <div class="asset-value">${item.displayValue || '—'}</div>
+        <span class="status-pill ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="asset-meta">
+        ${item.username ? '@' + item.username : 'Unknown user'} · ****${item.phone_last4 || '????'}
+        <br>${new Date(item.createdAt).toLocaleString()}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  wrap.innerHTML = '';
+  wrap.appendChild(grid);
+}
+
+async function openDetail(assetId) {
+  currentAssetId = assetId;
+  document.getElementById('modal-backdrop').classList.add('open');
+  document.getElementById('modal-title').textContent = 'Asset Claim';
+  document.getElementById('modal-meta').textContent = 'Loading asset details…';
+  document.getElementById('modal-asset-type').textContent = '—';
+  document.getElementById('modal-status').textContent = '—';
+  document.getElementById('modal-instructions').textContent = '';
+  document.getElementById('doc-preview').innerHTML = '<div style="font-size:13px;color:var(--color-text-muted);padding:20px 0">Loading asset details…</div>';
+  document.getElementById('reject-form').style.display = 'none';
+
+  try {
+    const r = await fetch(`/api/asset/admin/detail/${encodeURIComponent(assetId)}`, {
+      headers: { 'X-Admin-Key': adminKey, 'Authorization': 'Bearer ' + (localStorage.getItem('hvid_token') || '') }
+    });
+    if (!r.ok) throw new Error('Asset detail failed');
+    const d = await r.json();
+
+    const type        = (d.type || 'asset').toLowerCase();
+    const status      = (d.verificationStatus || 'pending').toUpperCase();
+    const statusLabel = status.replace('_', ' ');
+
+    document.getElementById('modal-title').textContent = `${type.toUpperCase()} Claim — ${d.displayValue || 'Asset'}`;
+    document.getElementById('modal-meta').textContent  = `Identity: ${d.identityId} · ${d.username ? '@' + d.username : 'Unknown'} · ****${d.phone_last4 || '????'}`;
+    document.getElementById('modal-asset-type').textContent = type.toUpperCase();
+    document.getElementById('modal-status').innerHTML =
+      `<span class="status-pill status-${status}">● ${statusLabel}</span>`;
+
+    // Build the detail panel
+    const preview = document.getElementById('doc-preview');
+
+    // Profile visit link
+    const profileUrl = _profileUrl(type, d.displayValue);
+    const visitLink  = profileUrl
+      ? `<a href="${profileUrl}" target="_blank" rel="noopener noreferrer"
+            style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;
+                   color:#818cf8;text-decoration:none;padding:8px 14px;border-radius:8px;
+                   background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.2);margin-bottom:16px">
+           🔗 Visit ${d.displayValue || 'profile'} →
+         </a>`
+      : '';
+
+    // Verification code block
+    const codeBlock = d.verificationCode
+      ? `<div style="background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);
+                     border-radius:10px;padding:14px 18px;margin-bottom:14px">
+           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+                       color:var(--color-text-muted);margin-bottom:6px">Verification Code to look for</div>
+           <div style="font-family:monospace;font-size:16px;font-weight:800;color:#818cf8;
+                       word-break:break-all;letter-spacing:.04em">${d.verificationCode}</div>
+         </div>`
+      : '';
+
+    // Instructions
+    const instructionsBlock = d.instructions
+      ? `<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+                     border-radius:10px;padding:14px 16px">
+           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+                       color:var(--color-text-muted);margin-bottom:8px">Instructions given to user</div>
+           <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7;
+                       white-space:pre-line">${d.instructions}</div>
+         </div>`
+      : '';
+
+    preview.innerHTML = visitLink + codeBlock + instructionsBlock;
+
+    // Show action buttons only for pending / pending_review
+    const actionRow = document.getElementById('action-row');
+    if (['PENDING', 'PENDING_REVIEW'].includes(status)) {
+      actionRow.innerHTML = `
+        <button class="btn-approve" onclick="approveAsset()">✓ Approve & Verify</button>
+        <button class="btn-reject" onclick="showRejectForm()">✕ Reject</button>
+        <button class="btn-close" onclick="closeModal()">Close</button>`;
+    } else {
+      actionRow.innerHTML = `<button class="btn-close" onclick="closeModal()">Close</button>`;
+    }
+    actionRow.style.display = 'flex';
+
+  } catch (e) {
+    document.getElementById('modal-meta').textContent = `Error loading asset: ${e.message}`;
+  }
+}
+
+// Build visit URL for common platforms
+function _profileUrl(type, displayValue) {
+  const val = (displayValue || '').replace('@', '').trim();
+  if (!val) return null;
+  const map = {
+    instagram:  `https://www.instagram.com/${val}/`,
+    twitter:    `https://twitter.com/${val}`,
+    linkedin:   displayValue.startsWith('http') ? displayValue : `https://www.linkedin.com/in/${val}`,
+    website:    displayValue.startsWith('http') ? displayValue : `https://${val}`,
+    storefront: displayValue.startsWith('http') ? displayValue : `https://${val}`,
+  };
+  return map[type] || null;
+}
+
+function closeModal() {
+  document.getElementById('modal-backdrop').classList.remove('open');
+  currentAssetId = null;
+}
+
+function closeModalOnBackdrop(e) {
+  if (e.target === document.getElementById('modal-backdrop')) closeModal();
+}
+
+function showRejectForm() {
+  document.getElementById('reject-form').style.display = 'block';
+  document.getElementById('reject-reason').focus();
+}
+
+async function approveAsset() {
+  if (!currentAssetId) return;
+  const btn = document.querySelector('.btn-approve');
+  btn.textContent = 'Approving…';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch(`/api/asset/admin/approve/${encodeURIComponent(currentAssetId)}`, {
+      method: 'POST',
+      headers: { 'X-Admin-Key': adminKey, 'Authorization': 'Bearer ' + (localStorage.getItem('hvid_token') || '') }
+    });
+    if (!r.ok) throw new Error('Approve failed');
+    showToast('Asset verified.', false);
+    closeModal();
+    loadAssets(currentStatus);
+  } catch (e) {
+    showToast(`Approve failed: ${e.message}`, true);
+  } finally {
+    btn.textContent = '✓ Approve';
+    btn.disabled = false;
+  }
+}
+
+async function confirmReject() {
+  if (!currentAssetId) return;
+  const reason = document.getElementById('reject-reason').value.trim();
+  const btn = document.querySelector('.btn-confirm-reject');
+  btn.textContent = 'Rejecting…';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch(`/api/asset/admin/reject/${encodeURIComponent(currentAssetId)}`, {
+      method: 'POST',
+      headers: { 'X-Admin-Key': adminKey, 'Authorization': 'Bearer ' + (localStorage.getItem('hvid_token') || '') }
+    });
+    if (!r.ok) throw new Error('Reject failed');
+    showToast('Asset rejected.', false);
+    closeModal();
+    loadAssets(currentStatus);
+  } catch (e) {
+    showToast(`Reject failed: ${e.message}`, true);
+  } finally {
+    btn.textContent = 'Confirm Rejection';
+    btn.disabled = false;
+  }
+}
+
+checkAdminKey();
+</script>
+</body>
+</html>

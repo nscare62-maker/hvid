@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identity Profile — HVID</title>
+  <meta name="description" content="HVID public identity trust profile. View system-generated verification signals for this identity." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/public.css" />
+  <style>
+    /* ── Profile page layout ─────────────────────────────────── */
+    .profile-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 72px; /* nav height */
+    }
+    .profile-stage {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: var(--space-8) var(--space-4);
+    }
+    .profile-inner {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    /* ── Loading ─────────────────────────────────────────────── */
+    #profile-loading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--color-text-muted);
+      padding: var(--space-6) 0;
+    }
+    .profile-spinner {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.1);
+      border-top-color: #818cf8;
+      animation: pSpin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pSpin { to { transform: rotate(360deg); } }
+
+    /* ── S1 Header ───────────────────────────────────────────── */
+    .profile-header {
+      text-align: center;
+      padding-bottom: var(--space-2);
+    }
+    .profile-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--color-text-muted);
+      margin-bottom: var(--space-3);
+    }
+    .profile-title {
+      font-size: 26px; font-weight: 800; letter-spacing: -.02em;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-2);
+    }
+    .profile-id {
+      font-size: 12px; font-family: monospace;
+      color: var(--color-text-muted);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 6px;
+      display: inline-block; padding: 3px 10px;
+    }
+
+    /* ── S2 Trust card ───────────────────────────────────────── */
+    #profile-trust-card {
+      border-radius: 16px; border: 1px solid;
+      overflow: hidden;
+      transition: box-shadow .3s;
+    }
+    .profile-trust-body {
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    #profile-trust-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700; border: 1px solid;
+      flex-shrink: 0;
+    }
+    #profile-trust-signal {
+      font-size: 18px; font-weight: 800; letter-spacing: -.01em;
+      margin-bottom: 6px;
+    }
+    #profile-tier-slot { display: flex; }
+    .profile-trust-footer {
+      padding: 12px 24px;
+      border-top: 1px solid rgba(255,255,255,.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .profile-trust-label {
+      font-size: 11px; font-weight: 600; letter-spacing: .05em;
+      text-transform: uppercase; color: var(--color-text-muted);
+    }
+
+    /* ── S3 Verification summary ─────────────────────────────── */
+    .profile-card {
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 14px;
+      padding: 20px 24px;
+    }
+    .profile-card-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; color: var(--color-text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .profile-verif-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--color-text-secondary);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .profile-verif-item:last-child { border-bottom: none; }
+    .profile-verif-check {
+      font-size: 12px; font-weight: 700;
+      color: #34d399;
+      background: rgba(52,211,153,.1);
+      border: 1px solid rgba(52,211,153,.2);
+      border-radius: 99px; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .profile-verif-pending { color: var(--color-text-muted); opacity: .6; }
+    .profile-verif-pending span {
+      font-size: 14px; color: rgba(255,255,255,.25);
+    }
+
+    /* ── S4 Stability ────────────────────────────────────────── */
+    #profile-stability {
+      font-size: 13px; line-height: 1.6;
+    }
+
+    /* ── S5 Verified Accounts ────────────────────────────────── */
+    /* Hidden by default — profile.js sets display:block when assets exist */
+    #profile-verified-assets {
+      display: none;
+    }
+
+    /* ── S6 Disclaimer ───────────────────────────────────────── */
+    .profile-disclaimer {
+      font-size: 12px; color: var(--color-text-muted);
+      line-height: 1.65;
+      padding: var(--space-3) var(--space-4);
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 10px;
+    }
+
+    /* ── Share section ───────────────────────────────────────── */
+    .profile-share {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .profile-share-input-wrap {
+      flex: 1; min-width: 0;
+      display: flex;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 9px;
+      overflow: hidden;
+    }
+    #profile-share-link {
+      flex: 1; background: transparent; border: none;
+      padding: 9px 12px; font-size: 12px;
+      color: var(--color-text-muted);
+      font-family: monospace;
+      cursor: default; outline: none;
+    }
+    #profile-copy-btn {
+      padding: 9px 14px; background: transparent;
+      border: none; border-left: 1px solid rgba(255,255,255,.07);
+      font-size: 12px; font-weight: 600; color: #818cf8;
+      cursor: pointer; white-space: nowrap;
+      transition: background .15s;
+    }
+    #profile-copy-btn:hover { background: rgba(129,140,248,.08); }
+    #profile-native-share {
+      padding: 9px 16px;
+      background: rgba(129,140,248,.08);
+      border: 1px solid rgba(129,140,248,.2);
+      border-radius: 9px;
+      font-size: 12px; font-weight: 600; color: #818cf8;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity .15s;
+    }
+    #profile-native-share:hover { opacity: .8; }
+
+    /* ── S6 CTAs ─────────────────────────────────────────────── */
+    .profile-actions {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .profile-actions .btn { flex: 1; text-align: center; min-width: 140px; }
+
+    /* ── Page opacity (hidden until rendered) ────────────────── */
+    #profile-page {
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    @media (max-width: 480px) {
+      .profile-title { font-size: 22px; }
+      .profile-stage { padding: var(--space-6) var(--space-3); }
+      .profile-actions .btn { min-width: 0; }
+    }
+
+    /* ── S6: History timeline ───────────────────────────────── */
+    .history-list {
+      position: relative;
+      padding-left: 20px;
+    }
+    .history-list::before {
+      content: '';
+      position: absolute;
+      left: 7px; top: 6px; bottom: 6px;
+      width: 1px;
+      background: rgba(99,102,241,.2);
+    }
+    .history-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .history-item:last-child { margin-bottom: 0; }
+    .history-dot {
+      position: absolute;
+      left: -20px; top: 5px;
+      width: 9px; height: 9px;
+      background: #6366f1;
+      border-radius: 50%;
+      border: 2px solid rgba(99,102,241,.3);
+      flex-shrink: 0;
+    }
+    .history-title {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+    .history-time {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-top: 3px;
+    }
+
+    /* Severity coloring — applies to dot + title */
+    .history-success .history-dot    { background: #34d399; border-color: rgba(52,211,153,.3); }
+    .history-success .history-title  { color: #34d399; }
+    .history-failure .history-dot    { background: #f87171; border-color: rgba(248,113,113,.3); }
+    .history-failure .history-title  { color: #f87171; }
+    .history-warning .history-dot    { background: #fbbf24; border-color: rgba(251,191,36,.3); }
+    .history-warning .history-title  { color: #fbbf24; }
+
+    /* Date group header */
+    .history-group {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .07em; text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      margin: 14px 0 8px;
+      padding-left: 0;
+    }
+    .history-group:first-child { margin-top: 0; }
+
+    /* Context metadata tag */
+    .history-context {
+      display: inline-block;
+      font-size: 10px; font-weight: 600;
+      color: rgba(129,140,248,.7);
+      background: rgba(129,140,248,.08);
+      border: 1px solid rgba(129,140,248,.15);
+      border-radius: 4px; padding: 1px 6px;
+      margin-left: 6px; vertical-align: middle;
+    }
+
+    /* Load more button */
+    .history-load-more {
+      display: block; width: 100%; margin-top: 14px;
+      padding: 8px 0; border-radius: 8px;
+      border: 1px dashed rgba(255,255,255,.1);
+      background: transparent; color: rgba(255,255,255,.35);
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: border-color .15s, color .15s;
+    }
+    .history-load-more:hover { border-color: rgba(99,102,241,.3); color: rgba(99,102,241,.8); }
+
+    /* History empty state */
+    .history-empty {
+      font-size: 13px; color: rgba(255,255,255,.3);
+      text-align: center; padding: 12px 0;
+    }
+  </style>
+
+
+</head>
+<body>
+
+  <!-- ── Nav ── -->
+  <nav class="nav scrolled" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-mark">HV</div>
+        HVID
+      </a>
+      <div class="nav-links">
+        <a href="/how-it-works" class="nav-link">How It Works</a>
+        <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
+      </div>
+      <div class="nav-actions">
+        <a href="auth/login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="auth/login.html" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="profile-page" id="profile-page-wrap">
+
+    <div class="profile-stage">
+      <div class="profile-inner">
+
+        <!-- Loading -->
+        <div id="profile-loading">
+          <div class="profile-spinner"></div>
+          <span>Loading identity profile…</span>
+        </div>
+
+        <!-- Profile content (hidden until JS sets opacity:1) -->
+        <div id="profile-page" style="opacity:0;display:flex;flex-direction:column;gap:var(--space-4);">
+
+          <!-- S1: Header -->
+          <div class="profile-header animate-fadeUp">
+            <div class="profile-eyebrow">🔐 HVID Profile</div>
+            <h1 class="profile-title">Identity Profile</h1>
+            <div class="profile-id" id="profile-identity-id">—</div>
+          </div>
+
+          <!-- S2: Trust card -->
+          <div id="profile-trust-card" style="background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.07);" class="animate-fadeUp">
+            <div class="profile-trust-body">
+              <div id="profile-trust-icon" style="background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.3)">◐</div>
+              <div>
+                <div id="profile-trust-signal" style="color:var(--color-text-primary)">—</div>
+                <div id="profile-tier-slot" style="margin-top:8px"></div>
+              </div>
+            </div>
+            <div class="profile-trust-footer">
+              <span class="profile-trust-label">Trust Signal</span>
+              <span style="font-size:11px;color:var(--color-text-muted)">Advisory only — not a verdict</span>
+            </div>
+          </div>
+
+          <!-- S3: Verification summary -->
+          <div class="profile-card animate-fadeUp">
+            <div class="profile-card-label">Verification Summary</div>
+            <div id="profile-verif-list">
+              <!-- Populated by profile.js -->
+            </div>
+            <!-- Identity type badge row (injected by profile.js via IdentityTypeUI) -->
+            <div id="profile-identity-type"></div>
+          </div>
+
+          <!-- S4: Stability indicator -->
+          <div class="profile-card animate-fadeUp">
+            <div class="profile-card-label">Stability</div>
+            <div id="profile-stability" style="color:var(--color-text-muted)">—</div>
+          </div>
+
+          <!-- S5: Verified Accounts (populated by profile.js when verified_assets exist) -->
+          <!-- Hidden by default — shown only if identity has at least one verified asset -->
+          <div class="profile-card animate-fadeUp" id="profile-verified-assets" style="display:none">
+            <!-- profile.js injects: label + rows of { type, value } -->
+            <!-- Only VERIFIED assets are shown. valueHash is never present. -->
+          </div>
+
+          <!-- S6: Activity History (own profile only — hidden until loaded by profile.js) -->
+          <!-- Security: only shown when myId === identityId; server enforces auth on endpoint. -->
+          <div class="profile-card animate-fadeUp" id="profile-history" style="display:none">
+            <div class="profile-card-label">Activity History</div>
+            <div class="history-list" id="history-list"></div>
+          </div>
+
+          <!-- S6: Disclaimer -->
+          <div class="profile-disclaimer animate-fadeUp" style="display:flex;align-items:center;gap:8px">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <div>This profile reflects system-generated trust signals and does not guarantee behavior.
+            No personal data is stored or displayed. Results may change over time.</div>
+          </div>
+
+          <!-- Share -->
+          <div class="profile-card animate-fadeUp">
+            <div class="profile-card-label">Share Profile</div>
+            <div class="profile-share">
+              <div class="profile-share-input-wrap">
+                <input type="text" id="profile-share-link" readonly />
+                <button id="profile-copy-btn" onclick="copyProfileLink()">Copy link</button>
+              </div>
+              <button id="profile-native-share" onclick="nativeShare()">↑ Share</button>
+            </div>
+          </div>
+
+          <!-- S8: Verify Your Account (Ownership Proof MVP) -->
+          <div class="profile-card animate-fadeUp" id="profile-verify-account-section" style="display:none; border:1px solid rgba(52,211,153,.3); background:rgba(52,211,153,.02)">
+            <div class="profile-card-label" style="color:#34d399">Verify Your Account</div>
+            <p style="font-size:12px; color:var(--color-text-muted); margin-bottom:16px">
+              Prove ownership of your digital accounts (Instagram, Website, etc.) by adding a verification code to your bio.
+            </p>
+            
+            <div id="verifyAccountStep1">
+              <div style="display:flex; gap:8px; margin-bottom:10px">
+                <select id="verifyPlatformSelect" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--color-text-primary); padding:8px 12px; font-size:13px; font-family:inherit; cursor:pointer; outline:none">
+                  <option value="instagram">Instagram</option>
+                  <option value="twitter">Twitter</option>
+                  <option value="website">Website</option>
+                </select>
+                <input type="text" id="verifyHandleInput" placeholder="Enter handle (e.g. @username)" style="flex:1; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--color-text-primary); padding:8px 14px; font-size:13px; outline:none;" />
+              </div>
+              <button class="btn btn-primary btn-sm" id="getVerificationCodeBtn" style="width:100%" onclick="getVerificationCode()">Get Verification Code</button>
+            </div>
+
+            <div id="verifyAccountStep2" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,.05)">
+              <div style="font-size:13px; margin-bottom:8px">1. Add this code to your bio/profile:</div>
+              <div id="verificationCodeDisplay" style="font-size:18px; font-family:monospace; font-weight:bold; color:#34d399; background:rgba(52,211,153,.1); padding:10px; border-radius:8px; text-align:center; margin-bottom:4px; letter-spacing:2px">
+                HVID-XXXX
+              </div>
+              <div id="verificationExpiryDisplay" style="font-size:11px; color:#fbbf24; text-align:center; margin-bottom:12px; font-weight:600;">
+                Code expires in 24 hours
+              </div>
+              <div style="font-size:12px; color:var(--color-text-muted); margin-bottom:16px" id="verificationInstructionsDisplay">
+                Add this code to your Instagram bio.
+              </div>
+              
+              <div style="font-size:13px; margin-bottom:8px">2. Paste your bio/profile text below to verify:</div>
+              <textarea id="proofText" placeholder="Paste your full profile bio here so we can verify the code is present" style="width:100%; height:80px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--color-text-primary); padding:10px; font-size:13px; font-family:inherit; outline:none; resize:vertical; margin-bottom:4px"></textarea>
+              <div style="font-size:11px; color:rgba(255,255,255,.3); margin-bottom:12px">
+                Hint: Make sure this code is visible on your public profile.
+              </div>
+              
+              <button class="btn btn-primary btn-sm" id="confirmVerificationBtn" style="width:100%" onclick="confirmAccountVerification()">Verify Account</button>
+            </div>
+            <div id="verifyAccountResult" style="margin-top:12px; font-size:13px; display:none; text-align:center;"></div>
+          </div>
+
+          <!-- S6: CTAs -->
+          <div class="profile-actions animate-fadeUp">
+            <button class="btn btn-primary" id="verifyPersonBtn" onclick="toggleMultiClaimForm()">
+              🛡️ Verify this person before trusting
+            </button>
+            <a href="/" class="btn btn-ghost">Check another identity</a>
+          </div>
+
+          <!-- S7: Multi-Claim Verification Form (New) -->
+          <div id="multiClaimVerification" class="profile-card animate-fadeUp" style="display:none; border:1px solid rgba(129,140,248,.3); background:rgba(129,140,248,.02)">
+            <div class="profile-card-label" style="color:#818cf8">Multi-Claim Verification</div>
+            <p style="font-size:12px; color:var(--color-text-muted); margin-bottom:16px">
+              Enter multiple pieces of information you have about this person (e.g. their Instagram and Phone) to verify they belong to this identity.
+            </p>
+            
+            <div id="multiClaimInputList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px">
+              <!-- Initial row -->
+              <div class="claim-row" style="display:flex; gap:8px">
+                <select class="claim-type-select" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--color-text-primary); padding:8px 12px; font-size:13px; font-family:inherit; cursor:pointer; outline:none">
+                  <option value="instagram">Instagram</option>
+                  <option value="phone">Phone</option>
+                  <option value="email">Email</option>
+                  <option value="website">Website</option>
+                </select>
+                <input type="text" class="claim-value-input" placeholder="Enter value (e.g. @username)" style="flex:1; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--color-text-primary); padding:8px 14px; font-size:13px; outline:none; transition:border-color .15s" onfocus="this.style.borderColor='rgba(129,140,248,.4)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'" />
+                <button class="remove-claim-btn" style="background:none; border:none; color:rgba(255,255,255,.2); cursor:pointer; font-size:18px; padding:0 8px" onclick="this.parentElement.remove()">×</button>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px">
+              <button class="btn btn-ghost btn-sm" onclick="addClaimRow()" style="flex:1">+ Add another</button>
+              <button class="btn btn-primary btn-sm" id="submitMultiClaims" style="flex:1.5" onclick="runMultiCheck()">Verify Identity</button>
+            </div>
+            
+            <!-- Result Output -->
+            <div id="multiCheckResultSlot" style="margin-top:20px; display:none"></div>
+          </div>
+
+          <div class="profile-actions animate-fadeUp">
+            <a href="auth/login.html" class="btn btn-ghost">Verify your identity</a>
+            <!-- Report entry point — hidden when viewing own profile (profile.js controls) -->
+            <button class="btn btn-ghost" id="profile-report-btn" style="display:none">
+              ⚑ Report Identity
+            </button>
+            <!-- Challenge entry point — shown only when viewing own profile (profile.js controls) -->
+            <button class="btn btn-ghost" id="profile-challenge-btn" style="display:none">
+              Challenge Report
+            </button>
+            <button class="btn btn-ghost" id="profile-ownership-challenge-btn" style="display:none">
+              ⚖ Ownership Challenge
+            </button>
+          </div>
+
+        </div><!-- /#profile-page -->
+
+      </div>
+    </div>
+
+  </div>
+
+  <footer style="border-top:1px solid var(--color-border);padding:var(--space-5) 0">
+    <div class="container">
+      <div class="footer-bottom">
+        <a href="/" style="font-size:13px;font-weight:600;color:var(--color-text-secondary)">HVID</a>
+        <span class="footer-copy">Identity confirmation infrastructure. Not a safety rating.</span>
+        <div class="flex gap-4">
+          <a href="/legal" class="footer-link">Privacy</a>
+          <a href="/trust-safety" class="footer-link">Trust &amp; Safety</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/tier.js"></script>
+  <script src="/static/js/trust-signal.js"></script>
+  <script src="/static/js/identity-type.js"></script>
+  <script src="/static/js/challenge-ui.js"></script>
+  <script src="/static/js/profile.js"></script>
+</body>
+</html>

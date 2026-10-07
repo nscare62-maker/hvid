@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linked Accounts — HVID Dashboard</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+      width: 100%;
+      max-width: 480px;
+      animation: fadeUp 0.3s ease-out;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+      letter-spacing: -0.01em;
+    }
+    .modal-sub {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-6);
+      line-height: 1.6;
+    }
+    .modal-form { display: flex; flex-direction: column; gap: var(--space-4); }
+    .modal-actions { display: flex; gap: var(--space-3); justify-content: flex-end; margin-top: var(--space-4); }
+
+    /* Mockup Account Rows */
+    .linked-account-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .linked-account-card:hover {
+      border-color: rgba(27, 100, 242, 0.4);
+      transform: translateY(-1px);
+    }
+    .account-info-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .account-icon-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .account-name-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 3px;
+    }
+    .account-detail-label {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      font-family: monospace;
+      letter-spacing: 0.02em;
+    }
+    .account-info-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .connected-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #10b981;
+    }
+    .connected-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+    .manage-link-btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1b64f2;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+    .manage-link-btn:hover {
+      background: rgba(27, 100, 242, 0.08);
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <!-- Midnight Navy Sidebar from Mockup -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="/" class="sidebar-logo">
+        <div class="sidebar-logo-mark">HV</div>
+        <span class="nav-logo-divider" style="color:rgba(255,255,255,0.25)">|</span>
+        <span>HVID</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <a href="/dashboard" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </span>
+          Dashboard
+        </a>
+        <a href="/dashboard/identity" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </span>
+          My Identity
+        </a>
+        <a href="/dashboard/verification" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </span>
+          Verification
+        </a>
+        <a href="/dashboard/linked-accounts" class="sidebar-link active">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          </span>
+          Linked Accounts
+        </a>
+        <a href="/dashboard/security" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          Security
+        </a>
+        <a href="/dashboard/timeline" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </span>
+          Activity
+        </a>
+        <a href="/dashboard/reports" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </span>
+          Reports &amp; Alerts
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebar-user-initial">R</div>
+        <div style="flex:1;min-width:0">
+          <div class="sidebar-user-name" id="sidebar-user-name">Rahul Kumar</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981"></span>
+            <span style="font-size:10px;color:#10b981;font-weight:700">Verified</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:var(--space-2);display:flex;align-items:center;justify-content:space-between">
+        <a href="/dashboard/settings" class="sidebar-link" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+        <a href="#" class="sidebar-link" id="logout-btn" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Sign Out
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-search-wrap">
+        <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search anything..." aria-label="Search" />
+      </div>
+      <div class="topbar-right">
+        <button class="topbar-icon-btn" aria-label="Notifications" title="Notifications">
+          <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </button>
+        <div class="topbar-profile-pill">
+          <div class="topbar-avatar" id="db-avatar">R</div>
+          <span class="topbar-name" id="db-display-name">Rahul Kumar</span>
+          <span class="badge-verified-inline" style="background:#10b981">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+        </div>
+        <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace;display:none" id="topbar-hvid"></span>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="page-header animate-fadeUp" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+        <div>
+          <h1 class="page-title">Linked Accounts</h1>
+          <p class="page-subtitle">Every account or financial asset confirmed to your verified HVID.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" id="add-account-btn" style="border:none;cursor:pointer;padding:8px 18px;border-radius:10px;font-weight:700">
+          + Add Account
+        </button>
+      </div>
+
+      <!-- ── Primary Mockup Screen 7 Accounts ── -->
+      <div class="animate-fadeUp delay-1" style="margin-bottom:var(--space-8)">
+        
+        <!-- HDFC Bank Card -->
+        <div class="linked-account-card">
+          <div class="account-info-left">
+            <div class="account-icon-badge" style="background:rgba(27,100,242,0.1);color:#1b64f2">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><polyline points="5 6 12 3 19 6"></polyline><line x1="4" y1="10" x2="4" y2="21"></line><line x1="20" y1="10" x2="20" y2="21"></line><line x1="8" y1="14" x2="8" y2="17"></line><line x1="12" y1="14" x2="12" y2="17"></line><line x1="16" y1="14" x2="16" y2="17"></line>
+              </svg>
+            </div>
+            <div>
+              <div class="account-name-label">HDFC Bank</div>
+              <div class="account-detail-label">••••4562</div>
+            </div>
+          </div>
+          <div class="account-info-right">
+            <div class="connected-pill">
+              <span class="connected-dot"></span>
+              <span>Connected</span>
+            </div>
+            <button class="manage-link-btn" onclick="window.HVID?.toast('Account settings verified.', 'info')">
+              Manage
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Paytm Wallet Card -->
+        <div class="linked-account-card">
+          <div class="account-info-left">
+            <div class="account-icon-badge" style="background:rgba(6,182,212,0.1);color:#06b6d4">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="3"></rect><line x1="2" y1="10" x2="22" y2="10"></line>
+              </svg>
+            </div>
+            <div>
+              <div class="account-name-label">Paytm Wallet</div>
+              <div class="account-detail-label">••••4251</div>
+            </div>
+          </div>
+          <div class="account-info-right">
+            <div class="connected-pill">
+              <span class="connected-dot"></span>
+              <span>Connected</span>
+            </div>
+            <button class="manage-link-btn" onclick="window.HVID?.toast('Account settings verified.', 'info')">
+              Manage
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Google Account Card -->
+        <div class="linked-account-card">
+          <div class="account-info-left">
+            <div class="account-icon-badge" style="background:rgba(234,67,53,0.1)">
+              <svg width="22" height="22" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="account-name-label">Google Account</div>
+              <div class="account-detail-label">rahul.kumar@gmail.com</div>
+            </div>
+          </div>
+          <div class="account-info-right">
+            <div class="connected-pill">
+              <span class="connected-dot"></span>
+              <span>Connected</span>
+            </div>
+            <button class="manage-link-btn" onclick="window.HVID?.toast('Account settings verified.', 'info')">
+              Manage
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Dynamic Digital Assets & Profiles ── -->
+      <div class="animate-fadeUp delay-2">
+        <div style="font-size:16px;font-weight:700;color:var(--color-text-primary);margin-bottom:14px">
+          Web &amp; Digital Assets
+        </div>
+        <div class="asset-table-wrap">
+          <!-- Populated by loadAssets() -->
+        </div>
+      </div>
+
+      <!-- Supported asset types -->
+      <div style="margin-top:var(--space-8)" class="animate-fadeUp delay-3">
+        <div class="dash-section-title">Supported online asset types — click to link</div>
+        <div class="grid-3" style="gap:var(--space-3)">
+          
+          <div class="asset-type-card" onclick="openModalWithType('instagram')" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;align-items:center;gap:var(--space-3);cursor:pointer;transition:border-color .2s,background .2s">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(225,48,108,0.1);display:flex;align-items:center;justify-content:center;color:#e1306c">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">Instagram</div>
+              <div style="font-size:12px;color:var(--color-text-muted)">@handle</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:#1b64f2;font-weight:600">+ Link →</span>
+          </div>
+
+          <div class="asset-type-card" onclick="openModalWithType('website')" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;align-items:center;gap:var(--space-3);cursor:pointer;transition:border-color .2s,background .2s">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;color:#3b82f6">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">Website</div>
+              <div style="font-size:12px;color:var(--color-text-muted)">domain.com</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:#1b64f2;font-weight:600">+ Link →</span>
+          </div>
+
+          <div class="asset-type-card" onclick="openModalWithType('twitter')" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;align-items:center;gap:var(--space-3);cursor:pointer;transition:border-color .2s,background .2s">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(29,155,240,0.1);display:flex;align-items:center;justify-content:center;color:#1d9bf0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">X / Twitter</div>
+              <div style="font-size:12px;color:var(--color-text-muted)">@handle</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:#1b64f2;font-weight:600">+ Link →</span>
+          </div>
+
+          <div class="asset-type-card" onclick="openModalWithType('linkedin')" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;align-items:center;gap:var(--space-3);cursor:pointer;transition:border-color .2s,background .2s">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(10,102,194,0.1);display:flex;align-items:center;justify-content:center;color:#0a66c2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">LinkedIn</div>
+              <div style="font-size:12px;color:var(--color-text-muted)">Profile URL</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:#1b64f2;font-weight:600">+ Link →</span>
+          </div>
+
+          <div class="asset-type-card" onclick="openModalWithType('storefront')" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;align-items:center;gap:var(--space-3);cursor:pointer;transition:border-color .2s,background .2s">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;color:#f59e0b">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">Storefront</div>
+              <div style="font-size:12px;color:var(--color-text-muted)">Shopify, Etsy, etc.</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:#1b64f2;font-weight:600">+ Link →</span>
+          </div>
+
+          <div class="asset-type-card" onclick="openModalWithType('CUSTOM')" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;align-items:center;gap:var(--space-3);cursor:pointer;transition:border-color .2s,background .2s">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(99,102,241,0.1);display:flex;align-items:center;justify-content:center;color:#6366f1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">Other / Custom</div>
+              <div style="font-size:12px;color:var(--color-text-muted)">Any platform</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:#1b64f2;font-weight:600">+ Link →</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- One asset = one owner rule -->
+      <div style="margin-top:var(--space-6);padding:var(--space-4) var(--space-5);background:rgba(27,100,242,0.04);border:1px solid rgba(27,100,242,0.15);border-radius:var(--radius-lg)" class="animate-fadeUp delay-4">
+        <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7;display:flex;align-items:center;gap:10px">
+          <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          <div>
+            <strong style="color:var(--color-text-primary)">One Asset = One Owner:</strong>
+            Each account or website can only be linked to one verified HVID at a time. If an asset is already claimed, you may file a resolution challenge.
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add Account Modal -->
+<div class="modal-overlay" id="add-account-modal">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)">
+      <h2 class="modal-title">Link a New Account</h2>
+      <button id="modal-close" style="background:none;border:none;color:var(--color-text-muted);font-size:20px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <p class="modal-sub">Submit your account handle or website URL. Ownership will be verified before linking is confirmed.</p>
+
+    <form class="modal-form" id="add-account-form">
+      <div class="input-group">
+        <label class="input-label" for="asset-type">Asset type</label>
+        <select class="input" id="asset-type" name="asset-type" required>
+          <option value="">Select type…</option>
+          <option value="instagram">Instagram (@handle)</option>
+          <option value="website">Website (domain.com)</option>
+          <option value="twitter">X / Twitter (@handle)</option>
+          <option value="linkedin">LinkedIn (profile URL)</option>
+          <option value="storefront">Storefront (URL)</option>
+          <option value="CUSTOM">Other / Custom</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="asset-value">Handle or URL</label>
+        <input type="text" class="input" id="asset-value" name="asset-value" placeholder="e.g. @yourhandle or yoursite.com" required />
+      </div>
+      <div id="modal-error" style="font-size:12px;color:#f87171;min-height:16px;display:none"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="modal-cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-sm" id="modal-submit-btn">Submit for Verification</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Verification Code Modal -->
+<div class="modal-overlay" id="verify-code-modal">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)">
+      <h2 class="modal-title" id="vc-modal-title">Your Verification Code</h2>
+      <button id="vc-close" style="background:none;border:none;color:var(--color-text-muted);font-size:20px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <p class="modal-sub" id="vc-modal-sub">Place this code as instructed below, then click the button when done.</p>
+
+    <!-- Code display -->
+    <div style="background:rgba(27,100,242,.07);border:1px solid rgba(27,100,242,.2);border-radius:10px;
+                padding:14px 20px;margin-bottom:var(--space-4);display:flex;align-items:center;gap:12px">
+      <div id="vc-code" style="font-family:monospace;font-size:18px;font-weight:800;
+                                letter-spacing:.06em;color:#1b64f2;flex:1;word-break:break-all">—</div>
+      <button onclick="copyVerifCode()" title="Copy code"
+        style="background:rgba(27,100,242,.12);border:1px solid rgba(27,100,242,.25);border-radius:7px;
+               padding:6px 10px;color:#1b64f2;font-size:12px;cursor:pointer;flex-shrink:0;font-weight:600">
+        Copy
+      </button>
+    </div>
+
+    <!-- Instructions -->
+    <div id="vc-instructions" style="font-size:13px;color:var(--color-text-secondary);line-height:1.65;
+         margin-bottom:var(--space-5);padding:12px 14px;background:var(--color-surface);border-radius:8px"></div>
+
+    <!-- Result message -->
+    <div id="vc-result" style="font-size:13px;min-height:20px;margin-bottom:var(--space-4);
+         padding:0 4px;line-height:1.5"></div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:var(--space-3);justify-content:flex-end" id="vc-actions">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/auth-context.js"></script>
+<script src="/static/js/protected-route.js"></script>
+<script src="/static/js/tier.js?v=2"></script>
+<script src="/static/js/dashboard.js"></script>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/app.js"></script>
+<script>
+'use strict';
+
+const TYPE_ICON = {
+  instagram: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>',
+  website:   '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>',
+  twitter:   '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1d9bf0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>',
+  linkedin:  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a66c2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>',
+  storefront:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>',
+  custom:    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>',
+};
+const TYPE_LABEL  = { instagram:'Instagram', website:'Website', twitter:'X / Twitter', linkedin:'LinkedIn', storefront:'Storefront', custom:'Custom' };
+
+const STATUS_BADGE = {
+  pending:        { label:'Pending',        color:'#fbbf24', bg:'rgba(251,191,36,.1)'  },
+  pending_review: { label:'Under Review',   color:'#1b64f2', bg:'rgba(27,100,242,.1)' },
+  verified:       { label:'Verified',       color:'#10b981', bg:'rgba(16,185,129,.1)'  },
+  failed:         { label:'Failed',         color:'#f87171', bg:'rgba(248,113,113,.1)' },
+  rejected:       { label:'Rejected',       color:'#f87171', bg:'rgba(248,113,113,.1)' },
+  unverified:     { label:'Unverified',     color:'rgba(255,255,255,.35)', bg:'rgba(255,255,255,.04)' },
+};
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openModalWithType(type) {
+  const modal   = document.getElementById('add-account-modal');
+  const select  = document.getElementById('asset-type');
+  const input   = document.getElementById('asset-value');
+  const errEl   = document.getElementById('modal-error');
+  if (errEl) { errEl.textContent=''; errEl.style.display='none'; }
+  if (select) {
+    select.value = type;
+    select.dispatchEvent(new Event('change'));
+  }
+  if (input) input.value = '';
+  modal?.classList.add('open');
+  setTimeout(() => input?.focus(), 150);
+}
+window.openModalWithType = openModalWithType;
+
+function renderAssets(assets) {
+  const wrap = document.querySelector('.asset-table-wrap');
+  if (!wrap) return;
+
+  if (!assets || assets.length === 0) {
+    wrap.innerHTML = `
+      <div class="empty-state" style="padding:32px 20px;text-align:center">
+        <div class="empty-state-icon" style="margin-bottom:12px">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.6"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        </div>
+        <div class="empty-state-title" style="font-size:15px;font-weight:700">No additional digital handles linked</div>
+        <div class="empty-state-desc" style="max-width:340px;margin:4px auto 16px;font-size:13px;color:var(--color-text-secondary)">
+          Click any platform below or use <strong>+ Add Account</strong> to link your handles.
+        </div>
+      </div>`;
+    return;
+  }
+
+  const rows = assets.map(a => {
+    const typeKey = (a.type||'').toLowerCase();
+    const statusKey = (a.verificationStatus || 'unverified').toLowerCase();
+    const badge   = STATUS_BADGE[statusKey] || STATUS_BADGE.unverified;
+    const icon    = TYPE_ICON[typeKey] || TYPE_ICON.custom;
+    const label   = TYPE_LABEL[typeKey] || a.type || 'Asset';
+    const displayVal = a.displayValue ? `<div style="font-size:12px;color:var(--color-text-muted);margin-top:2px">${esc(a.displayValue)}</div>` : '';
+    const verifyBtn = (a.verificationStatus === 'pending' && ['instagram','website','twitter','linkedin','storefront'].includes(typeKey))
+      ? `<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:4px 10px;flex-shrink:0"
+           onclick="openVerifyStep('${esc(a.id)}','${esc(typeKey)}','${esc(a.displayValue||'')}','${esc(a.verificationCode||'')}','${esc(a.instructions||'')}')">
+           ${typeKey === 'website' ? 'Verify →' : "Add Code →"}
+         </button>`
+      : (a.verificationStatus === 'pending_review'
+          ? `<span style="font-size:11px;color:#1b64f2;font-weight:600;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Under Review</span>`
+          : '');
+
+    const removeBtn = `<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:4px 10px;flex-shrink:0;border-color:rgba(248,113,113,.35);color:#fca5a5"
+      onclick="removeAsset('${esc(a.id)}', '${esc(label)}')">Remove</button>`;
+
+    return `
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--color-border)">
+        <span style="font-size:20px;flex-shrink:0">${icon}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">${esc(label)}</div>
+          ${displayVal}
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;
+                     background:${badge.bg};color:${badge.color};flex-shrink:0">${badge.label}</span>
+        ${verifyBtn}
+        ${removeBtn}
+      </div>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <div style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);overflow:hidden">
+      ${rows}
+    </div>`;
+}
+
+async function removeAsset(assetId, label) {
+  const confirmed = window.confirm(`Remove this ${label} account from your linked accounts?`);
+  if (!confirmed) return;
+
+  const res = await HVID_API.asset.remove(assetId);
+  if (HVID_API.isError(res)) {
+    window.HVID?.toast(HVID_API.errorMessage(res), 'error');
+    return;
+  }
+
+  window.HVID?.toast('Account removed successfully.', 'success');
+  await loadAssets();
+}
+window.removeAsset = removeAsset;
+
+async function loadAssets() {
+  const identityId = HVID_API.auth.identityId()
+    || window.Auth?.getSession?.()?.identityId
+    || window.Auth?.getSession?.()?.identity_id;
+  if (!identityId) {
+    const wrap = document.querySelector('.asset-table-wrap');
+    if (wrap) {
+      wrap.innerHTML = `
+        <div class="empty-state" style="padding:24px;text-align:center">
+          <div class="empty-state-title" style="font-size:14px">Syncing verified assets…</div>
+        </div>`;
+    }
+    return;
+  }
+
+  const res = await HVID_API.asset.list(identityId);
+  if (!HVID_API.isError(res)) renderAssets(Array.isArray(res) ? res : []);
+}
+
+let _lastClaim = null;
+
+async function handleClaimSubmit(e) {
+  e.preventDefault();
+  const type  = document.getElementById('asset-type')?.value;
+  const value = document.getElementById('asset-value')?.value?.trim();
+  const btn   = document.getElementById('modal-submit-btn');
+  const errEl = document.getElementById('modal-error');
+
+  if (!type) { if(errEl){ errEl.textContent='Please select an asset type.'; errEl.style.display='block'; } return; }
+  if (!value){ if(errEl){ errEl.textContent='Please enter a handle or URL.'; errEl.style.display='block'; } return; }
+  if (errEl) { errEl.textContent=''; errEl.style.display='none'; }
+
+  btn.disabled    = true;
+  btn.textContent = 'Submitting…';
+
+  const res = await HVID_API.asset.claim(type, value);
+
+  btn.disabled    = false;
+  btn.textContent = 'Submit for Verification';
+
+  if (HVID_API.isError(res)) {
+    if (errEl) { errEl.textContent = HVID_API.errorMessage(res); errEl.style.display='block'; }
+    return;
+  }
+
+  if (res.existing) {
+    window.HVID?.toast(res.message || 'This account is already added.', 'warning');
+    document.getElementById('add-account-modal')?.classList.remove('open');
+    loadAssets();
+    return;
+  }
+
+  document.getElementById('add-account-modal')?.classList.remove('open');
+  openVerifyStep(res.assetId, type, value, res.verificationCode, res.instructions);
+}
+
+function openVerifyStep(assetId, type, displayValue, verificationCode, instructions) {
+  _lastClaim = { assetId, type, displayValue, verificationCode };
+
+  const modal = document.getElementById('verify-code-modal');
+  const codeEl = document.getElementById('vc-code');
+  const instrEl = document.getElementById('vc-instructions');
+  const titleEl = document.getElementById('vc-modal-title');
+  const actionsEl = document.getElementById('vc-actions');
+  const resultEl = document.getElementById('vc-result');
+
+  if (resultEl) resultEl.innerHTML = '';
+
+  const label = TYPE_LABEL[type] || type;
+  if (titleEl) titleEl.textContent = `Verify your ${label}`;
+  if (codeEl) codeEl.textContent = verificationCode || '—';
+
+  let instr = instructions;
+  if (!instr) {
+    if (type === 'website') {
+      instr = `Add this TXT record to your DNS settings or add &lt;meta name="hvid-verify" content="${esc(verificationCode)}"&gt; to your HTML head, then click Check Now.`;
+    } else {
+      instr = `Add this code anywhere in your ${label} bio or profile description, then click "I have added the code".`;
+    }
+  }
+  if (instrEl) instrEl.innerHTML = instr;
+
+  if (actionsEl) {
+    if (type === 'website') {
+      actionsEl.innerHTML = `
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeVcModal()">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" id="check-website-btn" onclick="checkWebsiteVerification()">Check Now</button>`;
+    } else {
+      actionsEl.innerHTML = `
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeVcModal()">Later</button>
+        <button type="button" class="btn btn-primary btn-sm" id="confirm-social-btn" onclick="confirmSocialCodeAdded()">I have added the code</button>`;
+    }
+  }
+
+  modal?.classList.add('open');
+}
+
+function closeVcModal() {
+  document.getElementById('verify-code-modal')?.classList.remove('open');
+  loadAssets();
+}
+window.closeVcModal = closeVcModal;
+
+function copyVerifCode() {
+  const code = _lastClaim?.verificationCode || document.getElementById('vc-code')?.textContent;
+  if (!code || code === '—') return;
+  navigator.clipboard.writeText(code).then(() => {
+    window.HVID?.toast('Verification code copied to clipboard!', 'success');
+  }).catch(() => {
+    window.HVID?.toast(code, 'info');
+  });
+}
+window.copyVerifCode = copyVerifCode;
+
+async function confirmSocialCodeAdded() {
+  if (!_lastClaim) return;
+  const btn = document.getElementById('confirm-social-btn');
+  const msgEl = document.getElementById('vc-result');
+  if (btn) { btn.disabled = true; btn.textContent = 'Confirming…'; }
+
+  const res = await HVID_API.asset.submitProof(_lastClaim.assetId, 'social_bio', _lastClaim.verificationCode);
+  if (btn) { btn.disabled = false; btn.textContent = 'I have added the code'; }
+
+  if (HVID_API.isError(res)) {
+    if (msgEl) { msgEl.textContent = '✕ ' + HVID_API.errorMessage(res); msgEl.style.color = '#f87171'; }
+  } else {
+    if (msgEl) {
+      msgEl.innerHTML = '<span style="color:#10b981">✓ Submitted for automated review!</span>';
+    }
+    loadAssets();
+    setTimeout(() => document.getElementById('verify-code-modal')?.classList.remove('open'), 1600);
+  }
+}
+
+async function checkWebsiteVerification() {
+  if (!_lastClaim) return;
+  const btn = document.getElementById('check-website-btn');
+  const msgEl = document.getElementById('vc-result');
+  if (btn) { btn.disabled = true; btn.textContent = 'Checking DNS/Meta…'; }
+
+  const domain = (_lastClaim.displayValue || '').replace(/^https?:\/\//i, '').split('/')[0];
+  const res = await HVID_API.asset.verifyWebsite(_lastClaim.assetId, domain);
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Check Now'; }
+
+  if (HVID_API.isError(res)) {
+    if (msgEl) { msgEl.textContent = '✕ ' + HVID_API.errorMessage(res); msgEl.style.color = '#f87171'; }
+  } else if (res.success) {
+    if (msgEl) { msgEl.innerHTML = `<span style="color:#10b981">✓ ${res.message || 'Website verified!'}</span>`; }
+    loadAssets();
+    setTimeout(() => document.getElementById('verify-code-modal')?.classList.remove('open'), 1600);
+  } else {
+    if (msgEl) {
+      msgEl.textContent = res.message || 'Verification record not found yet. Check DNS or meta tag and retry.';
+      msgEl.style.color = '#fbbf24';
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadAssets();
+
+  document.getElementById('add-account-form')?.addEventListener('submit', handleClaimSubmit);
+
+  document.getElementById('add-account-btn')?.addEventListener('click', () => {
+    document.getElementById('add-account-modal')?.classList.add('open');
+  });
+
+  ['modal-close','modal-cancel'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', () => {
+      document.getElementById('add-account-modal')?.classList.remove('open');
+    });
+  });
+
+  document.getElementById('vc-close')?.addEventListener('click', () => {
+    document.getElementById('verify-code-modal')?.classList.remove('open');
+  });
+
+  document.getElementById('asset-type')?.addEventListener('change', e => {
+    const input = document.getElementById('asset-value');
+    if (!input) return;
+    const placeholders = {
+      instagram: '@yourhandle',
+      twitter:   '@yourhandle',
+      linkedin:  'linkedin.com/in/yourname',
+      website:   'yoursite.com',
+      storefront:'shop.yourstore.com',
+      CUSTOM:    'Enter username, ID, or link',
+    };
+    input.placeholder = placeholders[e.target.value] || 'Enter handle or URL';
+  });
+
+  document.getElementById('logout-btn')?.addEventListener('click', e => {
+    e.preventDefault();
+    window.Auth?.logout?.();
+    window.location.href = '/auth/login';
+  });
+});
+</script>
+</body>
+</html>

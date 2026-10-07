@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Face Verification — HVID</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <style>
+    body { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--color-bg); padding:20px; }
+    .card {
+      width:100%; max-width:500px;
+      background:rgba(20,20,35,0.95);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:20px; padding:36px 32px;
+      box-shadow:0 24px 60px rgba(0,0,0,0.5);
+    }
+    .logo { display:flex; align-items:center; gap:10px; margin-bottom:28px; }
+    .logo-mark { width:30px; height:30px; border-radius:8px; background:var(--color-primary); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; }
+    .logo-name { font-size:15px; font-weight:700; color:var(--color-text-primary); }
+
+    h2 { font-size:20px; font-weight:700; color:var(--color-text-primary); margin-bottom:6px; }
+    .sub { font-size:13px; color:var(--color-text-muted); margin-bottom:24px; line-height:1.6; }
+
+    .video-wrap {
+      position:relative; width:100%; max-width:420px; margin:0 auto 20px;
+      border-radius:16px; overflow:hidden; background:#0a0a14;
+      border:2px solid rgba(255,255,255,0.08);
+    }
+    #video { width:100%; display:block; min-height:280px; object-fit:cover; }
+    #canvas { width:100%; display:none; }
+
+    /* Oval face guide overlay */
+    .face-guide {
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      width:180px; height:230px;
+      border:3px solid rgba(129,140,248,0.7);
+      border-radius:50%;
+      pointer-events:none;
+      box-shadow:0 0 0 2000px rgba(0,0,0,0.35);
+    }
+    .face-guide.good { border-color:#34d399; box-shadow:0 0 0 2000px rgba(0,0,0,0.25), 0 0 20px rgba(52,211,153,0.3); }
+
+    .status-bar {
+      text-align:center; font-size:13px; font-weight:600;
+      padding:10px 14px; border-radius:10px; margin-bottom:16px;
+      background:rgba(255,255,255,0.04); color:var(--color-text-muted);
+      min-height:42px; display:flex; align-items:center; justify-content:center;
+    }
+    .status-bar.success { background:rgba(52,211,153,0.08); color:#34d399; }
+    .status-bar.error   { background:rgba(248,113,113,0.08); color:#f87171; }
+    .status-bar.info    { background:rgba(129,140,248,0.08); color:#818cf8; }
+
+    .btn-row { display:flex; gap:10px; justify-content:center; margin-bottom:20px; }
+    .btn-primary { background:var(--color-primary); color:#fff; border:none; border-radius:10px; padding:12px 28px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; transition:opacity .15s; }
+    .btn-primary:disabled { opacity:0.4; cursor:not-allowed; }
+    .btn-primary:not(:disabled):hover { opacity:0.88; }
+    .btn-ghost { background:transparent; color:var(--color-text-muted); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 22px; font-size:14px; cursor:pointer; font-family:inherit; transition:border-color .15s; }
+    .btn-ghost:hover { border-color:rgba(255,255,255,0.25); color:var(--color-text-primary); }
+
+    .result-box { display:none; text-align:center; padding:28px 20px; border-radius:14px; margin-bottom:16px; }
+    .result-box.success { background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); }
+    .result-box.error   { background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); }
+    .result-icon { font-size:48px; margin-bottom:12px; }
+    .result-title { font-size:18px; font-weight:700; margin-bottom:8px; }
+    .result-sub { font-size:13px; color:var(--color-text-muted); line-height:1.6; }
+
+    .tips { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:14px 16px; font-size:12px; color:var(--color-text-muted); line-height:1.9; }
+    .tips li { list-style:none; }
+    .tips li::before { content:'• '; color:#818cf8; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <div class="logo-mark">HV</div>
+    <div class="logo-name">HVID · Face Verification</div>
+  </div>
+
+  <div id="prereq-block" style="display:none">
+    <h2>KYC Required First</h2>
+    <p class="sub">You need to complete document (KYC) verification before face verification.</p>
+    <div class="btn-row">
+      <button class="btn-primary" id="complete-kyc-btn" onclick="completeKyc()">Complete KYC →</button>
+    </div>
+  </div>
+
+  <div id="main-block">
+    <h2>Face Verification</h2>
+    <p class="sub">Position your face inside the oval guide. Make sure you have good lighting. This is a one-time check.</p>
+
+    <div class="video-wrap" id="video-wrap">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas"></canvas>
+      <div class="face-guide" id="face-guide"></div>
+    </div>
+
+    <div class="status-bar info" id="status-bar">Starting camera…</div>
+
+    <div class="result-box" id="result-box">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-sub" id="result-sub"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="capture-btn" onclick="captureFrame()" disabled>Capture</button>
+      <button class="btn-ghost"   id="retry-btn"   onclick="retryCapture()" style="display:none">Retake</button>
+      <button class="btn-primary" id="verify-btn"  onclick="sendToBackend()" style="display:none">Verify →</button>
+    </div>
+
+    <ul class="tips" id="tips-box">
+      <li>Face the camera directly — no tilting</li>
+      <li>Good lighting — avoid strong backlight</li>
+      <li>Remove glasses or hats if possible</li>
+      <li>Make sure your full face fits in the oval</li>
+    </ul>
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+<script src="/static/js/auth.js"></script>
+<script>
+'use strict';
+
+const token     = localStorage.getItem('hvid_token') || '';
+let   stream    = null;
+let   captured  = null;
+
+// ── Auth guard ────────────────────────────────────────────────
+if (!token) {
+  window.location.href = '/auth/login';
+}
+
+// ── Check prerequisites ───────────────────────────────────────
+async function checkPrereqs() {
+  try {
+    const r = await fetch('/api/face/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    });
+    const d = await r.json();
+
+    if (r.status === 403 && d.requires_kyc) {
+      document.getElementById('prereq-block').style.display = 'block';
+      document.getElementById('main-block').style.display   = 'none';
+      return false;
+    }
+    if (d.status === 'ALREADY_VERIFIED') {
+      showResult(true, 'Already Verified', 'Your face has already been verified. No action needed.');
+      document.getElementById('capture-btn').style.display = 'none';
+      document.getElementById('tips-box').style.display    = 'none';
+      stopCamera();
+      return false;
+    }
+    return true;
+  } catch(e) {
+    return true; // allow through on network error
+  }
+}
+
+async function completeKyc() {
+  const btn = document.getElementById('complete-kyc-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Opening KYC…'; }
+
+  try {
+    const r = await fetch('/api/kyc/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    });
+    const d = await r.json().catch(() => ({}));
+    if (d.redirect_url) {
+      window.location.href = d.redirect_url;
+      return;
+    }
+    throw new Error(d.error || 'Could not start KYC.');
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Complete KYC →'; }
+    setStatus('error', e.message || 'Could not start KYC.');
+  }
+}
+
+// ── Camera ────────────────────────────────────────────────────
+async function startCamera() {
+  const ok = await checkPrereqs();
+  if (!ok) return;
+
+  try {
+    setStatus('info', 'Requesting camera access…');
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+    });
+    const video = document.getElementById('video');
+    video.srcObject = stream;
+    await video.play();
+    setStatus('info', 'Position your face inside the oval, then click Capture.');
+    document.getElementById('capture-btn').disabled = false;
+  } catch(e) {
+    setStatus('error', 'Camera access denied. Please allow camera permission and reload.');
+  }
+}
+
+function stopCamera() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+}
+
+// ── Capture ───────────────────────────────────────────────────
+function captureFrame() {
+  const video  = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  canvas.width  = video.videoWidth  || 640;
+  canvas.height = video.videoHeight || 480;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+
+  captured = canvas.toDataURL('image/jpeg', 0.85);
+
+  video.style.display  = 'none';
+  canvas.style.display = 'block';
+  document.getElementById('face-guide').style.display = 'none';
+
+  document.getElementById('capture-btn').style.display = 'none';
+  document.getElementById('retry-btn').style.display   = 'inline-block';
+  document.getElementById('verify-btn').style.display  = 'inline-block';
+  document.getElementById('tips-box').style.display    = 'none';
+
+  setStatus('info', 'Photo captured. Click Verify to submit, or Retake for a clearer photo.');
+  stopCamera();
+}
+
+function retryCapture() {
+  captured = null;
+  const video  = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  video.style.display  = 'block';
+  canvas.style.display = 'none';
+  document.getElementById('face-guide').style.display  = 'block';
+  document.getElementById('capture-btn').style.display = 'inline-block';
+  document.getElementById('retry-btn').style.display   = 'none';
+  document.getElementById('verify-btn').style.display  = 'none';
+  document.getElementById('tips-box').style.display    = 'block';
+  document.getElementById('result-box').style.display  = 'none';
+  setStatus('info', 'Position your face inside the oval, then click Capture.');
+  startCamera();
+}
+
+// ── Send to backend ───────────────────────────────────────────
+async function sendToBackend() {
+  if (!captured) return;
+
+  const btn = document.getElementById('verify-btn');
+  btn.disabled = true;
+  btn.textContent = 'Verifying…';
+  setStatus('info', 'Checking image quality…');
+
+  try {
+    const r = await fetch('/api/face/capture', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body:    JSON.stringify({ image: captured }),
+    });
+    const d = await r.json();
+
+    if (d.success) {
+      showResult(true, 'Face Verified!',
+        `Verification level upgraded to ${d.verification_level}. Trust signal: ${d.trust_signal}.`);
+      document.getElementById('retry-btn').style.display  = 'none';
+      document.getElementById('verify-btn').style.display = 'none';
+
+      // Update local session
+      try {
+        const sess = JSON.parse(localStorage.getItem('hvid_session') || '{}');
+        sess.verificationLevel = d.verification_level;
+        sess.trust_signal      = d.trust_signal;
+        sess.identityState     = 'VERIFIED';
+        localStorage.setItem('hvid_session', JSON.stringify(sess));
+      } catch(_) {}
+
+      setTimeout(() => { window.location.href = '/dashboard'; }, 2500);
+    } else {
+      showResult(false, 'Verification Failed', d.error || 'Please try again with better lighting.');
+      btn.disabled    = false;
+      btn.textContent = 'Verify →';
+    }
+  } catch(e) {
+    showResult(false, 'Network Error', 'Could not reach the server. Please try again.');
+    btn.disabled    = false;
+    btn.textContent = 'Verify →';
+  }
+}
+
+// ── UI helpers ────────────────────────────────────────────────
+function setStatus(type, msg) {
+  const el = document.getElementById('status-bar');
+  el.textContent = msg;
+  el.className   = 'status-bar ' + type;
+}
+
+function showResult(success, title, sub) {
+  const box = document.getElementById('result-box');
+  box.className = 'result-box ' + (success ? 'success' : 'error');
+  document.getElementById('result-icon').textContent  = success ? '✅' : '❌';
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent   = sub;
+  box.style.display = 'block';
+  setStatus(success ? 'success' : 'error', success ? 'Verification complete!' : 'Verification failed');
+}
+
+// ── Cleanup on leave ──────────────────────────────────────────
+window.addEventListener('beforeunload', stopCamera);
+
+// ── Init ──────────────────────────────────────────────────────
+startCamera();
+</script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activity Timeline — HVID Dashboard</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    /* ── Timeline layout ──────────────────────────────────────── */
+    .timeline-wrapper {
+      position: relative;
+      padding: 0 0 var(--space-8) 0;
+    }
+
+    /* Vertical spine */
+    .timeline-wrapper::before {
+      content: '';
+      position: absolute;
+      left: 22px;
+      top: 8px;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--color-primary), transparent);
+      opacity: 0.18;
+      border-radius: 2px;
+    }
+
+    /* ── Date group label ──────────────────────────────────────── */
+    .timeline-date-group {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: var(--space-5) 0 var(--space-3) 54px;
+    }
+
+    /* ── Single event row ──────────────────────────────────────── */
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-3) 0;
+      animation: fadeUp .35s ease both;
+    }
+
+    /* Icon bubble */
+    .tl-icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--color-surface-2);
+      border: 1.5px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      position: relative;
+      z-index: 1;
+      transition: background var(--transition-fast), border-color var(--transition-fast);
+    }
+    .timeline-item:hover .tl-icon {
+      background: rgba(91, 95, 239, 0.08);
+      border-color: rgba(91, 95, 239, 0.3);
+    }
+
+    /* Content */
+    .tl-content {
+      flex: 1;
+      min-width: 0;
+      padding-top: 10px;
+    }
+    .tl-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 2px;
+    }
+    .tl-sub {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-bottom: 4px;
+    }
+    .tl-time {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    /* Hover card effect */
+    .timeline-item-card {
+      background: transparent;
+      border-radius: var(--radius-lg);
+      padding: var(--space-3) var(--space-4) var(--space-3) 0;
+      transition: background var(--transition-fast);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      width: 100%;
+    }
+    .timeline-item-card:hover {
+      background: rgba(255,255,255,0.035);
+    }
+
+    /* ── Empty state ─────────────────────────────────────────── */
+    .tl-empty {
+      text-align: center;
+      padding: var(--space-12) var(--space-4);
+      color: var(--color-text-muted);
+    }
+    .tl-empty-icon {
+      font-size: 36px;
+      margin-bottom: var(--space-4);
+      opacity: 0.4;
+    }
+    .tl-empty-text {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      max-width: 340px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Placeholder badges (future) ─────────────────────────── */
+    .tl-future-row {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-top: var(--space-4);
+    }
+    .tl-future-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      background: var(--color-surface-2);
+      border: 1px dashed var(--color-border);
+      border-radius: 999px;
+      padding: 4px 12px;
+      letter-spacing: .04em;
+      opacity: 0.7;
+    }
+
+    /* ── Load more button ────────────────────────────────────── */
+    .tl-load-more {
+      display: flex;
+      justify-content: center;
+      margin-top: var(--space-6);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="/" class="sidebar-logo">
+        <div class="sidebar-logo-mark">HV</div>
+        <span class="nav-logo-divider" style="color:rgba(255,255,255,0.25)">|</span>
+        <span>HVID</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <a href="/dashboard" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </span>
+          Dashboard
+        </a>
+        <a href="/dashboard/identity" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </span>
+          My Identity
+        </a>
+        <a href="/dashboard/verification" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </span>
+          Verification
+        </a>
+        <a href="/dashboard/linked-accounts" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          </span>
+          Linked Accounts
+        </a>
+        <a href="/dashboard/security" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          Security
+        </a>
+        <a href="/dashboard/timeline" class="sidebar-link active">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </span>
+          Activity
+        </a>
+        <a href="/dashboard/reports" class="sidebar-link">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </span>
+          Reports &amp; Alerts
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebar-user-initial">R</div>
+        <div style="flex:1;min-width:0">
+          <div class="sidebar-user-name" id="sidebar-user-name">Rahul Kumar</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981"></span>
+            <span style="font-size:10px;color:#10b981;font-weight:700">Verified</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:var(--space-2);display:flex;align-items:center;justify-content:space-between">
+        <a href="/dashboard/settings" class="sidebar-link" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+        <a href="#" class="sidebar-link" id="logout-btn" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Sign Out
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-search-wrap">
+        <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search anything..." aria-label="Search" />
+      </div>
+      <div class="topbar-right">
+        <button class="topbar-icon-btn" aria-label="Notifications" title="Notifications">
+          <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </button>
+        <div class="topbar-profile-pill">
+          <div class="topbar-avatar" id="db-avatar">R</div>
+          <span class="topbar-name" id="db-display-name">Rahul Kumar</span>
+          <span class="badge-verified-inline" style="background:#10b981">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+        </div>
+        <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace;display:none" id="topbar-hvid"></span>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- Page header -->
+      <div class="page-header animate-fadeUp">
+        <h1 class="page-title">Activity Timeline</h1>
+        <p class="page-subtitle">A transparent, neutral record of your identity's evolution over time.</p>
+      </div>
+
+      <!-- Future placeholders (no logic yet) -->
+      <div class="card animate-fadeUp delay-1" style="margin-bottom:var(--space-5)">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3)">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:4px">Identity Signals</div>
+            <div style="font-size:12px;color:var(--color-text-muted)">Future indicators — not yet active</div>
+          </div>
+          <div class="tl-future-row">
+            <!-- Stability indicator placeholder -->
+            <span class="tl-future-badge">⏳ Stability Indicator <em style="font-weight:400">(coming soon)</em></span>
+            <!-- Long-term verified badge placeholder -->
+            <span class="tl-future-badge">🏅 Long-term Verified <em style="font-weight:400">(coming soon)</em></span>
+            <!-- Recent activity notice placeholder -->
+            <span class="tl-future-badge">👁 Recent Activity Notice <em style="font-weight:400">(coming soon)</em></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline card -->
+      <div class="card animate-fadeUp delay-2">
+        <div id="tl-loading" style="text-align:center;padding:var(--space-8);color:var(--color-text-muted);font-size:13px">
+          Loading timeline…
+        </div>
+
+        <!-- Timeline content injected here -->
+        <div id="tl-root" style="display:none"></div>
+
+        <!-- Empty state (shown if no events) -->
+        <div id="tl-empty" style="display:none">
+          <div class="tl-empty">
+            <div class="tl-empty-icon">📅</div>
+            <div class="tl-empty-text">
+              Your activity will appear here as your identity evolves.
+            </div>
+          </div>
+        </div>
+
+        <!-- Load more -->
+        <div class="tl-load-more" id="tl-load-more-row" style="display:none">
+          <button class="btn btn-ghost btn-sm" id="tl-load-more-btn" onclick="loadMore()">Load earlier events</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/auth-context.js"></script>
+<script src="/static/js/protected-route.js"></script>
+<script src="/static/js/tier.js?v=2"></script>
+<script src="/static/js/dashboard.js"></script>
+<script>
+'use strict';
+
+// ── Constants ─────────────────────────────────────────────────
+const API_BASE   = (window.HVID_CONFIG && window.HVID_CONFIG.apiBase) || '/api';
+const PAGE_SIZE  = 20;
+let   allEvents  = [];
+let   rendered   = 0;
+
+// ── Event type → UI mapping (exact spec) ─────────────────────
+const EVENT_MAP = {
+  IDENTITY_CREATED: {
+    icon:  '✦',
+    title: 'Identity created',
+    sub:   null,
+  },
+  ASSET_ADDED: {
+    icon:  '+',
+    title: 'New account linked',
+    sub:   (m) => m && m.type ? `${m.type} added` : 'Account added',
+  },
+  ASSET_VERIFIED: {
+    icon:  '✓',
+    title: 'Account verified',
+    sub:   null,
+  },
+  VERIFICATION_LEVEL_CHANGED: {
+    icon:  '↑',
+    title: 'Verification level updated',
+    sub:   () => 'Level increased',
+  },
+  ENFORCEMENT_LEVEL_CHANGED: {
+    icon:  '⚑',
+    title: 'Status updated',
+    sub:   () => 'System status changed',
+  },
+  MATCH_QUERY_RECORDED: {
+    icon:  '◎',
+    title: 'Profile checked',
+    sub:   () => 'Someone searched this identity',
+  },
+};
+
+// ── Timestamp formatting ──────────────────────────────────────
+function formatTimestamp(isoStr) {
+  const d    = new Date(isoStr);
+  const now  = new Date();
+  const diff = Math.floor((now - d) / 86400000); // days
+
+  if (diff === 0) return 'Today · ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (diff === 1) return 'Yesterday · ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (diff  < 7) return `${diff} days ago`;
+  return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
+// ── Date group label ──────────────────────────────────────────
+function dateGroupLabel(isoStr) {
+  const d    = new Date(isoStr);
+  const now  = new Date();
+  const diff = Math.floor((now - d) / 86400000);
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Yesterday';
+  if (diff  < 7) return d.toLocaleDateString([], { weekday: 'long' });
+  return d.toLocaleDateString([], { month: 'long', year: 'numeric' });
+}
+
+// ── Render timeline items ─────────────────────────────────────
+function renderEvents(events) {
+  const root = document.getElementById('tl-root');
+  if (!root) return;
+
+  let lastGroup = null;
+
+  events.forEach((ev, idx) => {
+    const def  = EVENT_MAP[ev.eventType];
+    if (!def) return;
+
+    const group = dateGroupLabel(ev.createdAt);
+    if (group !== lastGroup) {
+      lastGroup   = group;
+      const label = document.createElement('div');
+      label.className = 'timeline-date-group';
+      label.textContent = group;
+      root.appendChild(label);
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'timeline-wrapper';
+
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
+    item.style.animationDelay = `${Math.min(idx, 8) * 60}ms`;
+
+    const subText = typeof def.sub === 'function'
+      ? def.sub(ev.metadata)
+      : (def.sub || '');
+
+    item.innerHTML = `
+      <div class="timeline-item-card">
+        <div class="tl-icon" title="${def.title}">${def.icon}</div>
+        <div class="tl-content">
+          <div class="tl-title">${def.title}</div>
+          ${subText ? `<div class="tl-sub">${subText}</div>` : ''}
+          <div class="tl-time">${formatTimestamp(ev.createdAt)}</div>
+        </div>
+      </div>
+    `;
+
+    wrapper.appendChild(item);
+    root.appendChild(wrapper);
+  });
+
+  rendered += events.length;
+}
+
+// ── Load more ─────────────────────────────────────────────────
+function loadMore() {
+  const next = allEvents.slice(rendered, rendered + PAGE_SIZE);
+  renderEvents(next);
+  if (rendered >= allEvents.length) {
+    document.getElementById('tl-load-more-row').style.display = 'none';
+  }
+}
+
+// ── Fetch timeline from API ───────────────────────────────────
+async function loadTimeline() {
+  const session    = window.Auth && Auth.getSession();
+  const identityId = session && session.identityId;
+
+  // Dev fallback: use mock data if no session
+  if (!identityId) {
+    useMockData();
+    return;
+  }
+
+  try {
+    const res  = await fetch(`${API_BASE}/internal/history/${identityId}`, {
+      headers: { 'Authorization': `Bearer ${session.token || ''}` },
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const body = await res.json();
+
+    // Unwrap envelope { success, data }
+    const events = body.data || body;
+
+    document.getElementById('tl-loading').style.display = 'none';
+
+    if (!events || events.length === 0) {
+      document.getElementById('tl-empty').style.display = 'block';
+      return;
+    }
+
+    allEvents = events;
+    document.getElementById('tl-root').style.display = 'block';
+    renderEvents(allEvents.slice(0, PAGE_SIZE));
+
+    if (allEvents.length > PAGE_SIZE) {
+      document.getElementById('tl-load-more-row').style.display = 'flex';
+    }
+  } catch (err) {
+    console.warn('Timeline fetch failed, using mock data:', err.message);
+    useMockData();
+  }
+}
+
+// ── Mock data (dev/preview fallback) ─────────────────────────
+function useMockData() {
+  const now = new Date();
+  const ago = (days, hours = 0) => new Date(now - days * 86400000 - hours * 3600000).toISOString();
+
+  allEvents = [
+    { eventType: 'MATCH_QUERY_RECORDED',       metadata: { result_type: 'MATCH_CONFIRMED' },   createdAt: ago(0, 1) },
+    { eventType: 'MATCH_QUERY_RECORDED',       metadata: { result_type: 'PARTIAL_MATCH' },     createdAt: ago(0, 4) },
+    { eventType: 'VERIFICATION_LEVEL_CHANGED', metadata: { level: 2 },                         createdAt: ago(1, 2) },
+    { eventType: 'ASSET_ADDED',                metadata: { type: 'instagram' },                createdAt: ago(2)    },
+    { eventType: 'ASSET_ADDED',                metadata: { type: 'email' },                    createdAt: ago(3)    },
+    { eventType: 'ASSET_VERIFIED',             metadata: {},                                   createdAt: ago(4)    },
+    { eventType: 'ENFORCEMENT_LEVEL_CHANGED',  metadata: { level: 1 },                         createdAt: ago(5)    },
+    { eventType: 'IDENTITY_CREATED',           metadata: {},                                   createdAt: ago(14)   },
+  ];
+
+  document.getElementById('tl-loading').style.display = 'none';
+  document.getElementById('tl-root').style.display    = 'block';
+  renderEvents(allEvents.slice(0, PAGE_SIZE));
+  if (allEvents.length > PAGE_SIZE) {
+    document.getElementById('tl-load-more-row').style.display = 'flex';
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────
+loadTimeline();
+</script>
+</body>
+</html>

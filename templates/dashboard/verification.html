@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verification — HVID Dashboard</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <script src="/static/js/tier.js?v=2" defer></script>
+  <style>
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="/" class="sidebar-logo">
+        <div class="sidebar-logo-mark">HV</div>
+        HVID
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Navigation</div>
+        <a href="/dashboard" class="sidebar-link" id="nav-overview">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+          </span>
+          Dashboard
+        </a>
+        <a href="/dashboard/identity" class="sidebar-link" id="nav-identity">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </span>
+          My Identity
+        </a>
+        <a href="/dashboard/verification" class="sidebar-link active" id="nav-verification">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+          </span>
+          Verification
+        </a>
+        <a href="/dashboard/linked-accounts" class="sidebar-link" id="nav-linked">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          </span>
+          Linked Accounts
+        </a>
+        <a href="/dashboard/security" class="sidebar-link" id="nav-security">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          Security
+        </a>
+        <a href="/dashboard/timeline" class="sidebar-link" id="nav-activity">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </span>
+          Activity
+        </a>
+        <a href="/dashboard/reports" class="sidebar-link" id="nav-reports">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </span>
+          Reports &amp; Alerts
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebar-user-initial">R</div>
+        <div style="flex:1;min-width:0">
+          <div class="sidebar-user-name" id="sidebar-user-name">Rahul Kumar</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981"></span>
+            <span style="font-size:10px;color:#10b981;font-weight:700">Verified</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:var(--space-2);display:flex;align-items:center;justify-content:space-between">
+        <a href="/dashboard/settings" class="sidebar-link" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+        <a href="#" class="sidebar-link" id="logout-btn" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Sign Out
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-search-wrap">
+        <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search anything..." aria-label="Search" />
+      </div>
+      <div class="topbar-right">
+        <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace" id="topbar-hvid"></span>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- Re-verify banner (shown if state === REVERIFY_REQUIRED) -->
+      <div class="reverify-banner" id="reverify-banner" style="display:none">
+        <div class="reverify-banner-icon">
+          <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </div>
+        <div class="reverify-banner-text">
+          <div class="reverify-banner-title">Verification required to continue full access</div>
+          <div class="reverify-banner-desc">Your identity requires re-verification due to a system action or ownership conflict. Complete the steps below to restore full access.</div>
+        </div>
+        <a href="#" class="btn btn-secondary btn-sm" onclick="showStep(1)">Re-verify now</a>
+      </div>
+
+      <div class="page-header animate-fadeUp">
+        <h1 class="page-title">Identity Verification</h1>
+        <p class="page-subtitle">Complete KYC and biometric face verification to maintain Level 3 High Trust. One human, one persistent identity.</p>
+      </div>
+
+      <!-- ── Mockup Screen 7 Checklist Card ── -->
+      <div class="card animate-fadeUp delay-1" style="margin-bottom:var(--space-6);padding:24px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <h2 style="font-size:18px;font-weight:700;color:var(--color-text-primary);margin:0">Verification</h2>
+          <span style="font-size:13px;font-weight:600;color:var(--color-text-muted)">5 of 5 completed</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <!-- 1. Identity Verification -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg)">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Identity Verification</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Completed</span>
+            </div>
+          </div>
+
+          <!-- 2. Phone Verification -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg)">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Phone Verification</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Completed</span>
+            </div>
+          </div>
+
+          <!-- 3. Email Verification -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg)">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Email Verification</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Connected</span>
+            </div>
+          </div>
+
+          <!-- 4. Document Verification -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg)">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Document Verification</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Completed</span>
+            </div>
+          </div>
+
+          <!-- 5. Face Verification -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg)">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Face Verification</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Completed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Verification & Trust section ───────────────────── -->
+
+        <!-- Tier Card (rendered by TierUI.card()) -->
+        <div id="tier-card-target" style="margin-bottom:var(--space-5)"></div>
+
+        <!-- Verification Status Settings -->
+        <div class="card" style="margin-bottom:var(--space-5)">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:var(--space-5)">
+            Verification &amp; Trust
+          </div>
+            <div style="margin:-8px 0 18px;padding:10px 12px;border:1px solid rgba(27,100,242,.18);border-radius:10px;background:rgba(27,100,242,.05);font-size:12px;color:rgba(255,255,255,.62)">
+              Level 3 High Trust is the highest verification level currently available. Level 4 is not defined.
+            </div>
+
+          <!-- KYC row -->
+          <div id="kyc-verification-section" style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-4) 0;border-bottom:1px solid rgba(255,255,255,.05);scroll-margin-top:80px">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:3px">Document Verification (KYC)</div>
+              <div style="font-size:12px;color:var(--color-text-muted)">Submit a government-issued ID to reach Verified tier</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--space-3);flex-shrink:0">
+              <span id="kyc-status-pill"></span>
+              <button id="kyc-action-btn" class="btn btn-primary btn-sm" style="display:none">Start KYC Verification</button>
+            </div>
+          </div>
+
+          <!-- Face row -->
+          <div id="face-verification-section" style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-4) 0;scroll-margin-top:80px">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:3px">Face Verification</div>
+              <div style="font-size:12px;color:var(--color-text-muted)">Complete face matching for High Trust — requires KYC first</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--space-3);flex-shrink:0">
+              <span id="face-status-pill"></span>
+              <button id="face-action-btn" class="btn btn-secondary btn-sm" style="display:none">Start Face Verification</button>
+            </div>
+          </div>
+
+          <!-- Privacy note -->
+          <div style="margin-top:var(--space-4);padding:var(--space-3) var(--space-4);background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.15);border-radius:var(--radius-md)">
+            <div style="font-size:12px;color:rgba(16,185,129,.9);line-height:1.6;display:flex;align-items:center;gap:8px">
+              <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <div><strong style="color:#10b981">We do not store sensitive documents or biometric data.</strong>
+              Verification is handled securely via trusted providers.</div>
+            </div>
+          </div>
+        </div>
+
+      <!-- ── Verification step flow — two-column layout ── -->
+      <div class="vf-layout">
+
+        <!-- LEFT: step panels -->
+        <div class="vf-main">
+
+          <!-- Step progress -->
+          <div class="vf-progress" id="vf-progress" style="margin-bottom:var(--space-4)">
+            <div class="vf-step-pill active" id="pill-1"><div class="vf-step-num">1</div><span>Contact</span></div>
+            <div class="vf-connector" id="conn-1"></div>
+            <div class="vf-step-pill locked" id="pill-2"><div class="vf-step-num">2</div><span>Identity Proof</span></div>
+            <div class="vf-connector" id="conn-2"></div>
+            <div class="vf-step-pill locked" id="pill-3"><div class="vf-step-num">3</div><span>Confirmation</span></div>
+          </div>
+          <p id="step-label" style="font-size:13px;color:var(--color-text-muted);margin-bottom:var(--space-5)">Step 1 of 3</p>
+
+          <!-- STEP 1 — Contact -->
+          <div class="vf-panel active" id="panel-1">
+            <div class="vf-panel-card">
+              <div class="vf-panel-title">Contact Verification</div>
+              <div class="vf-panel-desc">We confirm you control the phone number linked to your HVID.</div>
+              <div class="vf-error-strip hidden" id="otp-error">✕ Verification failed — please retry.</div>
+              <div class="input-group" style="margin-bottom:var(--space-5)">
+                <label class="input-label">Your phone number</label>
+                <div style="display:flex;gap:var(--space-2);align-items:stretch">
+                  <select id="otp-country-code" class="input" style="width:90px;flex-shrink:0;padding:0 8px;cursor:pointer;font-size:14px">
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+61">🇦🇺 +61</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+60">🇲🇾 +60</option>
+                    <option value="+880">🇧🇩 +880</option>
+                    <option value="+92">🇵🇰 +92</option>
+                    <option value="+94">🇱🇰 +94</option>
+                    <option value="+977">🇳🇵 +977</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+33">🇫🇷 +33</option>
+                    <option value="+81">🇯🇵 +81</option>
+                    <option value="+82">🇰🇷 +82</option>
+                    <option value="+86">🇨🇳 +86</option>
+                    <option value="+55">🇧🇷 +55</option>
+                    <option value="+27">🇿🇦 +27</option>
+                    <option value="+234">🇳🇬 +234</option>
+                    <option value="+254">🇰🇪 +254</option>
+                  </select>
+                  <input type="tel" class="input" id="otp-contact" placeholder="98765 43210" style="flex:1;min-width:0" inputmode="numeric" autocomplete="tel-national" />
+                </div>
+                <div style="font-size:12px;color:var(--color-text-muted);margin-top:6px">Enter number without leading zero or country code</div>
+                <button class="btn btn-primary" id="otp-send-btn" onclick="sendOTP()" style="width:100%;margin-top:var(--space-3)">Send OTP</button>
+              </div>
+              <div class="input-group" style="margin-bottom:var(--space-2)">
+                <label class="input-label">Enter 6-digit code</label>
+                <div class="otp-grid" id="otp-grid">
+                  <input type="text" class="otp-cell" maxlength="1" inputmode="numeric" id="otp-0" aria-label="OTP digit 1"/>
+                  <input type="text" class="otp-cell" maxlength="1" inputmode="numeric" id="otp-1" aria-label="OTP digit 2"/>
+                  <input type="text" class="otp-cell" maxlength="1" inputmode="numeric" id="otp-2" aria-label="OTP digit 3"/>
+                  <input type="text" class="otp-cell" maxlength="1" inputmode="numeric" id="otp-3" aria-label="OTP digit 4"/>
+                  <input type="text" class="otp-cell" maxlength="1" inputmode="numeric" id="otp-4" aria-label="OTP digit 5"/>
+                  <input type="text" class="otp-cell" maxlength="1" inputmode="numeric" id="otp-5" aria-label="OTP digit 6"/>
+                </div>
+                <span style="font-size:12px;color:var(--color-text-muted)">Didn't receive it? <a href="#" id="otp-resend-link" style="color:var(--color-primary)" onclick="sendOTP();return false">Resend</a></span>
+              </div>
+              <div style="display:flex;justify-content:flex-end;margin-top:var(--space-6)">
+                <button class="btn btn-primary" id="otp-verify-btn" onclick="verifyOTP()">Verify Code →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 — Identity Proof -->
+          <div class="vf-panel" id="panel-2">
+            <div class="vf-panel-card" id="identity-proof-section" style="scroll-margin-top:80px">
+              <div class="vf-panel-title">Identity Proof</div>
+              <div class="vf-panel-desc">Choose one method to prove your identity. Documents are reviewed once and permanently deleted.</div>
+              <div class="vf-error-strip hidden" id="proof-error">✕ Additional verification required — please try again.</div>
+              <div class="proof-methods" id="proof-methods">
+                <div class="proof-method-card" id="method-id" onclick="selectProofMethod('id')">
+                  <div class="proof-method-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"></rect><circle cx="8" cy="11" r="3"></circle><path d="M14 9h4"></path><path d="M14 13h4"></path><path d="M5 18c0-1.7 1.3-3 3-3s3 1.3 3 3"></path></svg>
+                  </div>
+                  <div class="proof-method-label">Government ID</div>
+                  <div class="proof-method-sub">Passport, national ID, or driver's licence</div>
+                </div>
+                <div class="proof-method-card" id="method-face" onclick="selectProofMethod('face')">
+                  <div class="proof-method-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  </div>
+                  <div class="proof-method-label">Face Capture</div>
+                  <div class="proof-method-sub">One-time only. Never stored as image.</div>
+                </div>
+              </div>
+              <div id="face-notice" style="display:none;margin-bottom:var(--space-6)">
+                <div style="background:rgba(91,95,239,0.05);border:1px solid rgba(91,95,239,0.15);border-radius:var(--radius-lg);padding:var(--space-5)">
+                  <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:var(--space-4);display:flex;align-items:flex-start;gap:8px">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <div><strong style="color:var(--color-text-primary)">One-time face capture:</strong> Your face will be captured once to confirm you are a real person. Only an encrypted representation is stored — never the image itself.</div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm" id="face-capture-btn" onclick="simulateFaceCapture()">Start Face Capture</button>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:var(--space-4)">
+                <button class="btn btn-ghost btn-sm" onclick="showStep(1)">← Back</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 — Confirmation -->
+          <div class="vf-panel" id="panel-3">
+            <div class="vf-panel-card">
+              <div class="vf-confirmation">
+                <div class="vf-confirmation-icon">✓</div>
+                <div class="vf-confirmation-title" id="vf-confirmation-title">Verification Submitted</div>
+                <div class="vf-confirmation-desc" id="vf-confirmation-desc">Your verification status will update automatically after KYC and face review are complete.</div>
+                <div style="margin-bottom:var(--space-6)">
+                  <span class="id-state" id="confirm-status-badge">⏳ Pending Review</span>
+                </div>
+                <div style="background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-5);text-align:left">
+                  <div style="font-size:12px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:var(--space-3)">What happens next</div>
+                  <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+                    <div style="font-size:13px;color:var(--color-text-secondary);display:flex;gap:var(--space-3)"><span style="color:var(--color-primary);flex-shrink:0">01</span>HVID team reviews your submission privately</div>
+                    <div style="font-size:13px;color:var(--color-text-secondary);display:flex;gap:var(--space-3)"><span style="color:var(--color-primary);flex-shrink:0">02</span>Your document is permanently deleted after review</div>
+                    <div style="font-size:13px;color:var(--color-text-secondary);display:flex;gap:var(--space-3)"><span style="color:var(--color-primary);flex-shrink:0">03</span>Both reviews complete Level 3 High Trust verification</div>
+                  </div>
+                </div>
+                <div style="margin-top:var(--space-6)">
+                  <a href="/dashboard/identity" class="btn btn-primary btn-sm" id="vf-done-btn">Go to Identity →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.vf-main -->
+
+        <!-- RIGHT: info aside -->
+        <div class="vf-aside">
+          <div class="vf-aside-card">
+            <div class="vf-aside-card-title" style="display:flex;align-items:center;gap:8px">
+              <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <span>Identity protection</span>
+            </div>
+            <div class="vf-aside-card-body">
+              Verification documents are reviewed once and permanently deleted. No raw identity data is stored or displayed. One human = one identity. Identity is persistent but revocable — history is always retained internally.
+            </div>
+          </div>
+          <div class="vf-aside-card">
+            <div class="vf-aside-card-title" style="display:flex;align-items:center;gap:8px">
+              <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              <span>KYC step guide</span>
+            </div>
+            <div class="vf-aside-card-body">
+              <strong style="color:var(--color-text-primary)">1.</strong> Register and enter your personal details.<br/><br/>
+              <strong style="color:var(--color-text-primary)">2.</strong> Choose and upload a government ID such as Aadhaar, PAN, passport or driving licence.<br/><br/>
+              <strong style="color:var(--color-text-primary)">3.</strong> Complete selfie verification and let OCR + AI review the document.<br/><br/>
+              <strong style="color:var(--color-text-primary)">4.</strong> Your application is approved or rejected, and access is granted only after a successful review.
+            </div>
+          </div>
+        </div><!-- /.vf-aside -->
+
+      </div><!-- /.vf-layout -->
+
+    </main>
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/auth-context.js"></script>
+<script src="/static/js/protected-route.js"></script>
+<script src="/static/js/dashboard.js"></script>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/verification-flow.js"></script>
+<script>
+// Catch any JS errors and show them on the otp-error strip
+window.onerror = function(msg, src, line) {
+  const el = document.getElementById('otp-error');
+  if (el) { el.textContent = '⚠ JS Error: ' + msg + ' (line ' + line + ')'; el.classList.remove('hidden'); }
+  return false;
+};
+</script>
+<script>
+
+function vf_token() { return localStorage.getItem('hvid_token') || ''; }
+function vf_sess()  { try { return JSON.parse(localStorage.getItem('hvid_session')||'{}'); } catch(e){return{};} }
+function vf_iid()   { var s=vf_sess(); return s.identity_id||s.identityId||''; }
+
+// ── Step navigation ───────────────────────────────────────────
+let currentStep = 1;
+const LEGACY_VERIFICATION_STEP_KEY = 'hvid_verification_step';
+
+function getVerificationStepKey() {
+  var iid = vf_iid();
+  return iid ? 'hvid_verification_step_' + iid : LEGACY_VERIFICATION_STEP_KEY;
+}
+
+function saveVerificationStep(step) {
+  try { localStorage.setItem(getVerificationStepKey(), String(step)); } catch (e) {}
+}
+
+function restoreVerificationStep() {
+  // Skip phone OTP (Step 1) since user already verified during login
+  // Start directly at Step 2 (Identity Proof)
+  showStep(2);
+}
+
+function updateConfirmationState(kycStatus, faceStatus) {
+  const statusBadge = document.getElementById('confirm-status-badge');
+  const title = document.getElementById('vf-confirmation-title');
+  const desc = document.getElementById('vf-confirmation-desc');
+  if (!statusBadge || !title || !desc) return;
+
+  if (kycStatus === 'VERIFIED' && faceStatus === 'VERIFIED') {
+    statusBadge.textContent = '✅ Level 3 High Trust';
+    statusBadge.className = 'id-state id-state-VERIFIED';
+    title.textContent = 'High Trust Verification Complete';
+    desc.textContent = 'KYC and face verification are both approved. Level 3 High Trust is the highest level currently available.';
+  } else if (kycStatus === 'VERIFIED' && faceStatus === 'UNDER_REVIEW') {
+    statusBadge.textContent = '🔍 Face Review Under Review';
+    statusBadge.className = 'id-state id-state-UNDER_REVIEW';
+    title.textContent = 'KYC Verified - Face Review Pending';
+    desc.textContent = 'Your government ID is approved. Level 3 High Trust will complete after the admin approves your face verification.';
+  } else if (kycStatus === 'VERIFIED') {
+    statusBadge.textContent = '✓ KYC Verified';
+    statusBadge.className = 'id-state id-state-VERIFIED';
+    title.textContent = 'KYC Verified - Face Verification Required';
+    desc.textContent = 'Your government ID is approved. Complete face verification to reach Level 3 High Trust.';
+  } else if (kycStatus === 'REJECTED' || faceStatus === 'REJECTED') {
+    statusBadge.textContent = '❌ Review Needs Attention';
+    statusBadge.className = 'id-state id-state-REJECTED';
+    title.textContent = 'Verification Needs Attention';
+    desc.textContent = 'One verification step needs attention. Review the status above and submit a clearer verification.';
+  } else {
+    statusBadge.textContent = '⏳ Review In Progress';
+    statusBadge.className = 'id-state id-state-UNVERIFIED';
+    title.textContent = 'Verification Submitted';
+    desc.textContent = 'Your verification status will update automatically after KYC and face review are complete.';
+  }
+}
+
+function showStep(n) {
+  currentStep = n;
+  saveVerificationStep(n);
+  [1,2,3].forEach(i => {
+    const panel = document.getElementById('panel-' + i);
+    if (panel) panel.classList.toggle('active', i === n);
+  });
+  const labels = ['','Step 1 of 3','Step 2 of 3','Step 3 of 3'];
+  const lbl = document.getElementById('step-label');
+  if (lbl) lbl.textContent = labels[n] || '';
+  [1,2,3].forEach(i => {
+    const pill = document.getElementById('pill-' + i);
+    const conn = document.getElementById('conn-' + i);
+    if (!pill) return;
+    pill.classList.remove('active','done','locked');
+    if (i < n)        { pill.classList.add('done');   if(conn) conn.classList.add('done'); }
+    else if (i === n) { pill.classList.add('active');  if(conn) conn.classList.remove('done'); }
+    else              { pill.classList.add('locked');  if(conn) conn.classList.remove('done'); }
+  });
+}
+
+// ── Pre-fill contact from session ─────────────────────────────
+try {
+  (function prefillContact() {
+    var s  = vf_sess();
+    var el = document.getElementById('otp-contact');
+    if (!el) return;
+    if (s.phone && !s.phone.startsWith('****')) { el.value = s.phone; }
+  })();
+} catch(e) {}
+
+// ── Re-verify banner ──────────────────────────────────────────
+try {
+  (function checkReverify() {
+    var s = vf_sess();
+    var banner = document.getElementById('reverify-banner');
+    if (banner && s.identityState === 'REVERIFY_REQUIRED') banner.style.display = 'flex';
+  })();
+} catch(e) {}
+
+let otpResendTimer = null;
+let otpResendSecondsRemaining = 0;
+
+function updateOTPResendUI() {
+  const btn = document.getElementById('otp-send-btn');
+  const link = document.getElementById('otp-resend-link');
+
+  if (otpResendSecondsRemaining > 0) {
+    if (btn) {
+      btn.textContent = `Resend in ${otpResendSecondsRemaining}s`;
+      btn.disabled = true;
+    }
+    if (link) {
+      link.textContent = `Resend in ${otpResendSecondsRemaining}s`;
+      link.style.pointerEvents = 'none';
+      link.style.opacity = '0.7';
+    }
+  } else {
+    if (btn) {
+      btn.textContent = 'Send OTP';
+      btn.disabled = false;
+    }
+    if (link) {
+      link.textContent = 'Resend';
+      link.style.pointerEvents = '';
+      link.style.opacity = '';
+    }
+  }
+}
+
+function startOTPResendCountdown(seconds = 60) {
+  clearInterval(otpResendTimer);
+  otpResendSecondsRemaining = seconds;
+  updateOTPResendUI();
+
+  otpResendTimer = setInterval(() => {
+    otpResendSecondsRemaining -= 1;
+    if (otpResendSecondsRemaining <= 0) {
+      clearInterval(otpResendTimer);
+      otpResendSecondsRemaining = 0;
+    }
+    updateOTPResendUI();
+  }, 1000);
+}
+
+// ── Step 1: Send OTP via real API ─────────────────────────────
+function _notify(msg, type) {
+  if (window.HVID && HVID.toast) { HVID.toast(msg, type); return; }
+  const errEl = document.getElementById('otp-error');
+  if (errEl) { errEl.textContent = msg; errEl.classList.remove('hidden'); }
+}
+
+async function sendOTP() {
+  const btn  = document.getElementById('otp-send-btn');
+  const s    = vf_sess();
+  const inputEl   = document.getElementById('otp-contact');
+  const selectEl  = document.getElementById('otp-country-code');
+  const rawNumber = (inputEl && inputEl.value.trim().replace(/\D/g, '')) || '';
+  const countryCode = (selectEl && selectEl.value) || '+91';
+  // Build full E.164 phone: strip any leading zero from local number
+  const localNumber = rawNumber.replace(/^0+/, '');
+  const phone = localNumber ? countryCode + localNumber : (s.phone || null);
+
+  if (!phone) {
+    _notify('Please enter your phone number.', 'error');
+    if (inputEl) inputEl.focus();
+    return;
+  }
+
+  if (otpResendSecondsRemaining > 0) {
+    _notify('Please wait for the resend timer to finish.', 'info');
+    return;
+  }
+
+  if (btn) {
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+  }
+
+  try {
+    const r = await fetch('/api/auth/request-otp', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ phone }),
+    });
+    const d = await r.json();
+    if (r.ok) {
+      if (d.sms_error) {
+        // SMS failed but OTP was generated — show it on screen as fallback
+        const devMsg = d.dev_otp
+          ? `SMS unavailable. Your OTP is: <strong style="font-size:20px;letter-spacing:4px;color:#818cf8">${d.dev_otp}</strong>`
+          : `SMS unavailable (${d.sms_error}). Check the server console for your OTP code.`;
+        const errEl = document.getElementById('otp-error');
+        if (errEl) {
+          errEl.innerHTML = '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" style="vertical-align:middle;margin-right:6px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>' + devMsg;
+          errEl.style.background = 'rgba(251,191,36,0.08)';
+          errEl.style.borderColor = 'rgba(251,191,36,0.3)';
+          errEl.style.color = '#fbbf24';
+          errEl.classList.remove('hidden');
+        }
+      } else {
+        _notify('Code sent to your phone', 'success');
+      }
+      startOTPResendCountdown(60);
+      [0,1,2,3,4,5].forEach(i => {
+        const c = document.getElementById('otp-' + i);
+        if (c) { c.value = ''; c.classList.remove('filled'); }
+      });
+      setTimeout(() => { const f = document.getElementById('otp-0'); if(f) f.focus(); }, 100);
+    } else {
+      if (btn) {
+        btn.textContent = 'Send OTP';
+        btn.disabled = false;
+      }
+      _notify(d.error || 'Failed to send OTP', 'error');
+    }
+  } catch(e) {
+    if (btn) {
+      btn.textContent = 'Send OTP';
+      btn.disabled = false;
+    }
+    _notify('Network error. Please try again.', 'error');
+  }
+}
+
+// ── Step 1: Verify OTP via real API ──────────────────────────
+async function verifyOTP() {
+  const code  = [0,1,2,3,4,5].map(i => { const c=document.getElementById('otp-'+i); return c?c.value:''; }).join('');
+  const errEl = document.getElementById('otp-error');
+  const s     = vf_sess();
+  const inputEl   = document.getElementById('otp-contact');
+  const selectEl  = document.getElementById('otp-country-code');
+  const rawNumber = (inputEl && inputEl.value.trim().replace(/\D/g, '')) || '';
+  const countryCode = (selectEl && selectEl.value) || '+91';
+  const localNumber = rawNumber.replace(/^0+/, '');
+  const phone = localNumber ? countryCode + localNumber : (s.phone || null);
+
+  if (code.length < 6) {
+    if(errEl){ errEl.classList.remove('hidden'); errEl.textContent='✕ Please enter all 6 digits.'; }
+    return;
+  }
+  if (!phone) {
+    if(errEl){ errEl.classList.remove('hidden'); errEl.textContent='✕ Session phone not found. Please re-login.'; }
+    return;
+  }
+
+  errEl && errEl.classList.add('hidden');
+  const btn = document.getElementById('otp-verify-btn');
+  if(btn){ btn.textContent='Verifying…'; btn.disabled=true; }
+
+  try {
+    const r = await fetch('/api/auth/verify-otp', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ phone, otp: code }),
+    });
+    const d = await r.json();
+    if (r.ok) {
+      // Update session with fresh token
+      if (d.token) {
+        localStorage.setItem('hvid_token', d.token);
+        const sess = vf_sess();
+        sess.identityState     = d.identity_state     || sess.identityState;
+        sess.verificationLevel = d.verification_level != null ? d.verification_level : sess.verificationLevel;
+        localStorage.setItem('hvid_session', JSON.stringify(sess));
+      }
+      if(btn){ btn.textContent='Verified ✓'; }
+      _notify('Phone verified', 'success');
+      showStep(2);
+    } else {
+      if(errEl){ errEl.classList.remove('hidden'); errEl.textContent='✕ ' + (d.error||'Incorrect code.'); }
+      if(btn){ btn.textContent='Verify Code →'; btn.disabled=false; }
+    }
+  } catch(e) {
+    if(errEl){ errEl.classList.remove('hidden'); errEl.textContent='✕ Network error. Try again.'; }
+    if(btn){ btn.textContent='Verify Code →'; btn.disabled=false; }
+  }
+}
+
+// ── OTP cell auto-advance ─────────────────────────────────────
+document.querySelectorAll('.otp-cell').forEach((cell, idx, all) => {
+  cell.addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g,'').slice(-1);
+    this.classList.toggle('filled', !!this.value);
+    if (this.value && all[idx+1]) all[idx+1].focus();
+  });
+  cell.addEventListener('keydown', function(e) {
+    if (e.key === 'Backspace' && !this.value && all[idx-1]) all[idx-1].focus();
+  });
+});
+
+// ── Step 2: Proof method selection ───────────────────────────
+let selectedMethod = null;
+
+async function selectProofMethod(method) {
+  selectedMethod = method;
+  
+  // Government ID → redirect to KYC page immediately
+  if (method === 'id') {
+    document.querySelectorAll('.proof-method-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('method-id')?.classList.add('selected');
+    
+    // Show loading state
+    const card = document.getElementById('method-id');
+    if (card) card.style.opacity = '0.6';
+    
+    try {
+      const r = await fetch('/api/kyc/start', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + vf_token() },
+      });
+      const text = await r.text();
+      let d = {};
+      try { d = text ? JSON.parse(text) : {}; } catch { d = { error: text || 'Could not start KYC. Please try again.' }; }
+
+      if (r.ok && d.redirect_url) {
+        window.location.href = d.redirect_url;
+      } else if (r.status === 402 && d.redirect_url) {
+        sessionStorage.setItem('hvid_payment_intent', 'KYC');
+        window.location.href = d.redirect_url;
+      } else {
+        if (card) card.style.opacity = '1';
+        _notify(d.error || d.message || 'Could not start KYC. Please try again.', 'error');
+      }
+    } catch(e) {
+      if (card) card.style.opacity = '1';
+      _notify(e.message || 'Network error. Please try again.', 'error');
+    }
+    return;
+  }
+  
+  // Face capture → show notice
+  if (method === 'face') {
+    document.querySelectorAll('.proof-method-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('method-face')?.classList.add('selected');
+    document.getElementById('face-notice').style.display = 'block';
+    const btn = document.getElementById('proof-next-btn');
+    if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer'; }
+  }
+}
+
+function fileSelected(input) {
+  const s = document.getElementById('file-status');
+  if (!input.files.length || !s) return;
+  s.style.display = 'block';
+  s.textContent   = '✓ ' + input.files[0].name;
+}
+
+// ── Step 2: Face capture → redirect to real face capture page ─
+function simulateFaceCapture() {
+  window.location.href = '/face-capture';
+}
+
+// ── Step 2: Submit proof → KYC upload or face redirect ────────
+async function submitProof() {
+  if (!selectedMethod) return;
+
+  if (selectedMethod === 'face') {
+    window.location.href = '/face-capture';
+    return;
+  }
+
+  // ID upload → start KYC session then redirect to /kyc/mock
+  const errEl = document.getElementById('proof-error');
+  errEl && errEl.classList.add('hidden');
+  const btn = document.getElementById('proof-next-btn');
+  if(btn){ btn.textContent='Starting KYC…'; btn.disabled=true; }
+
+  try {
+    const r = await fetch('/api/kyc/start', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + vf_token() },
+    });
+    const text = await r.text();
+    let d = {};
+    try { d = text ? JSON.parse(text) : {}; } catch { d = { error: text || 'Could not start KYC. Try again.' }; }
+
+    if (r.ok && d.redirect_url) {
+      window.location.href = d.redirect_url;
+    } else {
+      if(errEl){ errEl.classList.remove('hidden'); errEl.textContent = d.error || d.message || 'Could not start KYC. Try again.'; }
+      if(btn){ btn.textContent='Submit Proof →'; btn.disabled=false; }
+    }
+  } catch(e) {
+    if(errEl){ errEl.classList.remove('hidden'); errEl.textContent = e.message || 'Network error. Try again.'; }
+    if(btn){ btn.textContent='Submit Proof →'; btn.disabled=false; }
+  }
+}
+
+// ── Trust section ─────────────────────────────────────────────
+async function loadTrustSection() {
+  const iid = vf_iid();
+  let tier  = 'BASIC';
+
+  const kycBtn  = document.getElementById('kyc-action-btn');
+  const faceBtn = document.getElementById('face-action-btn');
+  const kycPill = document.getElementById('kyc-status-pill');
+  const facePill= document.getElementById('face-status-pill');
+  let kycStatus = 'UNKNOWN';
+  let faceStatus = 'UNKNOWN';
+
+  function pill(status, label) {
+    const map = {
+      VERIFIED:     ['#34d399','rgba(52,211,153,.08)','rgba(52,211,153,.2)'],
+      PENDING:      ['#f59e0b','rgba(245,158,11,.08)','rgba(245,158,11,.2)'],
+      UNDER_REVIEW: ['#818cf8','rgba(129,140,248,.08)','rgba(129,140,248,.2)'],
+      REJECTED:     ['#f87171','rgba(248,113,113,.08)','rgba(248,113,113,.2)'],
+    };
+    const [c,bg,bd] = map[status] || ['#6b7280','rgba(107,114,128,.06)','rgba(107,114,128,.15)'];
+    return `<span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;background:${bg};border:1px solid ${bd};color:${c}">${label||status}</span>`;
+  }
+
+  if (iid) {
+    // KYC status
+    try {
+      const r = await fetch(`/api/kyc/status?identityId=${iid}`);
+      if (r.ok) {
+        const j = await r.json();
+        kycStatus = j.status || 'UNKNOWN';
+        if(kycPill) kycPill.innerHTML = pill(kycStatus, kycStatus === 'UNDER_REVIEW' ? 'Under Review' : kycStatus);
+        const done = ['VERIFIED','PENDING','UNDER_REVIEW'].includes(j.status);
+        if(kycBtn) kycBtn.style.display = done ? 'none' : 'inline-flex';
+        if(kycStatus === 'VERIFIED') tier = 'PROFESSIONAL';
+
+      }
+    } catch(_) {}
+
+    try {
+      const r2 = await fetch(`/api/face/status?identityId=${iid}`);
+      if (r2.ok) {
+        const j2 = await r2.json();
+        if(facePill) facePill.innerHTML = pill(j2.verified ? 'VERIFIED' : 'NONE', j2.verified ? 'Verified' : 'Not started');
+        if(faceBtn) faceBtn.style.display = j2.verified ? 'none' : 'inline-flex';
+        faceStatus = j2.status || (j2.verified ? 'VERIFIED' : 'NOT_STARTED');
+        if(j2.verified) tier = 'PREMIUM';
+      }
+    } catch(_) {}
+  }
+
+  updateConfirmationState(kycStatus, faceStatus);
+
+  // Render tier card
+  const tierTarget = document.getElementById('tier-card-target');
+  if (tierTarget && window.TierUI) TierUI.card(tier, tierTarget);
+
+  // Keep button state updates here. The actual KYC/face start actions are
+  // handled by verification-flow.js to avoid duplicate click handlers on the
+  // same elements.
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  restoreVerificationStep(); // Skip to Step 2 (Identity Proof)
+  loadTrustSection();
+  if (new URLSearchParams(window.location.search).get('start') === 'kyc') {
+    selectProofMethod('id');
+  }
+});
+</script>
+</body>
+</html>

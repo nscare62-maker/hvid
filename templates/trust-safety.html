@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trust & Safety — HVID</title>
+  <meta name="description" content="What HVID guarantees and what it does not. HVID confirms identity signals only — not behavior, safety, or intent." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/public.css" />
+</head>
+<body>
+
+  <nav class="nav" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><div class="nav-logo-mark">HV</div>HVID</a>
+      <div class="nav-links">
+        <a href="/how-it-works" class="nav-link">How It Works</a>
+        <a href="/for-individuals" class="nav-link">Individuals</a>
+        <a href="/for-businesses" class="nav-link">For Business</a>
+        <a href="/trust-safety" class="nav-link active">Trust &amp; Safety</a>
+      </div>
+      <div class="nav-actions">
+        <a href="auth/login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="auth/signup.html" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section style="padding: calc(var(--nav-height) + 64px) 0 64px; text-align:center; background: var(--color-bg);">
+    <div class="container" style="max-width:720px">
+      <div class="hero-eyebrow">Trust &amp; Safety</div>
+      <h1 class="hero-headline" style="font-size:clamp(32px,5vw,52px)">
+        What HVID <span class="accent">does</span> —<br/>and what it does not.
+      </h1>
+      <p class="hero-sub">
+        HVID is an identity confirmation infrastructure. It confirms that a digital account is linked to a real, persistent human identity. It does not evaluate that person's honesty, intentions, or trustworthiness.
+      </p>
+    </div>
+  </section>
+
+  <!-- Guarantee / Not-Guarantee split -->
+  <section class="section" id="guarantees">
+    <div class="container">
+      <div class="split-section" style="gap:var(--space-10);align-items:flex-start">
+
+        <!-- What HVID DOES guarantee -->
+        <div>
+          <div class="section-label" style="color:var(--color-green)">What HVID Confirms</div>
+          <h2 class="section-title" style="font-size:clamp(22px,3vw,30px)">Identity signals only</h2>
+          <p class="section-sub" style="margin-bottom:var(--space-6)">When HVID shows a verified match, it confirms the following — nothing more.</p>
+          <div class="benefit-list">
+            <div class="benefit-item">
+              <div class="benefit-icon" style="background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.2)">✓</div>
+              <div class="benefit-text">
+                <strong>Real human existence</strong>
+                <p>This account is linked to a human-verified identity record. It is not an automated account or bot identity.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" style="background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.2)">✓</div>
+              <div class="benefit-text">
+                <strong>Ownership confirmation</strong>
+                <p>The person who controls this account has claimed and verified ownership of it through HVID.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" style="background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.2)">✓</div>
+              <div class="benefit-text">
+                <strong>Identity continuity</strong>
+                <p>This identity is persistent. It cannot be transferred, duplicated, or reset. History is retained.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" style="background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.2)">✓</div>
+              <div class="benefit-text">
+                <strong>System-level status</strong>
+                <p>HVID shows whether an identity is stable, under review, or subject to an enforcement action.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- What HVID does NOT guarantee -->
+        <div>
+          <div class="section-label" style="color:#F87171">What HVID Does Not Guarantee</div>
+          <h2 class="section-title" style="font-size:clamp(22px,3vw,30px)">No behavioral judgment</h2>
+          <p class="section-sub" style="margin-bottom:var(--space-6)">A verified HVID does not mean the person is safe, honest, or trustworthy.</p>
+          <div class="benefit-list">
+            <div class="benefit-item">
+              <div class="benefit-icon" style="background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.18)">✕</div>
+              <div class="benefit-text">
+                <strong>Safety</strong>
+                <p>HVID does not assess whether interacting with this person is safe. Always exercise independent judgment.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" style="background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.18)">✕</div>
+              <div class="benefit-text">
+                <strong>Honesty or intent</strong>
+                <p>Verification does not confirm that a person is honest, acting in good faith, or free of harmful intent.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" style="background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.18)">✕</div>
+              <div class="benefit-text">
+                <strong>Signals, not verdicts</strong>
+                <p>HVID is not a risk detection system. A verified identity does not mean a transaction is risk-free. Always exercise independent judgment.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon" style="background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.18)">✕</div>
+              <div class="benefit-text">
+                <strong>Liability for outcomes</strong>
+                <p>HVID is not liable for any transaction, relationship, or interaction that occurs between users.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Disclaimer strip -->
+  <section style="padding:0 0 var(--space-16)">
+    <div class="container">
+      <div style="background:rgba(91,95,239,.05);border:1px solid rgba(91,95,239,.15);border-radius:16px;padding:28px 32px;text-align:center">
+        <p style="font-size:15px;color:var(--color-text-secondary);line-height:1.8;margin:0;max-width:640px;margin:0 auto">
+          <strong style="color:var(--color-text-primary)">HVID confirms identity linkage signals.</strong><br/>
+          It does not evaluate behavior, intent, or trustworthiness. All outputs are informational only and do not constitute a guarantee of any kind.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reporting system section -->
+  <section class="section" id="reporting" style="border-top:1px solid var(--color-border)">
+    <div class="container">
+      <div style="max-width:600px;margin:0 auto;text-align:center">
+        <div class="section-label">Reporting System</div>
+        <h2 class="section-title">Private. Evidence-based. Reviewed internally.</h2>
+        <p class="section-sub" style="margin:0 auto var(--space-10)">
+          HVID operates a private misconduct reporting system. It is not a public accusation platform.
+        </p>
+      </div>
+      <div class="step-grid" style="max-width:800px;margin:0 auto">
+        <div class="pillar-card" style="text-align:center">
+          <div class="pillar-icon" style="margin:0 auto var(--space-4)">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <div class="pillar-title">Reports are private</div>
+          <p class="pillar-desc">Your report identity is never disclosed to the reported party. All submissions remain confidential.</p>
+        </div>
+        <div class="pillar-card" style="text-align:center">
+          <div class="pillar-icon" style="margin:0 auto var(--space-4)">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </div>
+          <div class="pillar-title">Evidence-based only</div>
+          <p class="pillar-desc">Reports must contain factual evidence. Speculation, opinion, and accusations without evidence are not accepted.</p>
+        </div>
+        <div class="pillar-card" style="text-align:center">
+          <div class="pillar-icon" style="margin:0 auto var(--space-4)">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </div>
+          <div class="pillar-title">Internal review</div>
+          <p class="pillar-desc">All reports are reviewed by the HVID team privately. Outcomes are reflected as system-level signals — no public accusations are made.</p>
+        </div>
+        <div class="pillar-card" style="text-align:center">
+          <div class="pillar-icon" style="margin:0 auto var(--space-4)">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+          </div>
+          <div class="pillar-title">No public shaming</div>
+          <p class="pillar-desc">HVID does not publish reports, expose reporters, or enable public defamation. The system exists for accountability, not exposure.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About + Contact -->
+  <section class="section" id="about" style="border-top:1px solid var(--color-border)">
+    <div class="container">
+      <div class="split-section">
+        <div>
+          <div class="section-label" id="contact">Contact &amp; Support</div>
+          <h2 class="section-title" style="font-size:clamp(22px,3vw,30px)">Reach us</h2>
+          <p class="section-sub" style="margin-bottom:var(--space-6)">
+            For support, legal inquiries, or law enforcement requests, use the appropriate contact below.
+          </p>
+          <div class="benefit-list">
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              </div>
+              <div class="benefit-text">
+                <strong>General Support</strong>
+                <p>support@hvid.io — for account, verification, and platform questions.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+              <div class="benefit-text">
+                <strong>Legal &amp; Authorities</strong>
+                <p>legal@hvid.io — for law enforcement requests, legal orders, and formal data inquiries.</p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </div>
+              <div class="benefit-text">
+                <strong>Privacy Requests</strong>
+                <p>privacy@hvid.io — for data access, deletion, or correction requests under applicable law.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">About HVID</div>
+          <h2 class="section-title" style="font-size:clamp(22px,3vw,30px)">Identity infrastructure</h2>
+          <p class="section-sub" style="margin-bottom:var(--space-4)">
+            HVID was built on one principle: the internet needs a way to confirm that a digital account is controlled by a real, persistent human identity — without exposing personal data.
+          </p>
+          <p style="font-size:15px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:var(--space-4)">
+            HVID is not a social network. It is not a rating system. It is not a scam detector. It is infrastructure — a neutral layer that confirms identity continuity and ownership.
+          </p>
+          <p style="font-size:15px;color:var(--color-text-secondary);line-height:1.7">
+            Privacy-first by design. Minimal data. No public accusations. Accountability without exposure.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2025 HVID. All rights reserved.</span>
+        <span class="footer-copy">Identity confirmation infrastructure. Not a safety rating. Not a scam detector.</span>
+        <div class="flex gap-4">
+          <a href="/terms" class="footer-link">Terms</a>
+          <a href="/legal" class="footer-link">Privacy</a>
+          <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

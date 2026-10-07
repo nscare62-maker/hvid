@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identity Verification — HVID</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <style>
+    body { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--color-bg); padding:24px; }
+
+    .kyc-card {
+      width:100%; max-width:540px;
+      background:rgba(20,20,35,0.95);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:20px; padding:40px 36px;
+      box-shadow:0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    .kyc-logo { display:flex; align-items:center; gap:10px; margin-bottom:32px; }
+    .kyc-logo-mark {
+      width:32px; height:32px; border-radius:8px;
+      background:var(--color-primary);
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:800; color:#fff;
+    }
+    .kyc-logo-name { font-size:16px; font-weight:700; color:var(--color-text-primary); }
+
+    .progress-bar { height:3px; background:rgba(255,255,255,0.06); border-radius:99px; margin-bottom:32px; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--color-primary); border-radius:99px; transition:width .4s ease; }
+
+    .kyc-step { display:none; }
+    .kyc-step.active { display:block; animation:fadeUp .3s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    h2 { font-size:22px; font-weight:700; color:var(--color-text-primary); margin-bottom:8px; }
+    .sub { font-size:13px; color:var(--color-text-muted); margin-bottom:28px; line-height:1.6; }
+
+    .doc-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+    .doc-card {
+      border:1.5px solid rgba(255,255,255,0.08); border-radius:14px;
+      padding:18px 14px; cursor:pointer; text-align:center;
+      transition:border-color .2s, background .2s;
+    }
+    .doc-card:hover { border-color:rgba(91,95,239,0.4); background:rgba(91,95,239,0.05); }
+    .doc-card.selected { border-color:#5b5fef; background:rgba(91,95,239,0.1); }
+    .doc-icon { font-size:28px; margin-bottom:8px; }
+    .doc-label { font-size:13px; font-weight:600; color:var(--color-text-primary); }
+    .doc-sub { font-size:11px; color:var(--color-text-muted); margin-top:3px; }
+
+    .upload-zone {
+      border:2px dashed rgba(255,255,255,0.12); border-radius:14px;
+      padding:40px 20px; text-align:center; cursor:pointer;
+      transition:border-color .2s, background .2s; margin-bottom:16px;
+    }
+    .upload-zone:hover { border-color:rgba(91,95,239,0.5); background:rgba(91,95,239,0.04); }
+    .upload-zone.dragover { border-color:rgba(91,95,239,0.75); background:rgba(91,95,239,0.08); }
+    .upload-zone.has-file { border-color:#34d399; background:rgba(52,211,153,0.04); }
+    .upload-icon { font-size:32px; margin-bottom:10px; }
+    .upload-title { font-size:14px; font-weight:600; color:var(--color-text-primary); margin-bottom:4px; }
+    .upload-hint { font-size:12px; color:var(--color-text-muted); }
+    .file-name-display { font-size:13px; color:#34d399; font-weight:600; margin-top:10px; }
+
+    .preview-wrap { margin-bottom:16px; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.08); }
+    .preview-wrap img { width:100%; max-height:220px; object-fit:contain; background:#0a0a14; display:block; }
+
+    .requirements-list {
+      background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+      border-radius:10px; padding:14px 16px; margin-bottom:16px;
+      font-size:12px; color:var(--color-text-muted); line-height:1.9;
+    }
+    .requirements-list li { list-style:none; }
+    .requirements-list li::before { content:'✓ '; color:#34d399; font-weight:700; }
+
+    .notice {
+      background:rgba(52,211,153,0.05); border:1px solid rgba(52,211,153,0.15);
+      border-radius:10px; padding:12px 16px;
+      font-size:12px; color:rgba(52,211,153,0.8); line-height:1.6; margin-bottom:24px;
+    }
+    .notice.warning {
+      background:rgba(245,158,11,0.05); border-color:rgba(245,158,11,0.2);
+      color:rgba(245,158,11,0.85);
+    }
+
+    .error-msg {
+      background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25);
+      border-radius:10px; padding:12px 16px;
+      font-size:13px; color:#f87171; margin-bottom:16px; display:none;
+    }
+
+    .btn-row { display:flex; gap:12px; justify-content:flex-end; margin-top:8px; }
+    .btn-primary {
+      background:var(--color-primary); color:#fff; border:none; border-radius:10px;
+      padding:11px 24px; font-size:14px; font-weight:600; cursor:pointer;
+      font-family:inherit; transition:opacity .15s;
+    }
+    .btn-primary:disabled { opacity:0.4; cursor:not-allowed; }
+    .btn-primary:not(:disabled):hover { opacity:0.88; }
+    .btn-ghost {
+      background:transparent; color:var(--color-text-muted);
+      border:1px solid rgba(255,255,255,0.1); border-radius:10px;
+      padding:11px 20px; font-size:14px; font-weight:500; cursor:pointer;
+      font-family:inherit; transition:border-color .15s;
+    }
+    .btn-ghost:hover { border-color:rgba(255,255,255,0.25); color:var(--color-text-primary); }
+
+    /* Step 3 — under review */
+    .review-icon { font-size:52px; text-align:center; margin-bottom:16px; }
+    .review-title { font-size:22px; font-weight:700; color:#818cf8; text-align:center; margin-bottom:10px; }
+    .review-sub { font-size:13px; color:var(--color-text-muted); text-align:center; line-height:1.7; margin-bottom:24px; }
+    .review-steps { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:20px; margin-bottom:24px; }
+    .review-step-item { display:flex; gap:12px; align-items:flex-start; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .review-step-item:last-child { border-bottom:none; }
+    .review-step-num { color:var(--color-primary); font-weight:700; font-size:13px; flex-shrink:0; width:20px; }
+    .review-step-text { font-size:13px; color:var(--color-text-secondary); line-height:1.5; }
+
+    .journey-card {
+      background:rgba(91,95,239,0.06); border:1px solid rgba(91,95,239,0.18);
+      border-radius:14px; padding:16px; margin-bottom:24px;
+    }
+    .journey-title {
+      font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+      color:rgba(129,140,248,0.95); margin-bottom:10px;
+    }
+    .journey-list { display:grid; gap:8px; }
+    .journey-item {
+      display:flex; align-items:flex-start; gap:10px; padding:10px 12px;
+      border:1px solid rgba(255,255,255,0.06); border-radius:10px;
+      background:rgba(255,255,255,0.03); color:var(--color-text-secondary);
+      font-size:12px; line-height:1.5;
+    }
+    .journey-item .journey-badge {
+      width:22px; height:22px; border-radius:999px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(255,255,255,0.06); color:var(--color-text-primary);
+      font-size:11px; font-weight:700;
+    }
+    .journey-item.active {
+      border-color:rgba(91,95,239,0.35); background:rgba(91,95,239,0.1);
+      color:var(--color-text-primary);
+    }
+    .journey-item.active .journey-badge { background:var(--color-primary); color:#fff; }
+    .journey-item.done {
+      border-color:rgba(52,211,153,0.2); background:rgba(52,211,153,0.08);
+      color:var(--color-text-primary);
+    }
+    .journey-item.done .journey-badge { background:rgba(52,211,153,0.18); color:#34d399; }
+
+    .input-grid {
+      display:grid; gap:12px; margin-bottom:16px;
+    }
+    .input-group {
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .input-label {
+      font-size:12px; font-weight:600; color:var(--color-text-secondary);
+      text-transform:uppercase; letter-spacing:.06em;
+    }
+    .input-field {
+      width:100%; border:1px solid rgba(255,255,255,0.12); border-radius:10px;
+      background:rgba(255,255,255,0.04); padding:12px 14px; color:var(--color-text-primary);
+      font-size:14px; font-family:inherit;
+    }
+    .input-field:focus { outline:none; border-color:rgba(91,95,239,0.6); }
+    .summary-card {
+      background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px; padding:16px; margin-bottom:18px;
+    }
+    .summary-title { font-size:13px; font-weight:700; color:var(--color-text-primary); margin-bottom:10px; }
+    .summary-row { display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:13px; color:var(--color-text-secondary); }
+    .summary-row:last-child { border-bottom:none; }
+    .summary-row strong { color:var(--color-text-primary); text-align:right; }
+  </style>
+</head>
+<body>
+<div class="kyc-card">
+
+  <!-- Logo -->
+  <div class="kyc-logo">
+    <div class="kyc-logo-mark">HV</div>
+    <div class="kyc-logo-name">HVID · Identity Verification</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:33%"></div></div>
+
+  <!-- Error -->
+  <div class="error-msg" id="error-msg"></div>
+
+  <div class="journey-card" id="journey-card">
+    <div class="journey-title">Your KYC journey</div>
+    <div class="journey-list">
+      <div class="journey-item" data-step="1"><span class="journey-badge">1</span><span><strong>Personal details</strong><br/>Your profile is prepared for verification.</span></div>
+      <div class="journey-item" data-step="2"><span class="journey-badge">2</span><span><strong>Government ID</strong><br/>Your passport, Aadhaar, PAN or licence is selected.</span></div>
+      <div class="journey-item" data-step="3"><span class="journey-badge">3</span><span><strong>Document upload</strong><br/>A clear photo or scan is submitted for review.</span></div>
+      <div class="journey-item" data-step="4"><span class="journey-badge">4</span><span><strong>Selfie verification</strong><br/>A live-person check is completed for security.</span></div>
+      <div class="journey-item" data-step="5"><span class="journey-badge">5</span><span><strong>Review &amp; access</strong><br/>Your application is approved or rejected and access is granted or denied.</span></div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1: Personal details ── -->
+  <div class="kyc-step active" id="step-1">
+    <h2>Step 1: Enter your personal details</h2>
+    <p class="sub">These details help create your verified identity record and support the review process.</p>
+
+    <div class="input-grid">
+      <div class="input-group">
+        <label class="input-label" for="kyc-name">Full name</label>
+        <input class="input-field" id="kyc-name" placeholder="Enter your full name" oninput="updatePersonalDetailsState()" />
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="kyc-dob">Date of birth</label>
+        <input class="input-field" id="kyc-dob" type="date" oninput="updatePersonalDetailsState()" />
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="kyc-address">Address</label>
+        <input class="input-field" id="kyc-address" placeholder="Street, city, state" oninput="updatePersonalDetailsState()" />
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="kyc-mobile">Mobile number</label>
+        <input class="input-field" id="kyc-mobile" placeholder="10-digit mobile number" oninput="updatePersonalDetailsState()" />
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="kyc-email">Email address</label>
+        <input class="input-field" id="kyc-email" type="email" placeholder="name@example.com" oninput="updatePersonalDetailsState()" />
+      </div>
+    </div>
+
+    <div class="notice">🛡️ Your details are securely collected for this verification session and will be used to guide the review.</div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="cancel()">Cancel</button>
+      <button class="btn-primary" id="btn-next-1" onclick="savePersonalDetails(); goToStep(2)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: Choose document type ── -->
+  <div class="kyc-step" id="step-2">
+    <h2>Step 2: Choose your government ID</h2>
+    <p class="sub">Select the ID document you will upload for the next part of the KYC review.</p>
+
+    <div class="doc-grid">
+      <div class="doc-card" onclick="selectDoc('PASSPORT', this)">
+        <div class="doc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="12" cy="10" r="3"></circle><path d="M7 16h10"></path></svg></div>
+        <div class="doc-label">Passport</div>
+        <div class="doc-sub">International travel doc</div>
+      </div>
+      <div class="doc-card" onclick="selectDoc('NATIONAL_ID', this)">
+        <div class="doc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"></rect><circle cx="8" cy="11" r="3"></circle><path d="M14 9h4"></path><path d="M14 13h4"></path><path d="M5 18c0-1.7 1.3-3 3-3s3 1.3 3 3"></path></svg></div>
+        <div class="doc-label">National ID</div>
+        <div class="doc-sub">Aadhaar, PAN, or equivalent</div>
+      </div>
+      <div class="doc-card" onclick="selectDoc('DRIVERS_LICENSE', this)">
+        <div class="doc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></div>
+        <div class="doc-label">Driver's License</div>
+        <div class="doc-sub">Valid driving licence</div>
+      </div>
+      <div class="doc-card" onclick="selectDoc('RESIDENCE_PERMIT', this)">
+        <div class="doc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+        <div class="doc-label">Residence Permit</div>
+        <div class="doc-sub">Proof of residence</div>
+      </div>
+    </div>
+
+    <div class="notice">Your document is encrypted in transit. It is permanently deleted after admin review.</div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goToStep(1)">← Back</button>
+      <button class="btn-primary" id="btn-next-2" onclick="goToStep(3)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: Upload document ── -->
+  <div class="kyc-step" id="step-3">
+    <h2>Step 3: Upload your government ID</h2>
+    <p class="sub">Upload a clear photo or scan so the document can be read and verified.</p>
+
+    <ul class="requirements-list">
+      <li>All four corners of the document must be visible</li>
+      <li>Text must be clear and readable — no blurring</li>
+      <li>No glare or shadows covering the document</li>
+      <li>Document must not be expired</li>
+      <li>JPG, PNG, or PDF · Max 10 MB</li>
+    </ul>
+
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+      <div class="upload-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></div>
+      <div class="upload-title">Click to upload or drag file here</div>
+      <div class="upload-hint">JPG, PNG or PDF · Max 10 MB</div>
+      <div class="file-name-display" id="file-name-display" style="display:none"></div>
+    </div>
+    <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="fileChosen(this)" />
+
+    <div class="preview-wrap" id="preview-wrap" style="display:none">
+      <img id="preview-img" src="" alt="Document preview" />
+    </div>
+
+    <div class="notice warning">A human reviewer will check your document. Submitting a fake or invalid document will result in permanent rejection.</div>
+
+    <div id="doc-hint-box" style="display:none;background:rgba(129,140,248,0.06);border:1px solid rgba(129,140,248,0.2);border-radius:10px;padding:12px 16px;font-size:12px;color:rgba(129,140,248,0.9);line-height:1.8;margin-bottom:16px"></div>
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goToStep(2)">← Back</button>
+      <button class="btn-primary" id="btn-submit" onclick="submitDoc()" disabled>Submit for Review →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: Selfie verification ── -->
+  <div class="kyc-step" id="step-4">
+    <h2>Step 4: Complete your selfie verification</h2>
+    <p class="sub">A clear selfie helps confirm you are a real person and supports the face-match check.</p>
+
+    <div class="upload-zone" id="selfie-zone" onclick="document.getElementById('selfie-input').click()">
+      <div class="upload-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
+      <div class="upload-title">Upload a selfie photo</div>
+      <div class="upload-hint">Use good lighting and keep your face clearly visible</div>
+      <div class="file-name-display" id="selfie-name-display" style="display:none"></div>
+    </div>
+    <input type="file" id="selfie-input" accept=".jpg,.jpeg,.png" style="display:none" onchange="selfieChosen(this)" />
+
+    <div class="preview-wrap" id="selfie-preview-wrap" style="display:none">
+      <img id="selfie-preview-img" src="" alt="Selfie preview" />
+    </div>
+
+    <div class="notice">The selfie step strengthens the biometric check and helps establish trust in your identity.</div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goToStep(3)">← Back</button>
+      <button class="btn-primary" id="btn-selfie-next" onclick="goToStep(5)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: Review & access ── -->
+  <div class="kyc-step" id="step-5">
+    <div class="review-icon">✅</div>
+    <div class="review-title">KYC submission prepared</div>
+    <div class="review-sub">
+      Your details, ID upload, and selfie step are ready for review. The system will now move your case into the approval process.
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-title">KYC summary</div>
+      <div class="summary-row"><span>Name</span><strong id="summary-name">—</strong></div>
+      <div class="summary-row"><span>Mobile</span><strong id="summary-mobile">—</strong></div>
+      <div class="summary-row"><span>Document</span><strong id="summary-doc">—</strong></div>
+      <div class="summary-row"><span>Uploaded file</span><strong id="summary-file">—</strong></div>
+    </div>
+
+    <div class="notice">
+      ✓ Personal details captured<br>
+      ✓ Government ID uploaded<br>
+      ✓ Selfie verification completed<br>
+      ✓ Review will determine approval or rejection
+    </div>
+
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn-primary" onclick="goToDashboard()">Back to Dashboard →</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+
+const kycId   = new URLSearchParams(location.search).get('id') || '';
+const token   = localStorage.getItem('hvid_token') || '';
+
+// Scope personal details to the current user — never bleed between accounts
+function _kycStorageKey() {
+  try {
+    const sess = JSON.parse(localStorage.getItem('hvid_session') || '{}');
+    const uid  = sess.identity_id || sess.identityId || 'anon';
+    return 'hvid_kyc_personal_details_' + uid;
+  } catch(e) { return 'hvid_kyc_personal_details_anon'; }
+}
+let selDoc    = null;
+let chosenFile= null;
+let chosenSelfie = null;
+
+const DOC_LABELS = {
+  PASSPORT:         'Passport',
+  NATIONAL_ID:      'National ID (Aadhaar)',
+  DRIVERS_LICENSE:  "Driver's License",
+  RESIDENCE_PERMIT: 'Residence Permit (Aadhaar)',
+};
+
+const DOC_HINTS = {
+  NATIONAL_ID:      '<b>Aadhaar card requirements:</b><br>• "Aadhaar" / "UIDAI" branding must be visible<br>• 12-digit Aadhaar number must be readable<br>• "Government of India" text must be present',
+  RESIDENCE_PERMIT: '<b>Aadhaar card requirements:</b><br>• "Aadhaar" / "UIDAI" branding must be visible<br>• 12-digit Aadhaar number must be readable<br>• Address should be clearly readable',
+  DRIVERS_LICENSE:  '<b>Driving Licence requirements:</b><br>• "Driving Licence" and "Union of India" must be visible<br>• DL number must be readable<br>• Name and DOB must be present<br>• Any state colour accepted',
+  PASSPORT:         '<b>Passport requirements:</b><br>• Open to the data page (photo page)<br>• "Republic of India" and "IND" must be visible<br>• Passport number (e.g. J8250263) must be readable<br>• MRZ lines at bottom must be readable',
+};
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => { el.style.display = 'none'; }, 8000);
+}
+
+function setProgress(pct) {
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function updateJourneyStep(stepNum) {
+  document.querySelectorAll('.journey-item').forEach(item => {
+    const itemStep = Number(item.dataset.step || 0);
+    item.classList.remove('active', 'done');
+    if (itemStep < stepNum) item.classList.add('done');
+    if (itemStep === stepNum) item.classList.add('active');
+  });
+}
+
+function getPersonalDetails() {
+  return {
+    name: document.getElementById('kyc-name').value.trim(),
+    dob: document.getElementById('kyc-dob').value.trim(),
+    address: document.getElementById('kyc-address').value.trim(),
+    mobile: document.getElementById('kyc-mobile').value.trim(),
+    email: document.getElementById('kyc-email').value.trim(),
+  };
+}
+
+function savePersonalDetails() {
+  const details = getPersonalDetails();
+  localStorage.setItem(_kycStorageKey(), JSON.stringify(details));
+}
+
+function updatePersonalDetailsState() {
+  const details = getPersonalDetails();
+  const isValid = details.name && details.dob && details.address && details.mobile && details.email && /\S+@\S+\.\S+/.test(details.email);
+  document.getElementById('btn-next-1').disabled = !isValid;
+}
+
+function populateSummary() {
+  const details = JSON.parse(localStorage.getItem(_kycStorageKey()) || '{}');
+  document.getElementById('summary-name').textContent = details.name || '—';
+  document.getElementById('summary-mobile').textContent = details.mobile || '—';
+  document.getElementById('summary-doc').textContent = DOC_LABELS[selDoc] || selDoc || '—';
+  document.getElementById('summary-file').textContent = chosenFile ? chosenFile.name : '—';
+}
+
+function goToStep(n) {
+  document.querySelectorAll('.kyc-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  setProgress(n === 1 ? 20 : n === 2 ? 40 : n === 3 ? 60 : n === 4 ? 80 : 100);
+  updateJourneyStep(n);
+  if (n === 5) populateSummary();
+  document.getElementById('error-msg').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectDoc(type, el) {
+  selDoc = type;
+  document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-next-2').disabled = false;
+}
+
+function fileChosen(input) {
+  if (!input.files.length) return;
+  chosenFile = input.files[0];
+
+  const ext = chosenFile.name.split('.').pop().toLowerCase();
+  if (!['jpg','jpeg','png','pdf'].includes(ext)) {
+    showError('Only JPG, PNG and PDF files are accepted.');
+    input.value = '';
+    chosenFile = null;
+    return;
+  }
+  if (chosenFile.size > 10 * 1024 * 1024) {
+    showError('File too large. Maximum size is 10 MB.');
+    input.value = '';
+    chosenFile = null;
+    return;
+  }
+  if (chosenFile.size < 5000) {
+    showError('File is too small. Please upload a clear photo or scan of your document.');
+    input.value = '';
+    chosenFile = null;
+    return;
+  }
+
+  // Show filename
+  const fn = document.getElementById('file-name-display');
+  fn.textContent = '✓ ' + chosenFile.name + ' (' + (chosenFile.size / 1024).toFixed(0) + ' KB)';
+  fn.style.display = 'block';
+  document.getElementById('upload-zone').classList.add('has-file');
+  document.getElementById('btn-submit').disabled = false;
+
+  // Show image preview for images
+  if (['jpg','jpeg','png'].includes(ext)) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('preview-img').src = e.target.result;
+      document.getElementById('preview-wrap').style.display = 'block';
+    };
+    reader.readAsDataURL(chosenFile);
+  } else {
+    document.getElementById('preview-wrap').style.display = 'none';
+  }
+}
+
+function selfieChosen(input) {
+  if (!input.files.length) return;
+  chosenSelfie = input.files[0];
+
+  const ext = chosenSelfie.name.split('.').pop().toLowerCase();
+  if (!['jpg','jpeg','png'].includes(ext)) {
+    showError('Please upload a JPG or PNG selfie image.');
+    input.value = '';
+    chosenSelfie = null;
+    return;
+  }
+  if (chosenSelfie.size > 5 * 1024 * 1024) {
+    showError('Selfie image is too large. Please use a smaller file.');
+    input.value = '';
+    chosenSelfie = null;
+    return;
+  }
+
+  const fn = document.getElementById('selfie-name-display');
+  fn.textContent = '✓ ' + chosenSelfie.name + ' (' + (chosenSelfie.size / 1024).toFixed(0) + ' KB)';
+  fn.style.display = 'block';
+  document.getElementById('selfie-zone').classList.add('has-file');
+  document.getElementById('btn-selfie-next').disabled = false;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('selfie-preview-img').src = e.target.result;
+    document.getElementById('selfie-preview-wrap').style.display = 'block';
+  };
+  reader.readAsDataURL(chosenSelfie);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Business KYC is a paid feature; block direct URL access as well as the CTA.
+  Promise.all([
+    fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } }),
+    fetch('/api/payment/purchases', { headers: { 'Authorization': 'Bearer ' + token } }),
+  ])
+    .then(async ([identityResponse, purchasesResponse]) => ({
+      identity: identityResponse.ok ? await identityResponse.json() : null,
+      purchases: purchasesResponse.ok ? await purchasesResponse.json() : null,
+    }))
+    .then(({ identity, purchases }) => {
+      const hasVerifiedPlan = purchases
+        ? (purchases.plan_ids || []).includes('VERIFIED')
+        : identity && ['VERIFIED', 'PREMIUM'].includes(identity.tier);
+      if (identity && identity.identity_type === 'BUSINESS' && !hasVerifiedPlan) {
+        window.location.replace('/dashboard/upgrade?reason=business-kyc');
+      }
+    })
+    .catch(() => {});
+
+  updateJourneyStep(1);
+  updatePersonalDetailsState();
+  document.getElementById('btn-next-2').disabled = true;
+  document.getElementById('btn-selfie-next').disabled = true;
+
+  const bindUploadZone = (zoneId, inputId) => {
+    const zone = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+    if (!zone || !input) return;
+
+    zone.addEventListener('click', () => input.click());
+
+    const clearDragState = () => zone.classList.remove('dragover');
+    ['dragenter', 'dragover'].forEach(evt => {
+      zone.addEventListener(evt, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        zone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach(evt => {
+      zone.addEventListener(evt, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        clearDragState();
+      });
+    });
+
+    zone.addEventListener('drop', e => {
+      const files = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files : null;
+      if (!files || !files.length) return;
+      const dt = new DataTransfer();
+      Array.from(files).forEach(file => dt.items.add(file));
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  };
+
+  bindUploadZone('upload-zone', 'file-input');
+  bindUploadZone('selfie-zone', 'selfie-input');
+
+  const savedDetails = JSON.parse(localStorage.getItem(_kycStorageKey()) || '{}');
+  // Only prefill if these details belong to the current user (key is already scoped)
+  if (savedDetails.name)    document.getElementById('kyc-name').value    = savedDetails.name;
+  if (savedDetails.dob)     document.getElementById('kyc-dob').value     = savedDetails.dob;
+  if (savedDetails.address) document.getElementById('kyc-address').value = savedDetails.address;
+  if (savedDetails.mobile)  document.getElementById('kyc-mobile').value  = savedDetails.mobile;
+  if (savedDetails.email)   document.getElementById('kyc-email').value   = savedDetails.email;
+  updatePersonalDetailsState();
+});
+
+async function submitDoc() {
+  if (!chosenFile || !selDoc) return;
+
+  if (!token) {
+    showError('You are not logged in. Please log in first.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-submit');
+  btn.textContent = 'Uploading…';
+  btn.disabled = true;
+
+  const formData = new FormData();
+  formData.append('file', chosenFile);
+  formData.append('kyc_id', kycId);
+  formData.append('document_type', selDoc);
+  formData.append('personal_details', JSON.stringify(getPersonalDetails()));
+  if (chosenSelfie) formData.append('selfie_file', chosenSelfie);
+
+  try {
+    const r = await fetch('/api/kyc/upload', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: formData,
+    });
+
+    const d = await r.json();
+
+    if (!r.ok) {
+      const reasons = d.reasons || [];
+      const hint    = d.hint || '';
+      let msg = d.error || 'Upload failed.';
+      if (reasons.length) {
+        msg = '❌ Document not accepted:\n• ' + reasons.join('\n• ');
+      }
+      if (hint) msg += '\n\n💡 ' + hint;
+      showError(msg.replace(/\n/g, '\n'));
+
+      // Show formatted error
+      const errEl = document.getElementById('error-msg');
+      errEl.innerHTML = `
+        <strong>❌ Document not accepted</strong><br>
+        <ul style="margin:8px 0 4px 16px;padding:0">
+          ${reasons.map(r => `<li>${r}</li>`).join('')}
+        </ul>
+        ${hint ? `<div style="margin-top:8px;padding:8px 10px;background:rgba(245,158,11,0.08);border-radius:8px;font-size:12px;color:rgba(245,158,11,0.9)">💡 ${hint}</div>` : ''}
+      `;
+      errEl.style.display = 'block';
+      errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      btn.textContent = 'Submit for Review →';
+      btn.disabled = false;
+      return;
+    }
+
+    goToStep(4);
+
+  } catch (err) {
+    showError('Network error. Please check your connection and try again.');
+    btn.textContent = 'Submit for Review →';
+    btn.disabled = false;
+  }
+}
+
+function cancel() {
+  window.location.href = '/dashboard/verification';
+}
+
+function goToDashboard() {
+  window.location.href = '/dashboard';
+}
+</script>
+</body>
+</html>

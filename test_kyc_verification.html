@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYC Verification Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+    .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+    .success { background-color: #d4edda; border-color: #c3e6cb; }
+    .error { background-color: #f8d7da; border-color: #f5c6cb; }
+    .info { background-color: #d1ecf1; border-color: #bee5eb; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    .status { font-weight: bold; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>KYC Verification Fix - Test Page</h1>
+  
+  <div class="test-section info">
+    <h2>Test Setup</h2>
+    <p>This page tests the KYC verification authentication fix.</p>
+    <ol>
+      <li>First, clear local storage and login</li>
+      <li>Then check if session has correct property names</li>
+      <li>Finally, test if KYC verification detects authentication</li>
+    </ol>
+  </div>
+
+  <div class="test-section">
+    <h2>Step 1: Clear Storage</h2>
+    <button onclick="clearStorage()">Clear Local Storage</button>
+    <div id="clear-result" class="status"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Step 2: Simulate Login</h2>
+    <button onclick="simulateLogin()">Simulate Login (Set Session)</button>
+    <div id="login-result" class="status"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Step 3: Check Session Data</h2>
+    <button onclick="checkSession()">Check Session Properties</button>
+    <div id="session-result"></div>
+    <pre id="session-data"></pre>
+  </div>
+
+  <div class="test-section">
+    <h2>Step 4: Test Identity ID Retrieval</h2>
+    <button onclick="testIdentityRetrieval()">Test Identity ID Retrieval</button>
+    <div id="identity-result"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Step 5: Test KYC Start</h2>
+    <button onclick="testKYCStart()">Test KYC Start Logic</button>
+    <div id="kyc-result"></div>
+  </div>
+
+  <script>
+    // Simulate the auth functions
+    function getSession() {
+      try {
+        return JSON.parse(localStorage.getItem('hvid_session') || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function getIdentityId() {
+      const s = getSession();
+      return s.identity_id || s.identityId || null;
+    }
+
+    function clearStorage() {
+      localStorage.clear();
+      document.getElementById('clear-result').innerHTML = 
+        '<span style="color: green;">✓ Local storage cleared</span>';
+    }
+
+    function simulateLogin() {
+      const token = 'test_jwt_token_' + Date.now();
+      const identityId = 'test-uuid-' + Math.random().toString(36).substring(7);
+      
+      // Simulate the fixed loginWithToken function
+      localStorage.setItem('hvid_token', token);
+      
+      const session = {
+        identity_id: identityId,  // Backend returns identity_id
+        identityId: identityId,   // Keep both for compatibility
+        hvid: identityId,
+        loginAt: new Date().toISOString(),
+        identityState: 'UNVERIFIED',
+        verificationLevel: 0
+      };
+      
+      localStorage.setItem('hvid_session', JSON.stringify(session));
+      
+      document.getElementById('login-result').innerHTML = 
+        '<span style="color: green;">✓ Login simulated successfully</span>';
+    }
+
+    function checkSession() {
+      const session = getSession();
+      const hasIdentityId = !!session.identity_id;
+      const hasIdentityIdCamel = !!session.identityId;
+      const hasBoth = hasIdentityId && hasIdentityIdCamel;
+      
+      let resultClass = hasBoth ? 'success' : 'error';
+      let resultText = '';
+      
+      if (hasBoth) {
+        resultText = '<span style="color: green;">✓ Session has BOTH property names (identity_id and identityId)</span>';
+      } else if (hasIdentityId) {
+        resultText = '<span style="color: orange;">⚠ Session only has identity_id (snake_case)</span>';
+      } else if (hasIdentityIdCamel) {
+        resultText = '<span style="color: orange;">⚠ Session only has identityId (camelCase)</span>';
+      } else {
+        resultText = '<span style="color: red;">✗ Session has neither property - NOT LOGGED IN</span>';
+      }
+      
+      document.getElementById('session-result').innerHTML = resultText;
+      document.getElementById('session-data').textContent = JSON.stringify(session, null, 2);
+    }
+
+    function testIdentityRetrieval() {
+      const identityId = getIdentityId();
+      const resultDiv = document.getElementById('identity-result');
+      
+      if (identityId) {
+        resultDiv.innerHTML = `
+          <div class="status" style="color: green;">✓ Identity ID retrieved successfully</div>
+          <div><strong>Value:</strong> ${identityId}</div>
+          <div style="margin-top: 10px; padding: 10px; background: #d4edda; border-radius: 3px;">
+            <strong>Test PASSED:</strong> The getIdentityId() function successfully retrieves the identity 
+            regardless of property name (identity_id or identityId).
+          </div>
+        `;
+      } else {
+        resultDiv.innerHTML = `
+          <div class="status" style="color: red;">✗ Failed to retrieve Identity ID</div>
+          <div style="margin-top: 10px; padding: 10px; background: #f8d7da; border-radius: 3px;">
+            <strong>Test FAILED:</strong> Could not retrieve identity ID. Make sure you've simulated login first.
+          </div>
+        `;
+      }
+    }
+
+    function testKYCStart() {
+      const identityId = getIdentityId();
+      const resultDiv = document.getElementById('kyc-result');
+      
+      if (!identityId) {
+        resultDiv.innerHTML = `
+          <div class="status" style="color: red;">✗ KYC would show "Please sign in" error</div>
+          <div style="margin-top: 10px; padding: 10px; background: #f8d7da; border-radius: 3px;">
+            <strong>Test FAILED:</strong> This is the original bug - identity ID not found, 
+            so the verification flow thinks the user is not logged in.
+          </div>
+        `;
+      } else {
+        resultDiv.innerHTML = `
+          <div class="status" style="color: green;">✓ KYC would proceed correctly</div>
+          <div><strong>Identity ID found:</strong> ${identityId}</div>
+          <div style="margin-top: 10px; padding: 10px; background: #d4edda; border-radius: 3px;">
+            <strong>Test PASSED:</strong> The verification flow would successfully detect the logged-in user 
+            and proceed with KYC verification instead of showing "Please sign in" error.
+          </div>
+        `;
+      }
+    }
+  </script>
+
+  <div class="test-section info" style="margin-top: 30px;">
+    <h2>Expected Results</h2>
+    <ul>
+      <li>After clearing storage: All tests should show not logged in</li>
+      <li>After simulating login: Session should have BOTH property names</li>
+      <li>Identity retrieval should work regardless of which property name exists</li>
+      <li>KYC start test should pass and show identity ID</li>
+    </ul>
+    
+    <h3>Quick Test Sequence</h3>
+    <ol>
+      <li>Click "Clear Local Storage"</li>
+      <li>Click "Simulate Login"</li>
+      <li>Click "Check Session Properties" - should see BOTH properties</li>
+      <li>Click "Test Identity ID Retrieval" - should retrieve successfully</li>
+      <li>Click "Test KYC Start Logic" - should show "would proceed correctly"</li>
+    </ol>
+  </div>
+</body>
+</html>

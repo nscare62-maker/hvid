@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adaptive Intel — HVID Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    :root {
+      --color-verified: #10b981;
+      --color-limited: #f59e0b;
+      --color-suspended: #ef4444;
+      --color-admin: #a78bfa;
+    }
+    body { font-family: 'Outfit', sans-serif; background: #060608; }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+
+    /* ── Adaptive Header ─────────────────────────────────────── */
+    .adaptive-header {
+      background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: var(--space-4) 0; margin-bottom: var(--space-8);
+    }
+    .header-stat { font-size: 11px; font-weight: 600; color: var(--color-text-muted); display: flex; align-items: center; gap: 8px; }
+    .header-stat span { color: #fff; font-weight: 700; }
+
+    .grid-layout { display: grid; grid-template-columns: 1fr 400px; gap: var(--space-8); }
+
+    /* ── Insight & Conflict ──────────────────────────────────── */
+    .panel-adaptive {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-bottom: var(--space-6);
+    }
+    .adaptive-card {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px; padding: var(--space-5); position: relative;
+    }
+    .pattern-hint {
+      background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 8px; padding: 10px; font-size: 12px; color: var(--color-limited);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ── Conflict Warning ────────────────────────────────────── */
+    .conflict-warning {
+      background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px; padding: 12px; margin-top: 12px; font-size: 13px;
+      color: var(--color-suspended); font-weight: 600; display: none;
+      animation: shake 0.4s ease-in-out;
+    }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+    /* ── Feedback Loop ───────────────────────────────────────── */
+    .feedback-wrap { display: flex; align-items: center; gap: 12px; margin-top: 12px; font-size: 11px; color: var(--color-text-muted); }
+    .btn-feedback {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px; padding: 4px 10px; color: #fff; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-feedback:hover { background: rgba(255,255,255,0.1); }
+    .btn-feedback.active { background: var(--color-primary); border-color: var(--color-primary); }
+
+    .op-card {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px; padding: var(--space-6); margin-bottom: var(--space-6);
+    }
+    .intel-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 8px; }
+    .intel-value { font-size: 15px; font-weight: 700; color: #fff; }
+
+    .btn-op {
+      width: 100%; padding: 14px; border-radius: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: all 0.2s; cursor: pointer; border: none; margin-bottom: 10px;
+    }
+    .btn-op-suspend { background: var(--color-limited); color: #000; }
+    .btn-op-revoke { background: var(--color-suspended); color: #fff; }
+    .btn-op-verify { background: rgba(255,255,255,0.05); color: #fff; }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo">HVID Admin</div>
+      <div style="margin-top:var(--space-3)"><span class="admin-badge">⚑ Adaptive Console</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Review</div>
+        <a href="/admin/kyc-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg></span> KYC Review</a>
+        <a href="/admin/asset-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span> Asset Review</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Intelligence</div>
+        <a href="/admin/high-risk" class="sidebar-link"><span class="sidebar-link-icon">⚡</span> High Risk</a>
+        <a href="/admin/identity-search" class="sidebar-link active"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Explorer</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="dashboard-main">
+    <!-- Adaptive Header -->
+    <div class="adaptive-header">
+      <div class="container" style="display:flex; justify-content:space-between; align-items:center">
+        <div style="display:flex; gap:32px">
+          <div class="header-stat">LAST DECISION: <span id="header-last-decision">No prior actions</span></div>
+          <div class="header-stat">DECISION LATENCY: <span id="header-latency">No recent signals</span></div>
+        </div>
+        <div class="header-stat">UUID: <span class="mono" id="header-id">---</span></div>
+      </div>
+    </div>
+
+    <main class="page-content">
+      <div id="loading" style="text-align:center; padding:100px; color:var(--color-text-muted)">Calibrating Intelligence Layer...</div>
+
+      <div id="content" class="animate-fadeUp" style="display:none">
+        
+        <!-- Pattern Hint Panel -->
+        <div id="pattern-hint" class="pattern-hint" style="display:none">
+          <span>⚠</span> <strong>PATTERN ALERT:</strong> Similar signals observed in 3 other identities recently.
+        </div>
+
+        <div class="panel-adaptive">
+          <div class="adaptive-card">
+            <div class="intel-label">Signal Confidence</div>
+            <div id="intel-confidence" class="intel-value">Calculating...</div>
+          </div>
+          <div class="adaptive-card" style="background:rgba(59, 130, 246, 0.05)">
+            <div class="intel-label">System Recommendation</div>
+            <div id="intel-rec" class="intel-value" style="color:var(--color-limited)">Analysis...</div>
+            
+            <div class="feedback-wrap">
+              Helpful?
+              <button class="btn-feedback" id="fb-yes" onclick="setFeedback('yes')">Yes</button>
+              <button class="btn-feedback" id="fb-no" onclick="setFeedback('no')">No</button>
+            </div>
+          </div>
+          <div class="adaptive-card">
+            <div class="intel-label">Activity Trend</div>
+            <div id="intel-trend" class="intel-value">Stable</div>
+          </div>
+        </div>
+
+        <div class="grid-layout">
+          <div class="grid-left">
+            <div class="op-card">
+              <div class="op-card-title">Analysis Summary</div>
+              <div id="insight-bullets" style="font-size:14px; line-height:1.6; color:#fff"></div>
+            </div>
+            
+            <div class="op-card">
+              <div class="op-card-title">State Transition Audit</div>
+              <div id="history-timeline" style="padding-left:20px; border-left:2px solid rgba(255,255,255,0.05)"></div>
+            </div>
+          </div>
+
+          <div class="grid-right">
+            <div class="op-card">
+              <div class="op-card-title">Decision Console</div>
+              
+              <div id="conflict-warning" class="conflict-warning">
+                ⚠ ACTION CONFLICT: Selected intervention exceeds recommended risk level.
+              </div>
+
+              <textarea id="op-reason" style="width:100%; min-height:100px; background:#0c0c0e; border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; padding:12px; font-family:inherit; margin-bottom:12px" placeholder="Justification..."></textarea>
+              
+              <div style="display:grid; gap:8px">
+                <button class="btn-op btn-op-suspend" id="btn-SUSPENDED" onclick="handleAction('SUSPENDED')">Suspend Account</button>
+                <button class="btn-op btn-op-verify" id="btn-REVERIFY_REQUIRED" onclick="handleAction('REVERIFY_REQUIRED')">Trigger Re-verify</button>
+                <button class="btn-op btn-op-revoke" id="btn-REVOKED" onclick="handleAction('REVOKED')">Revoke Permanent</button>
+              </div>
+            </div>
+            
+            <div class="op-card">
+              <div class="op-card-title">Operator Notes</div>
+              <textarea id="op-notes" style="width:100%; min-height:80px; background:transparent; border:none; color:#fff; font-size:13px; font-family:inherit; resize:none; outline:none" placeholder="Notes for this investigation..."></textarea>
+              <button onclick="saveNotes()" style="background:none; border:none; color:var(--color-primary); font-size:11px; font-weight:700; cursor:pointer; padding:0">Save Persistence</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  'use strict';
+  const urlParams = new URLSearchParams(window.location.search);
+  const identityId = urlParams.get('id');
+  let currentRecLevel = 0; // 0:Low, 1:Med, 2:High
+
+  function getHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('hvid_token')}`,
+      'X-Admin-Key': localStorage.getItem('hvid_admin_key')
+    };
+  }
+
+  async function loadData() {
+    if (!identityId) return;
+    try {
+      const res = await fetch(`/api/admin/identity/${identityId}`, { headers: getHeaders() });
+      const data = await res.json();
+      render(data);
+    } catch (err) { console.error(err); }
+  }
+
+  function render(data) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    const { identity, flags, status_logs } = data;
+    document.getElementById('header-id').textContent = identity.id;
+
+    // ── STEP 1: LAST DECISION MEMORY ──────────────────────────
+    const lastAdminAction = status_logs.find(log => log.reason.startsWith('admin:'));
+    if (lastAdminAction) {
+      const adminId = lastAdminAction.reason.split('|')[0].replace('admin:', '');
+      const date = new Date(lastAdminAction.createdAt).toLocaleDateString();
+      document.getElementById('header-last-decision').innerHTML = `<span>${lastAdminAction.newStatus}</span> (by ${adminId.slice(0,6)}, ${date})`;
+    }
+
+    // ── STEP 3: LATENCY TRACKING ──────────────────────────────
+    if (flags.length > 0) {
+      const latestFlag = flags[0];
+      const elapsedMs = Date.now() - new Date(latestFlag.createdAt).getTime();
+      const mins = Math.floor(elapsedMs / 60000);
+      document.getElementById('header-latency').innerHTML = `<span>${mins}m ago</span>`;
+    }
+
+    // ── STEP 4: PATTERN HINT ──────────────────────────────────
+    const patternHint = document.getElementById('pattern-hint');
+    const seenPatterns = JSON.parse(localStorage.getItem('hvid_seen_patterns') || '{}');
+    let hasPattern = false;
+    flags.forEach(f => {
+      if (seenPatterns[f.flagType] && seenPatterns[f.flagType] !== identityId) hasPattern = true;
+      seenPatterns[f.flagType] = identityId;
+    });
+    localStorage.setItem('hvid_seen_patterns', JSON.stringify(seenPatterns));
+    if (hasPattern) patternHint.style.display = 'flex';
+
+    // ── STEP 2: CONFLICT DETECTION LOGIC ──────────────────────
+    const riskScore = flags.reduce((sum, f) => sum + (f.severity || 0), 0);
+    const recEl = document.getElementById('intel-rec');
+    if (riskScore >= 5) {
+      recEl.textContent = 'SUSPEND'; recEl.style.color = 'var(--color-suspended)'; currentRecLevel = 2;
+    } else if (riskScore >= 2) {
+      recEl.textContent = 'RE-VERIFY'; recEl.style.color = 'var(--color-limited)'; currentRecLevel = 1;
+    } else {
+      recEl.textContent = 'MONITOR'; recEl.style.color = 'var(--color-verified)'; currentRecLevel = 0;
+    }
+
+    // Signals Snapshot
+    const flagCounts = {};
+    flags.forEach(f => flagCounts[f.flagType] = (flagCounts[f.flagType] || 0) + 1);
+    document.getElementById('insight-bullets').innerHTML = Object.keys(flagCounts).map(type => `• ${flagCounts[type]}x ${type}`).join('<br/>');
+
+    // Notes
+    document.getElementById('op-notes').value = localStorage.getItem(`notes_${identity.id}`) || '';
+
+    // Feedback
+    const fb = localStorage.getItem(`feedback_${identityId}`);
+    if (fb === 'yes') document.getElementById('fb-yes').classList.add('active');
+    if (fb === 'no') document.getElementById('fb-no').classList.add('active');
+
+    // Conflict monitoring
+    ['SUSPENDED', 'REVERIFY_REQUIRED', 'REVOKED'].forEach(status => {
+      const btn = document.getElementById(`btn-${status}`);
+      btn.onmouseover = () => checkConflict(status);
+      btn.onmouseout = () => document.getElementById('conflict-warning').style.display = 'none';
+    });
+  }
+
+  function checkConflict(selectedStatus) {
+    const warn = document.getElementById('conflict-warning');
+    let selectedLevel = 0;
+    if (selectedStatus === 'REVERIFY_REQUIRED') selectedLevel = 1;
+    if (selectedStatus === 'SUSPENDED' || selectedStatus === 'REVOKED') selectedLevel = 2;
+
+    if (selectedLevel > currentRecLevel) {
+      warn.style.display = 'block';
+    } else {
+      warn.style.display = 'none';
+    }
+  }
+
+  function setFeedback(val) {
+    localStorage.setItem(`feedback_${identityId}`, val);
+    document.getElementById('fb-yes').classList.remove('active');
+    document.getElementById('fb-no').classList.remove('active');
+    document.getElementById(`fb-${val}`).classList.add('active');
+  }
+
+  function saveNotes() {
+    localStorage.setItem(`notes_${identityId}`, document.getElementById('op-notes').value);
+    alert('Persisted.');
+  }
+
+  async function handleAction(status) {
+    const reason = document.getElementById('op-reason').value.trim();
+    if (reason.length < 10) return alert('Reason required.');
+    try {
+      await fetch(`/api/admin/identity/${identityId}/action`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ status, reason })
+      });
+      window.location.reload();
+    } catch (err) { alert(err.message); }
+  }
+
+  loadData();
+</script>
+</body>
+</html>

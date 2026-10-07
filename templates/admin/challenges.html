@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Challenge Queue — HVID Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    /* ── Admin badge ─────────────────────────────────────────── */
+    .admin-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      color: #a78bfa; background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 999px; padding: 3px 10px;
+    }
+
+    /* ── Filter bar ──────────────────────────────────────────── */
+    .filter-bar {
+      display: flex; gap: var(--space-3); flex-wrap: wrap;
+      margin-bottom: var(--space-5); align-items: center;
+    }
+    .filter-bar select {
+      font-family: var(--font-sans); font-size: 13px;
+      background: var(--color-surface-2); color: var(--color-text-primary);
+      border: 1px solid var(--color-border); border-radius: var(--radius-md);
+      padding: 8px 12px; cursor: pointer; outline: none;
+    }
+    .filter-bar select:focus { border-color: var(--color-primary); }
+
+    /* ── Challenge table ─────────────────────────────────────── */
+    .challenge-table { width: 100%; border-collapse: collapse; }
+    .challenge-table th {
+      text-align: left; font-size: 11px; font-weight: 700;
+      color: var(--color-text-muted); text-transform: uppercase;
+      letter-spacing: .07em; padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .challenge-table td {
+      padding: var(--space-3) var(--space-4); font-size: 13px;
+      color: var(--color-text-secondary); border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .challenge-table tr { cursor: pointer; transition: background var(--transition-fast); }
+    .challenge-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+    /* ── Status pills ────────────────────────────────────────── */
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; border-radius: 999px;
+      padding: 3px 10px; border: 1px solid;
+    }
+    .status-INITIATED          { color: #818cf8; background: rgba(129,140,248,.08); border-color: rgba(129,140,248,.2); }
+    .status-PAYMENT_PENDING    { color: #f59e0b; background: rgba(245,158,11,.08);  border-color: rgba(245,158,11,.2); }
+    .status-PAYMENT_COMPLETED  { color: #34d399; background: rgba(52,211,153,.08);  border-color: rgba(52,211,153,.2); }
+    .status-UNDER_REVIEW       { color: #818cf8; background: rgba(129,140,248,.08); border-color: rgba(129,140,248,.2); }
+    .status-RESOLVED_SUCCESS   { color: #34d399; background: rgba(52,211,153,.08);  border-color: rgba(52,211,153,.2); }
+    .status-RESOLVED_FAILED    { color: #f87171; background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.2); }
+
+    /* ── Payment status pill ─────────────────────────────────── */
+    .pay-pill {
+      font-size: 10px; font-weight: 600; border-radius: 6px;
+      padding: 2px 8px; background: var(--color-surface-2);
+      color: var(--color-text-muted);
+    }
+    .pay-COMPLETED { color: #34d399; background: rgba(52,211,153,.08); }
+    .pay-FAILED    { color: #f87171; background: rgba(248,113,113,.08); }
+
+    /* ── ID monospace ────────────────────────────────────────── */
+    .challenge-id { font-family: monospace; font-size: 12px; color: var(--color-text-muted); }
+
+    /* ── View link ───────────────────────────────────────────── */
+    .view-link {
+      font-size: 12px; font-weight: 600; color: var(--color-primary);
+      text-decoration: none; opacity: .8;
+    }
+    .view-link:hover { opacity: 1; }
+
+    /* ── Pagination ──────────────────────────────────────────── */
+    .pagination {
+      display: flex; align-items: center; gap: var(--space-3);
+      justify-content: flex-end; margin-top: var(--space-5);
+    }
+    .pagination-info { font-size: 12px; color: var(--color-text-muted); }
+
+    /* ── Empty / error state ─────────────────────────────────── */
+    .empty-state {
+      text-align: center; padding: var(--space-12) var(--space-4);
+      color: var(--color-text-muted);
+    }
+    .empty-state-icon { font-size: 32px; opacity: .35; margin-bottom: var(--space-4); }
+    .empty-state-text { font-size: 14px; color: var(--color-text-secondary); }
+
+    /* ── Summary badges ──────────────────────────────────────── */
+    .summary-row {
+      display: flex; gap: var(--space-3); flex-wrap: wrap;
+      margin-bottom: var(--space-5);
+    }
+    .summary-badge {
+      font-size: 12px; font-weight: 600; border-radius: 8px;
+      padding: 6px 12px; border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03); color: var(--color-text-muted);
+    }
+    .summary-badge strong { color: var(--color-text-primary); margin-right: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <!-- Admin sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo" style="cursor:default">
+        <div class="sidebar-logo-mark">HV</div>
+        HVID Admin
+      </div>
+      <div style="margin-top:var(--space-3)"><span class="admin-badge">⚑ Internal</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Reports</div>
+        <a href="/admin/reports" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span> Report Queue</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Review</div>
+        <a href="/admin/kyc-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg></span> KYC Review</a>
+        <a href="/admin/asset-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span> Asset Review</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Challenges</div>
+        <a href="/admin/challenges" class="sidebar-link active"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span> Challenge Queue</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Identities</div>
+        <a href="/admin/identity-search" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Identity Search</a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div style="font-size:12px;color:var(--color-text-muted);margin-bottom:var(--space-2)">Signed in as admin</div>
+      <a href="/admin/reports" class="sidebar-link" style="color:var(--color-text-muted)"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg></span> Back to Reports</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">Challenge Queue</div>
+      <div class="topbar-right" style="gap:var(--space-3)">
+        <span class="admin-badge">⚑ Admin View</span>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header animate-fadeUp">
+        <h1 class="page-title">Challenge Queue</h1>
+        <p class="page-subtitle">Review challenges filed by identities against resolved reports. All actions are logged.</p>
+      </div>
+
+      <!-- Summary row (populated by JS) -->
+      <div class="summary-row animate-fadeUp delay-1" id="summary-row" style="display:none">
+        <div class="summary-badge"><strong id="count-review">—</strong> Under Review</div>
+        <div class="summary-badge"><strong id="count-success">—</strong> Resolved Success</div>
+        <div class="summary-badge"><strong id="count-failed">—</strong> Resolved Failed</div>
+        <div class="summary-badge"><strong id="count-total">—</strong> Total</div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar animate-fadeUp delay-1">
+        <select id="filter-status" onchange="applyFilters()">
+          <option value="">All statuses</option>
+          <option value="INITIATED">Initiated</option>
+          <option value="PAYMENT_PENDING">Payment Pending</option>
+          <option value="PAYMENT_COMPLETED">Payment Done</option>
+          <option value="UNDER_REVIEW">Under Review</option>
+          <option value="RESOLVED_SUCCESS">Resolved — Success</option>
+          <option value="RESOLVED_FAILED">Resolved — Failed</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="resetFilters()">Reset</button>
+      </div>
+
+      <!-- Table card -->
+      <div class="card animate-fadeUp delay-2" style="padding:0;overflow:hidden">
+        <div id="queue-loading" style="text-align:center;padding:var(--space-8);font-size:13px;color:var(--color-text-muted)">
+          Loading challenges…
+        </div>
+
+        <div id="queue-empty" style="display:none">
+          <div class="empty-state">
+            <div class="empty-state-icon">⚖️</div>
+            <div class="empty-state-text">No challenges found</div>
+          </div>
+        </div>
+
+        <div id="queue-table-wrap" style="display:none;overflow-x:auto">
+          <table class="challenge-table" id="queue-table">
+            <thead>
+              <tr>
+                <th>Challenge ID</th>
+                <th>Report ID</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Submitted</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="queue-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination-row" style="display:none">
+        <span class="pagination-info" id="pagination-info"></span>
+        <button class="btn btn-ghost btn-sm" id="btn-prev" onclick="changePage(-1)">← Prev</button>
+        <button class="btn btn-ghost btn-sm" id="btn-next" onclick="changePage(1)">Next →</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const API_BASE  = '/api';
+const PAGE_SIZE = 20;
+let currentPage = 0;
+
+// ── All loaded items (client-side filter for status) ──────────
+// Server endpoint returns all; we filter locally for instant UX.
+// On high-volume deployments, switch to server-side ?status= param.
+let allItems = [];
+
+// ── Auth helpers ─────────────────────────────────────────────
+function getAdminHeaders() {
+  const token    = localStorage.getItem('hvid_token')    || '';
+  const adminKey = localStorage.getItem('hvid_admin_key') || '';
+  return {
+    'Content-Type':  'application/json',
+    'Authorization': `Bearer ${token}`,
+    'X-Admin-Key':   adminKey,
+  };
+}
+
+function showAuthError(message) {
+  document.getElementById('queue-loading').style.display    = 'none';
+  document.getElementById('queue-table-wrap').style.display = 'none';
+  document.getElementById('queue-empty').style.display      = 'block';
+  const txt = document.getElementById('queue-empty').querySelector('.empty-state-text');
+  if (txt) txt.textContent = message;
+}
+
+// ── Filter + pagination ───────────────────────────────────────
+function applyFilters() { currentPage = 0; renderTable(); }
+
+function resetFilters() {
+  document.getElementById('filter-status').value = '';
+  applyFilters();
+}
+
+function changePage(dir) {
+  const newPage = currentPage + dir;
+  if (newPage < 0) return;
+  currentPage = newPage;
+  renderTable();
+}
+
+// ── Formatters ────────────────────────────────────────────────
+function formatDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function renderStatusPill(status) {
+  const labels = {
+    INITIATED:        'Initiated',
+    PAYMENT_PENDING:  'Payment Pending',
+    PAYMENT_COMPLETED:'Payment Done',
+    UNDER_REVIEW:     'Under Review',
+    RESOLVED_SUCCESS: 'Success',
+    RESOLVED_FAILED:  'Failed',
+  };
+  const cls   = `status-${status}`;
+  const label = labels[status] || status;
+  return `<span class="status-pill ${cls}">● ${label}</span>`;
+}
+
+function renderPayPill(payStatus) {
+  if (!payStatus) return '<span class="pay-pill">—</span>';
+  const cls   = `pay-${payStatus}`;
+  const label = payStatus.charAt(0) + payStatus.slice(1).toLowerCase();
+  return `<span class="pay-pill ${cls}">${label}</span>`;
+}
+
+// ── Render table from allItems + filters ──────────────────────
+function renderTable() {
+  const status  = document.getElementById('filter-status').value;
+  const filtered = status ? allItems.filter(c => c.status === status) : allItems;
+
+  const start = currentPage * PAGE_SIZE;
+  const page  = filtered.slice(start, start + PAGE_SIZE);
+
+  document.getElementById('queue-loading').style.display = 'none';
+
+  if (filtered.length === 0) {
+    document.getElementById('queue-empty').style.display      = 'block';
+    document.getElementById('queue-table-wrap').style.display = 'none';
+    document.getElementById('pagination-row').style.display   = 'none';
+    const txt = document.getElementById('queue-empty').querySelector('.empty-state-text');
+    if (txt) txt.textContent = status ? `No challenges with status: ${status}` : 'No challenges found';
+    return;
+  }
+
+  document.getElementById('queue-empty').style.display      = 'none';
+  document.getElementById('queue-table-wrap').style.display = 'block';
+  document.getElementById('pagination-row').style.display   = 'flex';
+
+  const tbody = document.getElementById('queue-tbody');
+  tbody.innerHTML = '';
+
+  page.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.onclick = () => window.location.href = `challenge-detail.html?id=${encodeURIComponent(c.id)}`;
+    tr.innerHTML = `
+      <td><span class="challenge-id">${c.id.slice(0, 8)}…</span></td>
+      <td><span class="challenge-id">${(c.reportId || c.report_id || '—').toString().slice(0, 8)}…</span></td>
+      <td>${renderStatusPill(c.status)}</td>
+      <td>${renderPayPill(c.paymentStatus || c.payment_status)}</td>
+      <td style="font-size:12px;color:var(--color-text-muted)">${formatDate(c.createdAt || c.created_at)}</td>
+      <td>
+        <a href="challenge-detail.html?id=${encodeURIComponent(c.id)}"
+           class="view-link"
+           onclick="event.stopPropagation()">View →</a>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('pagination-info').textContent =
+    `Page ${currentPage + 1} · ${filtered.length} total`;
+  document.getElementById('btn-prev').disabled = currentPage === 0;
+  document.getElementById('btn-next').disabled = start + PAGE_SIZE >= filtered.length;
+}
+
+// ── Summary counters ──────────────────────────────────────────
+function renderSummary(items) {
+  const counts = { UNDER_REVIEW: 0, RESOLVED_SUCCESS: 0, RESOLVED_FAILED: 0 };
+  items.forEach(c => {
+    if (counts[c.status] !== undefined) counts[c.status]++;
+  });
+  document.getElementById('count-review').textContent  = counts.UNDER_REVIEW;
+  document.getElementById('count-success').textContent = counts.RESOLVED_SUCCESS;
+  document.getElementById('count-failed').textContent  = counts.RESOLVED_FAILED;
+  document.getElementById('count-total').textContent   = items.length;
+  document.getElementById('summary-row').style.display = 'flex';
+}
+
+// ── Load all challenges from API ──────────────────────────────
+async function loadChallenges() {
+  const token    = localStorage.getItem('hvid_token');
+  const adminKey = localStorage.getItem('hvid_admin_key');
+
+  if (!token || !adminKey) {
+    showAuthError('Admin authentication required. Please set your token and admin key.');
+    return;
+  }
+
+  document.getElementById('queue-loading').style.display    = 'block';
+  document.getElementById('queue-table-wrap').style.display = 'none';
+  document.getElementById('queue-empty').style.display      = 'none';
+  document.getElementById('pagination-row').style.display   = 'none';
+
+  try {
+    const res = await fetch(`${API_BASE}/challenge/admin/all`, {
+      headers: getAdminHeaders(),
+    });
+
+    if (res.status === 401) { showAuthError('Admin authentication required — invalid or expired token (401).'); return; }
+    if (res.status === 403) { showAuthError('Admin access denied — X-Admin-Key incorrect or not configured (403).'); return; }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const body = await res.json();
+    allItems   = Array.isArray(body) ? body : (body.data || []);
+
+    renderSummary(allItems);
+    renderTable();
+
+  } catch (err) {
+    document.getElementById('queue-loading').style.display = 'none';
+    showAuthError(`Could not load challenges: ${err.message || 'Network error'}`);
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────
+loadChallenges();
+</script>
+</body>
+</html>

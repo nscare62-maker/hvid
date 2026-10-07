@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Status Checker - HVID</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        .status-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .status-text {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .status-detail {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.6;
+        }
+        .status-box.checking {
+            border-color: #fbbf24;
+        }
+        .status-box.checking .status-icon { color: #fbbf24; }
+        .status-box.online {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .status-box.online .status-icon { 
+            color: #10b981;
+            animation: none;
+        }
+        .status-box.offline {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+        .status-box.offline .status-icon { 
+            color: #ef4444;
+            animation: none;
+        }
+        .instructions {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        .instructions.show { display: block; }
+        .instructions h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+        .instructions code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #fbbf24;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #5b5fef;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #4a4ed5;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .endpoint-info {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+        }
+        .endpoint-info div {
+            margin: 8px 0;
+        }
+        .endpoint-info .label {
+            color: #999;
+            display: inline-block;
+            width: 120px;
+        }
+        .endpoint-info .value {
+            color: #5b5fef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🔍 Backend Status Check</h1>
+            <p class="subtitle">Checking if HVID backend server is running...</p>
+
+            <div class="status-box checking" id="status-box">
+                <div class="status-icon" id="status-icon">⏳</div>
+                <div class="status-text" id="status-text">Checking connection...</div>
+                <div class="status-detail" id="status-detail">
+                    Attempting to connect to backend server...
+                </div>
+            </div>
+
+            <div class="endpoint-info">
+                <div><span class="label">Backend URL:</span> <span class="value" id="backend-url">http://localhost:3000/api</span></div>
+                <div><span class="label">Status:</span> <span class="value" id="connection-status">Connecting...</span></div>
+                <div><span class="label">Response Time:</span> <span class="value" id="response-time">-</span></div>
+            </div>
+
+            <div class="instructions" id="instructions">
+                <h3>⚠️ How to Start the Backend</h3>
+                <ol>
+                    <li>Open a <strong>new terminal</strong> (Command Prompt or PowerShell)</li>
+                    <li>Navigate to backend folder:
+                        <br><code>cd backend</code>
+                    </li>
+                    <li>Install dependencies (first time only):
+                        <br><code>npm install</code>
+                    </li>
+                    <li>Start the server:
+                        <br><code>npm run start:dev</code>
+                    </li>
+                    <li>Wait for message: <code>HVID Backend → http://localhost:3000/api</code></li>
+                    <li>Refresh this page to check status</li>
+                </ol>
+            </div>
+
+            <div class="actions">
+                <button class="btn" onclick="checkStatus()">🔄 Check Again</button>
+                <a href="/" class="btn">🏠 Go to Homepage</a>
+                <a href="auth/login.html" class="btn btn-success" id="login-btn" style="display: none;">🚀 Go to Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        
+        async function checkStatus() {
+            const statusBox = document.getElementById('status-box');
+            const statusIcon = document.getElementById('status-icon');
+            const statusText = document.getElementById('status-text');
+            const statusDetail = document.getElementById('status-detail');
+            const instructions = document.getElementById('instructions');
+            const connectionStatus = document.getElementById('connection-status');
+            const responseTime = document.getElementById('response-time');
+            const loginBtn = document.getElementById('login-btn');
+
+            // Reset to checking state
+            statusBox.className = 'status-box checking';
+            statusIcon.textContent = '⏳';
+            statusText.textContent = 'Checking connection...';
+            statusDetail.textContent = 'Attempting to connect to backend server...';
+            connectionStatus.textContent = 'Connecting...';
+            responseTime.textContent = '-';
+            instructions.classList.remove('show');
+            loginBtn.style.display = 'none';
+
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+
+                if (response.ok || response.status === 404) {
+                    // Backend is running (404 is OK - means server is responding)
+                    statusBox.className = 'status-box online';
+                    statusIcon.textContent = '✅';
+                    statusText.textContent = 'Backend is Online!';
+                    statusDetail.innerHTML = `
+                        The HVID backend server is running and responding correctly.<br>
+                        You can now use the application.
+                    `;
+                    connectionStatus.textContent = 'Connected';
+                    connectionStatus.style.color = '#10b981';
+                    responseTime.textContent = duration + ' ms';
+                    loginBtn.style.display = 'inline-block';
+                } else {
+                    throw new Error('Unexpected response');
+                }
+            } catch (error) {
+                // Backend is not running
+                statusBox.className = 'status-box offline';
+                statusIcon.textContent = '❌';
+                statusText.textContent = 'Backend is Offline';
+                statusDetail.innerHTML = `
+                    Cannot connect to the backend server at <code>localhost:3000</code><br>
+                    The backend needs to be started before you can use the application.
+                `;
+                connectionStatus.textContent = 'Disconnected';
+                connectionStatus.style.color = '#ef4444';
+                responseTime.textContent = 'Timeout';
+                instructions.classList.add('show');
+            }
+        }
+
+        // Check on load
+        window.addEventListener('load', checkStatus);
+
+        // Auto-refresh every 5 seconds
+        setInterval(checkStatus, 5000);
+    </script>
+</body>
+</html>

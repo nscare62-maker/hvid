@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: hvid
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --workers 2 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: SECRET_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: TEXTBEE_API_KEY
+        sync: false
+      - key: TEXTBEE_DEVICE_ID
+        sync: false
+      - key: ADMIN_KEY
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: OTP_EXPIRY_MINUTES
+        value: '20'
+      - key: MAX_OTP_ATTEMPTS
+        value: '3'
+      - key: AUTO_CREATE_DB
+        value: 'false'

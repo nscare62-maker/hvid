@@ -1,0 +1,36 @@
+@import url('./global.css');
+
+html body { background: var(--color-bg); color: var(--color-text-primary); flex-direction: column; }
+body > #hvid-disclaimer { max-width: 800px; flex-shrink: 0; }
+body .page-wrap { max-width: 580px; padding-block: 32px; }
+body .page-logo, body .page-header .logo { color: var(--color-primary); font-size: 22px; letter-spacing: -.04em; }
+body .page-header h1 { font-family: var(--font-editorial); font-weight: 400; font-size: 38px; letter-spacing: -.035em; }
+body .page-header p { color: var(--color-text-secondary); line-height: 1.8; }
+body .form-card, body .modal { background: var(--color-surface); border-color: var(--color-border); border-radius: 12px; box-shadow: var(--shadow-sm); }
+body .form-card { padding: 32px; }
+body .target-pill { background: var(--color-accent-soft); border-color: var(--color-border); color: var(--color-primary); }
+body .field-label { color: var(--color-text-primary); font-weight: 500; }
+body :is(.field-input, .field-select, .field-textarea) { background: var(--color-bg); color: var(--color-text-primary); border-color: var(--color-border); border-radius: 7px; padding: 12px 14px; }
+body :is(.field-input, .field-select, .field-textarea):focus { border-color: var(--color-primary); box-shadow: var(--shadow-glow); }
+body .field-select option { background: var(--color-surface); }
+body :is(.field-hint, .state-desc, .char-counter, .back-link, .status-desc, .challenge-context, .state-empty, .confirm-note, .modal-desc) { color: var(--color-text-secondary); }
+body :is(.field-error, .field-label .req, .evidence-remove, .auth-warning, .auth-warning a) { color: var(--color-red); }
+body :is(.add-url-btn, .refresh-btn) { color: var(--color-primary); background: var(--color-accent-soft); border-color: #bccbb1; border-radius: 7px; }
+body :is(.notice, .notice strong) { color: var(--color-amber); }
+body .notice { background: #fbf5e7; border-color: #e7d7ad; }
+body :is(.payment-info, .status-box, #type-guidance) { background: var(--color-surface-2); border-color: var(--color-border); color: var(--color-text-secondary); }
+body :is(.payment-info strong, .payment-fee span, .status-box-label) { color: var(--color-primary); }
+body .payment-fee { color: var(--color-text-primary); border-color: var(--color-border); }
+body .submit-btn, body #confirm-btn, body .modal-btn-confirm { background: var(--color-primary); color: #fff; border-color: var(--color-primary); border-radius: 7px; font-weight: 500; }
+body #confirm-btn.ready { background: var(--color-primary); border-color: var(--color-primary); }
+body .modal-btn-cancel { background: var(--color-bg); border-color: var(--color-border); color: var(--color-text-primary); }
+body .toast { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+body .itype-card { background: var(--color-surface) !important; border-color: var(--color-border) !important; color: var(--color-text-primary) !important; box-shadow: var(--shadow-sm); }
+body .itype-card.selected { background: var(--color-accent-soft) !important; border-color: var(--color-primary) !important; }
+body .page-wrap [style*="color:rgba(255,255,255"],
+body .page-wrap [style*="color: rgba(255,255,255"] { color: var(--color-text-secondary) !important; }
+@media (max-width: 540px) {
+  body .page-wrap { padding-block: 14px; }
+  body .form-card { padding: 24px 20px; }
+  body .page-header h1 { font-size: 32px; }
+}

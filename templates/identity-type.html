@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Choose Identity Type — HVID</title>
+  <meta name="description" content="Select your HVID identity type: Personal, Professional, or Business.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+
+    .page-wrap {
+      width: 100%; max-width: 560px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      text-align: center; margin-bottom: 40px;
+    }
+    .page-header .logo {
+      font-size: 13px; font-weight: 700; letter-spacing: .12em;
+      color: rgba(129,140,248,.7); margin-bottom: 28px; display: block;
+    }
+    .page-header h1 {
+      font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.6;
+    }
+
+    /* ── Cards grid ── */
+    .type-grid {
+      display: flex; flex-direction: column; gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    /* Cards injected by JS */
+    .itype-card { width: 100%; }
+
+    /* ── Guidance banner ── */
+    #type-guidance {
+      border-radius: 12px; padding: 14px 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      font-size: 13px; color: rgba(255,255,255,.5);
+      min-height: 50px; transition: all .25s;
+      margin-bottom: 28px;
+    }
+    #type-guidance.active {
+      background: rgba(129,140,248,.06);
+      border-color: rgba(129,140,248,.18);
+      color: rgba(255,255,255,.75);
+    }
+
+    /* ── Confirmation warning ── */
+    .confirm-note {
+      font-size: 11px; color: rgba(255,255,255,.3);
+      text-align: center; margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── Action button ── */
+    #confirm-btn {
+      width: 100%; padding: 14px;
+      border-radius: 12px; border: none; cursor: pointer;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      background: rgba(129,140,248,.1);
+      border: 1px solid rgba(129,140,248,.25);
+      color: #818cf8;
+      transition: opacity .15s, transform .1s;
+      letter-spacing: .01em;
+    }
+    #confirm-btn:hover:not(:disabled) { opacity: .8; transform: translateY(-1px); }
+    #confirm-btn:disabled { opacity: .35; cursor: not-allowed; }
+    #confirm-btn.ready {
+      background: rgba(129,140,248,.15);
+      border-color: rgba(129,140,248,.4);
+    }
+
+    /* ── Confirmation modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.65); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; z-index: 100;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: #13131a; border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px; padding: 32px 28px;
+      max-width: 400px; width: 100%;
+      transform: translateY(12px); transition: transform .25s;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; }
+    .modal-desc  { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.6; margin-bottom: 24px; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-btn {
+      flex: 1; padding: 11px; border-radius: 10px; border: 1px solid;
+      cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600;
+      transition: opacity .15s;
+    }
+    .modal-btn:hover { opacity: .8; }
+    .modal-btn-cancel {
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.6);
+    }
+    .modal-btn-confirm {
+      background: rgba(129,140,248,.12);
+      border-color: rgba(129,140,248,.3);
+      color: #818cf8;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1e1e2e; border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 10px 18px;
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85);
+      z-index: 200; opacity: 0; transition: opacity .2s;
+      white-space: nowrap; pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 480px) {
+      .page-header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-wrap">
+    <header class="page-header">
+      <span class="logo">HVID</span>
+      <h1>Choose your identity type</h1>
+      <p>Select the type that best describes how you'll use your HVID identity.<br>You can change this later with confirmation.</p>
+    </header>
+
+    <!-- Cards injected by JS -->
+    <div class="type-grid" id="type-grid" role="group" aria-label="Identity type selection"></div>
+
+    <!-- Guidance banner -->
+    <div id="type-guidance">Select an identity type above to see details.</div>
+
+    <!-- Warning note -->
+    <p class="confirm-note">
+      Identity type changes require explicit confirmation<br>and may affect your trust signal.
+    </p>
+    <p style="font-size:11px;color:rgba(255,255,255,.25);line-height:1.65;text-align:center;margin-top:10px;font-style:italic">
+      HVID is a decision-support system that provides identity signals.
+      It does not make judgments or conclusions.
+    </p>
+
+    <!-- Confirm button -->
+    <button id="confirm-btn" disabled>Select a type to continue</button>
+  </div>
+
+  <!-- Confirmation modal -->
+  <div class="modal-overlay" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-title" id="modal-title">Change identity type?</div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
+        <button class="modal-btn modal-btn-confirm" id="modal-confirm">Confirm change</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="/static/js/identity-type.js"></script>
+  <script>
+    'use strict';
+
+    const TYPES    = ['PERSONAL', 'PROFESSIONAL', 'BUSINESS'];
+    const grid     = document.getElementById('type-grid');
+    const guidance = document.getElementById('type-guidance');
+    const btn      = document.getElementById('confirm-btn');
+    const modal    = document.getElementById('confirm-modal');
+    const toastEl  = document.getElementById('toast');
+
+    let selected = null;
+
+    // ── Read current type from URL or API (if owner session exists) ──
+    const params      = new URLSearchParams(window.location.search);
+    const currentType = (params.get('current') || '').toUpperCase() || null;
+
+    // ── Build selection cards ──────────────────────────────────
+    function refresh() {
+      grid.innerHTML = '';
+      TYPES.forEach(type => {
+        const card = IdentityTypeUI.selectionCard(type, selected === type, onSelect);
+        grid.appendChild(card);
+      });
+    }
+
+    function onSelect(type) {
+      selected = type;
+      refresh();
+      const cfg = IdentityTypeUI.resolve(type);
+
+      // Update guidance banner
+      guidance.textContent = cfg.guidance + (cfg.cta ? ' ' + cfg.cta.text + '.' : '');
+      guidance.style.borderColor = cfg.border;
+      guidance.style.color       = cfg.color;
+      guidance.style.background  = cfg.bg;
+      guidance.classList.add('active');
+
+      // Update button
+      if (type === currentType) {
+        btn.textContent = `${cfg.icon} ${cfg.title} — already selected`;
+        btn.disabled    = true;
+        btn.classList.remove('ready');
+      } else {
+        btn.textContent = `Continue as ${cfg.title}`;
+        btn.disabled    = false;
+        btn.classList.add('ready');
+        btn.style.background   = cfg.bg;
+        btn.style.borderColor  = cfg.border;
+        btn.style.color        = cfg.color;
+      }
+    }
+
+    // ── Confirm button → show modal ────────────────────────────
+    btn.addEventListener('click', () => {
+      if (!selected || selected === currentType) return;
+      const cfg = IdentityTypeUI.resolve(selected);
+
+      document.getElementById('modal-desc').textContent =
+        `You are setting your identity to "${cfg.title}". ` +
+        cfg.guidance +
+        ' This action is logged. You can change it again later.';
+
+      modal.classList.add('open');
+    });
+
+    // ── Modal: Cancel ──────────────────────────────────────────
+    document.getElementById('modal-cancel').addEventListener('click', () => {
+      modal.classList.remove('open');
+    });
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+    // ── Modal: Confirm → PATCH /api/identity/:id/type ──────────
+    document.getElementById('modal-confirm').addEventListener('click', async () => {
+      modal.classList.remove('open');
+      const cfg = IdentityTypeUI.resolve(selected);
+
+      const token      = window.Auth?.getToken?.() || localStorage.getItem('hvid_token');
+      const identityId = window.Auth?.getSession?.()?.identity_id
+                      || localStorage.getItem('hvid_identity_id');
+
+      if (!token || !identityId) {
+        showToast('Sign in required to change identity type.');
+        return;
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Updating…';
+
+      try {
+        const resp = await fetch(`/api/identity/${identityId}/type`, {
+          method:  'PATCH',
+          headers: {
+            'Content-Type':  'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ type: selected }),
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.message || `HTTP ${resp.status}`);
+        }
+
+        showToast(`${cfg.icon} Identity type updated to ${cfg.title}`);
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1400);
+
+      } catch (err) {
+        showToast('Could not update identity type. ' + (err?.message || ''));
+        btn.disabled    = false;
+        btn.textContent = `Continue as ${cfg.title}`;
+      }
+    });
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      setTimeout(() => toastEl.classList.remove('show'), 3000);
+    }
+
+    // ── Init ──────────────────────────────────────────────────
+    refresh();
+    // Pre-select current type if passed in URL
+    if (currentType && TYPES.includes(currentType)) onSelect(currentType);
+  </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identity Lookup — HVID Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+    .search-hero {
+      max-width: 700px;
+      margin: 15vh auto;
+      text-align: center;
+    }
+    .search-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 24px; padding: var(--space-8);
+      margin-top: var(--space-10);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .input-field {
+      width: 100%; padding: 18px 24px;
+      background: #0c0c0e; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; color: #fff; font-size: 18px;
+      font-family: inherit; outline: none; transition: all 0.2s;
+      margin-bottom: var(--space-4);
+    }
+    .input-field:focus {
+      border-color: var(--color-primary);
+      background: #111114;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+    .btn-search {
+      width: 100%; padding: 16px; border-radius: 16px;
+      background: var(--color-primary); color: #fff;
+      font-weight: 700; font-size: 16px; border: none;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-search:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    .btn-search:active { transform: translateY(0); }
+
+    .admin-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; color: #a78bfa;
+      background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 999px; padding: 3px 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo">HV Admin</div>
+      <div style="margin-top:var(--space-3)"><span class="admin-badge">⚑ Operator Mode</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Review</div>
+        <a href="/admin/kyc-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg></span> KYC Review</a>
+        <a href="/admin/asset-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span> Asset Review</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Core Queue</div>
+        <a href="/admin/reports" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span> Reports</a>
+        <a href="/admin/challenges" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span> Challenges</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Identities</div>
+        <a href="/admin/identity-search" class="sidebar-link active"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Identity Operator</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="dashboard-main">
+    <main class="page-content">
+      <div class="search-hero animate-fadeUp">
+        <div style="margin-bottom: var(--space-4)">
+          <span class="admin-badge">Intelligence Layer</span>
+        </div>
+        <h1 style="font-size: 42px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: var(--space-2)">Identity Explorer</h1>
+        <p style="color: var(--color-text-muted); font-size: 18px">Retrieve deep-intelligence records and enforcement states.</p>
+        
+        <div class="search-box">
+          <form id="search-form">
+            <input type="text" id="identity-id" class="input-field" placeholder="Search by Identity UUID..." required autocomplete="off" />
+            <button type="submit" class="btn-search">Initiate Investigation</button>
+          </form>
+          <div style="margin-top: var(--space-6); font-size: 12px; color: var(--color-text-muted)">
+            Enter a valid HVID identity identifier to access the operator console.
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  'use strict';
+  document.getElementById('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('identity-id').value.trim();
+    if (id) {
+      window.location.href = `identity-detail.html?id=${encodeURIComponent(id)}`;
+    }
+  });
+
+  window.onload = () => {
+    if (!localStorage.getItem('hvid_token') || !localStorage.getItem('hvid_admin_key')) {
+      window.location.href = '../dashboard/index.html';
+    }
+  };
+</script>
+</body>
+</html>

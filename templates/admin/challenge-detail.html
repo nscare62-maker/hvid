@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Challenge Detail — HVID Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    .admin-badge { display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.06em;color:#a78bfa;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:999px;padding:3px 10px; }
+
+    .detail-section { margin-bottom: var(--space-6); }
+    .detail-section-title { font-size:11px;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:var(--space-4); }
+
+    .kv-row { display:flex;gap:var(--space-3);padding:var(--space-3) 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:flex-start; }
+    .kv-key { font-size:12px;color:var(--color-text-muted);min-width:180px;flex-shrink:0; }
+    .kv-val { font-size:13px;color:var(--color-text-primary); }
+
+    .description-box { font-size:13px;color:var(--color-text-secondary);background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);max-height:200px;overflow-y:auto;line-height:1.7;white-space:pre-wrap; }
+
+    .evidence-link { display:block;font-size:13px;padding:var(--space-2) 0;color:var(--color-primary);word-break:break-all; }
+    .evidence-link:hover { text-decoration:underline; }
+
+    /* Status pills */
+    .status-pill { display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;border:1px solid; }
+    .status-INITIATED         { color:#818cf8;background:rgba(129,140,248,.08);border-color:rgba(129,140,248,.2); }
+    .status-PAYMENT_PENDING   { color:#f59e0b;background:rgba(245,158,11,.08); border-color:rgba(245,158,11,.2); }
+    .status-PAYMENT_COMPLETED { color:#34d399;background:rgba(52,211,153,.08); border-color:rgba(52,211,153,.2); }
+    .status-UNDER_REVIEW      { color:#818cf8;background:rgba(129,140,248,.08);border-color:rgba(129,140,248,.2); }
+    .status-RESOLVED_SUCCESS  { color:#34d399;background:rgba(52,211,153,.08); border-color:rgba(52,211,153,.2); }
+    .status-RESOLVED_FAILED   { color:#f87171;background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.2); }
+
+    /* Action panel */
+    .action-panel { display:flex;gap:var(--space-4);flex-wrap:wrap;margin-top:var(--space-4); }
+    .btn-review  { background:rgba(129,140,248,.12);color:#818cf8;border:1px solid rgba(129,140,248,.25);border-radius:var(--radius-md);padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition-fast); }
+    .btn-review:hover:not(:disabled)   { background:rgba(129,140,248,.22); }
+    .btn-success { background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);border-radius:var(--radius-md);padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition-fast); }
+    .btn-success:hover:not(:disabled)  { background:rgba(52,211,153,.22); }
+    .btn-reject  { background:var(--color-surface-2);color:var(--color-text-secondary);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition-fast); }
+    .btn-reject:hover:not(:disabled)   { background:rgba(248,113,113,.08);color:#f87171;border-color:rgba(248,113,113,.2); }
+    .btn-review:disabled,.btn-success:disabled,.btn-reject:disabled { opacity:.35;cursor:not-allowed; }
+
+    /* Modal */
+    .modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:none;align-items:center;justify-content:center;padding:var(--space-4); }
+    .modal-overlay.show { display:flex; }
+    .modal-box { background:var(--color-surface-1,#1a1a2e);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-7);width:100%;max-width:480px; }
+    .modal-title { font-size:16px;font-weight:700;color:var(--color-text-primary);margin-bottom:var(--space-3); }
+    .modal-warning { font-size:12px;color:#f59e0b;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-4);line-height:1.6; }
+    .modal-label { font-size:12px;font-weight:600;color:var(--color-text-muted);margin-bottom:var(--space-2); }
+    .modal-textarea { width:100%;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-md);color:var(--color-text-primary);font-family:inherit;font-size:13px;padding:10px 12px;resize:vertical;min-height:80px;outline:none;line-height:1.6; }
+    .modal-textarea:focus { border-color:var(--color-primary); }
+    .modal-actions { display:flex;gap:var(--space-3);justify-content:flex-end;margin-top:var(--space-5); }
+
+    /* Toast */
+    .toast { position:fixed;bottom:var(--space-6);right:var(--space-6);background:var(--color-surface-1,#1a1a2e);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:12px 20px;font-size:13px;font-weight:600;color:var(--color-text-primary);z-index:2000;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;pointer-events:none; }
+    .toast.show { opacity:1;transform:none; }
+    .toast.success { border-color:rgba(52,211,153,.3);color:#34d399; }
+    .toast.error   { border-color:rgba(248,113,113,.3);color:#f87171; }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo" style="cursor:default">
+        <div class="sidebar-logo-mark">HV</div>
+        HVID Admin
+      </div>
+      <div style="margin-top:var(--space-3)"><span class="admin-badge">⚑ Internal</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Review</div>
+        <a href="/admin/kyc-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg></span> KYC Review</a>
+        <a href="/admin/asset-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span> Asset Review</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Reports</div>
+        <a href="/admin/reports" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span> Report Queue</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Challenges</div>
+        <a href="/admin/challenges" class="sidebar-link active"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span> Challenge Queue</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Identities</div>
+        <a href="/admin/identity-search" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Identity Search</a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div style="font-size:12px;color:var(--color-text-muted);margin-bottom:var(--space-2)">Signed in as admin</div>
+      <a href="/admin/reports" class="sidebar-link" style="color:var(--color-text-muted)"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg></span> Back to Reports</a>
+    </div>
+  </aside>
+
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">Challenge Detail</div>
+      <div class="topbar-right" style="gap:var(--space-3)">
+        <a href="/admin/challenges" class="btn btn-ghost btn-sm">← Back to queue</a>
+        <span class="admin-badge">⚑ Admin View</span>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- Loading -->
+      <div id="detail-loading" style="text-align:center;padding:var(--space-10);font-size:13px;color:var(--color-text-muted)">
+        Loading challenge…
+      </div>
+
+      <!-- Error -->
+      <div id="detail-error" style="display:none;text-align:center;padding:var(--space-10)">
+        <div style="font-size:32px;opacity:.3;margin-bottom:var(--space-4)">⚠️</div>
+        <div id="detail-error-text" style="font-size:14px;color:var(--color-text-secondary)">Could not load challenge.</div>
+      </div>
+
+      <!-- Content -->
+      <div id="detail-content" style="display:none">
+
+        <!-- Header card -->
+        <div class="card animate-fadeUp" style="margin-bottom:var(--space-5)">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap">
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--space-2)">Challenge ID</div>
+              <div style="font-family:monospace;font-size:16px;color:var(--color-text-primary)" id="d-id">—</div>
+            </div>
+            <div id="d-status-badge"></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5)" class="animate-fadeUp delay-1">
+
+          <!-- Left: details -->
+          <div>
+            <!-- Core info -->
+            <div class="card detail-section">
+              <div class="detail-section-title">Challenge Info</div>
+              <div class="kv-row"><div class="kv-key">Report ID</div><div class="kv-val" style="font-family:monospace;font-size:12px" id="d-report-id">—</div></div>
+              <div class="kv-row"><div class="kv-key">Challenger Identity</div><div class="kv-val" style="font-family:monospace;font-size:12px" id="d-challenger-id">—</div></div>
+              <div class="kv-row"><div class="kv-key">Status</div><div class="kv-val" id="d-status">—</div></div>
+              <div class="kv-row"><div class="kv-key">Payment Status</div><div class="kv-val" id="d-payment">—</div></div>
+              <div class="kv-row"><div class="kv-key">Payment Reference</div><div class="kv-val" id="d-pay-ref" style="font-family:monospace;font-size:12px">—</div></div>
+              <div class="kv-row"><div class="kv-key">Submitted</div><div class="kv-val" id="d-created">—</div></div>
+              <div class="kv-row"><div class="kv-key">Last Updated</div><div class="kv-val" id="d-updated">—</div></div>
+            </div>
+
+            <!-- Challenge reason -->
+            <div class="card detail-section">
+              <div class="detail-section-title">Challenge Reason</div>
+              <div class="description-box" id="d-reason">No reason provided.</div>
+            </div>
+
+            <!-- Counter-evidence -->
+            <div class="card detail-section">
+              <div class="detail-section-title">Counter-Evidence URLs</div>
+              <div id="d-evidence">
+                <div style="font-size:13px;color:var(--color-text-muted)">No evidence links submitted.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: actions -->
+          <div>
+            <!-- Admin notes -->
+            <div class="card detail-section">
+              <div class="detail-section-title">Admin Notes (internal)</div>
+              <div class="description-box" id="d-admin-notes" style="min-height:60px">No notes yet.</div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card detail-section">
+              <div class="detail-section-title">Actions</div>
+              <div id="actions-resolved-msg" style="display:none;font-size:13px;color:var(--color-text-muted);padding:var(--space-3) 0">
+                This challenge has been resolved — no further actions available.
+              </div>
+              <div class="action-panel" id="action-panel">
+                <button class="btn-review"  id="btn-review"  onclick="openModal('review')">Mark Under Review</button>
+                <button class="btn-success" id="btn-success" onclick="openModal('success')">Resolve — Success</button>
+                <button class="btn-reject"  id="btn-reject"  onclick="openModal('reject')">Resolve — Failed</button>
+              </div>
+            </div>
+
+            <!-- Link to report -->
+            <div class="card detail-section">
+              <div class="detail-section-title">Linked Report</div>
+              <a href="#" id="d-report-link" class="btn btn-ghost btn-sm" style="display:inline-flex">Open Report →</a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /detail-content -->
+    </main>
+  </div>
+</div>
+
+<!-- Confirm modal -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Confirm Action</div>
+    <div class="modal-warning" id="modal-warning">This action will be logged and cannot be undone.</div>
+    <div class="modal-label">Admin Notes <span style="color:rgba(255,255,255,.3)">(required)</span></div>
+    <textarea class="modal-textarea" id="modal-notes" placeholder="Describe your decision clearly…"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="modal-confirm-btn" onclick="confirmAction()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+const API_BASE = '/api';
+const params   = new URLSearchParams(location.search);
+const challengeId = params.get('id') || '';
+
+let currentChallenge = null;
+let pendingAction    = null; // 'review' | 'success' | 'reject'
+
+// ── Auth ─────────────────────────────────────────────────────
+function getAdminHeaders() {
+  return {
+    'Content-Type':  'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('hvid_token') || ''}`,
+    'X-Admin-Key':   localStorage.getItem('hvid_admin_key') || '',
+  };
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = `toast ${type} show`;
+  setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+
+// ── Formatters ────────────────────────────────────────────────
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+const STATUS_LABELS = {
+  INITIATED: 'Initiated', PAYMENT_PENDING: 'Payment Pending',
+  PAYMENT_COMPLETED: 'Payment Confirmed', UNDER_REVIEW: 'Under Review',
+  RESOLVED_SUCCESS: 'Resolved — Success', RESOLVED_FAILED: 'Resolved — Failed',
+};
+function statusPill(s) {
+  return `<span class="status-pill status-${s}">● ${STATUS_LABELS[s] || s}</span>`;
+}
+
+// ── Load challenge ────────────────────────────────────────────
+async function loadChallenge() {
+  if (!challengeId) { showError('No challenge ID in URL.'); return; }
+
+  try {
+    const res = await fetch(`${API_BASE}/challenge/admin/${encodeURIComponent(challengeId)}`, {
+      headers: getAdminHeaders(),
+    });
+
+    if (res.status === 401) { showError('Admin authentication required (401).'); return; }
+    if (res.status === 403) { showError('Admin access denied (403).'); return; }
+    if (res.status === 404) { showError('Challenge not found.'); return; }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    currentChallenge = await res.json();
+    renderChallenge(currentChallenge);
+
+  } catch (err) {
+    showError(err.message || 'Network error');
+  }
+}
+
+function showError(msg) {
+  document.getElementById('detail-loading').style.display = 'none';
+  document.getElementById('detail-error-text').textContent = msg;
+  document.getElementById('detail-error').style.display   = 'block';
+}
+
+function renderChallenge(c) {
+  document.getElementById('detail-loading').style.display = 'none';
+  document.getElementById('detail-content').style.display = 'block';
+
+  const id = c.id || '';
+  document.getElementById('d-id').textContent          = id;
+  document.getElementById('d-report-id').textContent   = c.reportId || c.report_id || '—';
+  document.getElementById('d-challenger-id').textContent = c.challengerIdentityId || c.challenger_identity_id || '—';
+  document.getElementById('d-status').innerHTML        = statusPill(c.status);
+  document.getElementById('d-status-badge').innerHTML  = statusPill(c.status);
+  document.getElementById('d-payment').textContent     = c.paymentStatus || c.payment_status || '—';
+  document.getElementById('d-pay-ref').textContent     = c.paymentReference || c.payment_reference || '—';
+  document.getElementById('d-created').textContent     = fmtDate(c.createdAt || c.created_at);
+  document.getElementById('d-updated').textContent     = fmtDate(c.updatedAt || c.updated_at);
+  document.getElementById('d-reason').textContent      = c.challengeReason || c.challenge_reason || 'No reason provided.';
+  document.getElementById('d-admin-notes').textContent = c.adminNotes || c.admin_notes || 'No notes yet.';
+
+  // Report link
+  const rId = c.reportId || c.report_id || '';
+  const rLink = document.getElementById('d-report-link');
+  if (rId) rLink.href = `report-detail.html?id=${encodeURIComponent(rId)}`;
+
+  // Evidence
+  const urls = c.evidenceUrls || c.evidence_urls || [];
+  const evEl = document.getElementById('d-evidence');
+  if (urls.length > 0) {
+    evEl.innerHTML = urls.map(u =>
+      `<a href="${encodeURI(u)}" target="_blank" rel="noopener noreferrer" class="evidence-link">${u}</a>`
+    ).join('');
+  }
+
+  // Show/hide action buttons based on current status
+  const isResolved = c.status === 'RESOLVED_SUCCESS' || c.status === 'RESOLVED_FAILED';
+  document.getElementById('action-panel').style.display        = isResolved ? 'none' : 'flex';
+  document.getElementById('actions-resolved-msg').style.display = isResolved ? 'block' : 'none';
+
+  // Mark Under Review only available from PAYMENT_COMPLETED
+  document.getElementById('btn-review').disabled =
+    c.status !== 'PAYMENT_COMPLETED';
+
+  // Resolve only available from UNDER_REVIEW
+  const canResolve = c.status === 'UNDER_REVIEW';
+  document.getElementById('btn-success').disabled = !canResolve;
+  document.getElementById('btn-reject').disabled  = !canResolve;
+}
+
+// ── Modal ─────────────────────────────────────────────────────
+const MODAL_CONFIG = {
+  review:  { title: 'Mark as Under Review',      warning: 'This will move the challenge to UNDER_REVIEW. Ensure payment is confirmed first.' },
+  success: { title: 'Resolve — Success',          warning: '⚠️ This will reverse enforcement for the challenger and update trust signal. This cannot be undone.' },
+  reject:  { title: 'Resolve — Failed',           warning: 'This will close the challenge as RESOLVED_FAILED. Enforcement remains active.' },
+};
+
+function openModal(action) {
+  pendingAction = action;
+  const cfg = MODAL_CONFIG[action];
+  document.getElementById('modal-title').textContent   = cfg.title;
+  document.getElementById('modal-warning').textContent = cfg.warning;
+  document.getElementById('modal-notes').value         = '';
+  document.getElementById('confirm-modal').classList.add('show');
+  setTimeout(() => document.getElementById('modal-notes').focus(), 80);
+}
+
+function closeModal() {
+  document.getElementById('confirm-modal').classList.remove('show');
+  pendingAction = null;
+}
+
+async function confirmAction() {
+  const notes = document.getElementById('modal-notes').value.trim();
+  if (!notes) {
+    document.getElementById('modal-notes').style.borderColor = 'rgba(248,113,113,.5)';
+    setTimeout(() => document.getElementById('modal-notes').style.borderColor = '', 1500);
+    return;
+  }
+
+  const confirmBtn = document.getElementById('modal-confirm-btn');
+  confirmBtn.disabled    = true;
+  confirmBtn.textContent = 'Confirming…';
+
+  try {
+    let url, body;
+
+    if (pendingAction === 'review') {
+      url  = `${API_BASE}/challenge/admin/${encodeURIComponent(challengeId)}/review`;
+      body = { adminNotes: notes };
+    } else {
+      url  = `${API_BASE}/challenge/admin/${encodeURIComponent(challengeId)}/resolve`;
+      body = {
+        outcome:    pendingAction === 'success' ? 'RESOLVED_SUCCESS' : 'RESOLVED_FAILED',
+        adminNotes: notes,
+      };
+    }
+
+    const res = await fetch(url, {
+      method:  'PATCH',
+      headers: getAdminHeaders(),
+      body:    JSON.stringify(body),
+    });
+
+    if (res.status === 401) throw new Error('Authentication required (401)');
+    if (res.status === 403) throw new Error('Admin access denied (403)');
+    if (res.status === 400) {
+      const e = await res.json().catch(() => ({}));
+      throw new Error(e.message || 'Bad request (400)');
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const updated = await res.json();
+    closeModal();
+    showToast('Action applied successfully', 'success');
+    renderChallenge(updated);
+
+  } catch (err) {
+    showToast(err.message || 'Action failed', 'error');
+  } finally {
+    confirmBtn.disabled    = false;
+    confirmBtn.textContent = 'Confirm';
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('confirm-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── Init ──────────────────────────────────────────────────────
+loadChallenge();
+</script>
+</body>
+</html>

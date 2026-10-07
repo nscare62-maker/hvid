@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Identity — HVID Dashboard</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    .id-profile-card {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 4px 20px -2px rgba(27, 100, 242, 0.05);
+      margin-bottom: 24px;
+    }
+    .id-avatar-large {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: #eff6ff;
+      border: 3px solid #1b64f2;
+      color: #1b64f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .id-profile-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 4px;
+    }
+    .id-profile-email {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: 10px;
+    }
+    .id-profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #10b981;
+      background: #ecfdf5;
+      padding: 4px 12px;
+      border-radius: 99px;
+      border: 1px solid #d1fae5;
+    }
+    .id-info-card {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px -2px rgba(27, 100, 242, 0.05);
+      margin-bottom: 24px;
+    }
+    .id-info-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 16px;
+    }
+    .id-info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+    }
+    .id-info-row:last-child {
+      border-bottom: none;
+    }
+    .id-info-label {
+      color: var(--color-text-secondary);
+      font-weight: 500;
+    }
+    .id-info-val-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+    .id-info-chevron {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+    .id-doc-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 10px;
+    }
+    .id-doc-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+    .id-doc-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1b64f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .id-doc-badge-verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #10b981;
+      background: #ecfdf5;
+      padding: 4px 10px;
+      border-radius: 99px;
+    }
+    .id-doc-badge-missing {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ef4444;
+      background: #fef2f2;
+      padding: 4px 10px;
+      border-radius: 99px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="/" class="sidebar-logo">
+        <div class="sidebar-logo-mark">HV</div>
+        HVID
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Navigation</div>
+        <a href="/dashboard" class="sidebar-link" id="nav-overview">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+          </span>
+          Dashboard
+        </a>
+        <a href="/dashboard/identity" class="sidebar-link active" id="nav-identity">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </span>
+          My Identity
+        </a>
+        <a href="/dashboard/verification" class="sidebar-link" id="nav-verification">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+          </span>
+          Verification
+        </a>
+        <a href="/dashboard/linked-accounts" class="sidebar-link" id="nav-linked">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          </span>
+          Linked Accounts
+        </a>
+        <a href="/dashboard/security" class="sidebar-link" id="nav-security">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          Security
+        </a>
+        <a href="/dashboard/timeline" class="sidebar-link" id="nav-activity">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </span>
+          Activity
+        </a>
+        <a href="/dashboard/reports" class="sidebar-link" id="nav-reports">
+          <span class="sidebar-link-icon">
+            <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </span>
+          Reports &amp; Alerts
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebar-user-initial">R</div>
+        <div style="flex:1;min-width:0">
+          <div class="sidebar-user-name" id="sidebar-user-name">Rahul Kumar</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981"></span>
+            <span style="font-size:10px;color:#10b981;font-weight:700">Verified</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:var(--space-2);display:flex;align-items:center;justify-content:space-between">
+        <a href="/dashboard/settings" class="sidebar-link" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+        <a href="#" class="sidebar-link" id="logout-btn" style="color:var(--sidebar-text);padding:6px 10px;font-size:12px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Sign Out
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-search-wrap">
+        <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search anything..." aria-label="Search" />
+      </div>
+      <div class="topbar-right">
+        <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace" id="topbar-hvid"></span>
+        <span id="verify-me-slot" style="margin-right:4px"></span>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- Re-verification / Suspended banners -->
+      <div class="reverify-banner" id="reverify-banner" style="display:none">
+        <div class="reverify-banner-icon">
+          <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <div class="reverify-banner-text">
+          <div class="reverify-banner-title">Verification required to continue full access</div>
+          <div class="reverify-banner-desc">Your identity requires re-verification. Complete verification to restore full access.</div>
+        </div>
+        <a href="/dashboard/verification" class="btn btn-secondary btn-sm">Re-verify</a>
+      </div>
+
+      <div class="reverify-banner" id="suspended-banner" style="display:none;border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.04)">
+        <div class="reverify-banner-icon">
+          <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+        </div>
+        <div class="reverify-banner-text">
+          <div class="reverify-banner-title" style="color:#f87171">Account Suspended</div>
+          <div class="reverify-banner-desc">Your identity has been suspended. Contact HVID support for information.</div>
+        </div>
+      </div>
+
+      <!-- ── Screen 6: Profile Card matching Mockup ── -->
+      <div class="id-profile-card animate-fadeUp">
+        <div class="id-avatar-large" id="identity-avatar">R</div>
+        <div class="id-profile-name" id="identity-display-name">Rahul Kumar</div>
+        <div class="id-profile-email" id="id-field-email">rahul.kumar@email.com</div>
+        <span class="id-profile-badge" id="identity-state-badge">
+          <svg class="hvid-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Verified
+        </span>
+        <div style="margin-top:12px;display:none">
+          <span id="identity-hvid-id">HVID-XXXXXXX</span>
+          <span id="id-field-name">Rahul Kumar</span>
+          <span id="id-field-hvid">—</span>
+          <button id="switch-account-btn"></button>
+          <button id="edit-identity-btn"></button>
+        </div>
+      </div>
+
+      <!-- ── Screen 6: Personal Information Card ── -->
+      <div class="id-info-card animate-fadeUp delay-1">
+        <div class="id-info-title">Personal Information</div>
+        <div class="id-info-row">
+          <span class="id-info-label">Full Name</span>
+          <div class="id-info-val-wrap">
+            <span>Rahul Kumar</span>
+            <span class="id-info-chevron">›</span>
+          </div>
+        </div>
+        <div class="id-info-row">
+          <span class="id-info-label">Date of Birth</span>
+          <div class="id-info-val-wrap">
+            <span>12 Apr 1998</span>
+            <span class="id-info-chevron">›</span>
+          </div>
+        </div>
+        <div class="id-info-row">
+          <span class="id-info-label">Gender</span>
+          <div class="id-info-val-wrap">
+            <span>Male</span>
+            <span class="id-info-chevron">›</span>
+          </div>
+        </div>
+        <div class="id-info-row">
+          <span class="id-info-label">Nationality</span>
+          <div class="id-info-val-wrap">
+            <span>Indian</span>
+            <span class="id-info-chevron">›</span>
+          </div>
+        </div>
+        <div class="id-info-row">
+          <span class="id-info-label">Address</span>
+          <div class="id-info-val-wrap">
+            <span style="max-width:260px;text-align:right">123, Green Park, Chennai, Tamil Nadu</span>
+            <span class="id-info-chevron">›</span>
+          </div>
+        </div>
+        <div class="id-info-row" style="display:none">
+          <span id="id-field-since">—</span>
+          <span id="id-field-state">ACTIVE</span>
+          <span id="id-field-last-verified">—</span>
+        </div>
+      </div>
+
+      <!-- ── Screen 6: Identity Documents Card ── -->
+      <div class="id-info-card animate-fadeUp delay-2">
+        <div class="id-info-title">Identity Documents</div>
+        <div class="id-doc-item">
+          <div class="id-doc-left">
+            <div class="id-doc-icon">
+              <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="3"></rect><circle cx="8" cy="11" r="3"></circle><path d="M14 9h4"></path></svg>
+            </div>
+            <span>Aadhaar Card</span>
+          </div>
+          <span class="id-doc-badge-verified">✓ Verified</span>
+        </div>
+        <div class="id-doc-item">
+          <div class="id-doc-left">
+            <div class="id-doc-icon">
+              <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="13" y2="16"></line></svg>
+            </div>
+            <span>PAN Card</span>
+          </div>
+          <span class="id-doc-badge-verified">✓ Verified</span>
+        </div>
+        <div class="id-doc-item">
+          <div class="id-doc-left">
+            <div class="id-doc-icon" style="background:#fef2f2;color:#ef4444">
+              <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </div>
+            <span>Passport</span>
+          </div>
+          <span class="id-doc-badge-missing">+ Not Added</span>
+        </div>
+      </div>
+
+      <!-- Verification Level track (retaining script integration) -->
+      <div class="card animate-fadeUp delay-2" style="margin-bottom:var(--space-6)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:2px">Verification Level</div>
+            <div style="font-size:12px;color:var(--color-text-muted)" id="level-label-text">Level 3 — High Assurance</div>
+          </div>
+          <span class="id-state id-state-VERIFIED" id="level-badge" style="background:#ecfdf5;color:#10b981;border:none">Level 3</span>
+        </div>
+        <div class="veri-level-track" id="level-track">
+          <div class="veri-level-pip" id="pip-0"></div>
+          <div class="veri-level-pip" id="pip-1"></div>
+          <div class="veri-level-pip" id="pip-2"></div>
+          <div class="veri-level-pip filled" id="pip-3"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:var(--space-2)">
+          <span style="font-size:10px;color:var(--color-text-muted)">Unverified</span>
+          <span style="font-size:10px;color:var(--color-text-muted)">Basic</span>
+          <span style="font-size:10px;color:var(--color-text-muted)">Strong</span>
+          <span style="font-size:10px;color:#10b981;font-weight:700">High Assurance</span>
+        </div>
+      </div>
+
+      <!-- Core identity rules (Vector shield icon, no emojis) -->
+      <div style="padding:var(--space-4) var(--space-5);background:rgba(27,100,242,0.04);border:1px solid rgba(27,100,242,0.12);border-radius:var(--radius-lg)" class="animate-fadeUp delay-3">
+        <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.8;display:flex;align-items:flex-start;gap:10px">
+          <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1b64f2" style="margin-top:4px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <div>
+            <strong style="color:var(--color-text-primary)">Identity Assurance:</strong>
+            One human = one persistent identity. Personal information is secured and encrypted. HVID confirms your real presence without exposing private data.
+          </div>
+        </div>
+      </div>
+
+      <!-- Growth badge and verify slots -->
+      <div id="growth-badge-slot" style="display:none"></div>
+      <div id="verify-me-action-slot" style="display:none"></div>
+      <a href="../p.html" id="view-public-profile-link" style="display:none"></a>
+
+    </main>
+  </div>
+</div>
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/auth-context.js"></script>
+<script src="/static/js/protected-route.js"></script>
+<script src="/static/js/tier.js?v=2"></script>
+<script src="/static/js/growth.js"></script>
+<script src="/static/js/dashboard.js"></script>
+<script>
+'use strict';
+
+// ── Populate identity fields from session ─────────────────────
+(async function populateIdentity() {
+  let session = (window.Auth && Auth.getSession()) || {};
+
+  // Refresh profile data so this page never depends on stale localStorage fields.
+  try {
+    const token = Auth.getToken();
+    if (token) {
+      const response = await fetch('/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const live = await response.json();
+        session = { ...session, ...live };
+        session.username = live.username || session.username || null;
+        session.email = live.email || session.email || null;
+        session.lastVerifiedAt = live.last_verified_at || session.lastVerifiedAt || null;
+        session.createdAt = live.created_at || session.createdAt || null;
+        session.identityState = live.identity_state || session.identityState;
+        session.verificationLevel = live.verification_level ?? session.verificationLevel;
+        session.identityId = live.identity_id || session.identityId;
+        session.identity_id = live.identity_id || session.identity_id;
+        localStorage.setItem(Auth.STORAGE_KEY, JSON.stringify(session));
+      }
+    }
+  } catch (_) {
+    // Keep the cached session available if the profile request is unavailable.
+  }
+
+  const g = id => document.getElementById(id);
+  const fmt = d => d ? new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : 'Not available';
+  const identityId = session.identity_id || session.identityId || '';
+  const hvid = identityId ? `HVID-${identityId.slice(0, 8).toUpperCase()}` : 'HVID account';
+  const displayName = session.username || session.name || `Identity ${session.phone_last4 || ''}`.trim();
+  const displayEmail = session.email || 'Email not added';
+
+  const initials = displayName[0].toUpperCase();
+  const state    = session.identityState    || 'UNVERIFIED';
+  const level    = session.verificationLevel || 0;
+
+  // Avatar
+  g('identity-avatar')      && (g('identity-avatar').textContent = initials);
+  g('identity-display-name')&& (g('identity-display-name').textContent = displayName);
+  g('identity-hvid-id')     && (g('identity-hvid-id').textContent = hvid);
+
+  // Fields
+  g('id-field-name')  && (g('id-field-name').textContent  = displayName);
+  g('id-field-email') && (g('id-field-email').textContent = displayEmail);
+  g('id-field-hvid')  && (g('id-field-hvid').textContent  = hvid);
+  g('id-field-since') && (g('id-field-since').textContent = fmt(session.createdAt || session.loginAt));
+  g('id-field-state') && (g('id-field-state').textContent = state);
+  g('id-field-last-verified') && (g('id-field-last-verified').textContent = fmt(session.lastVerifiedAt));
+
+  // State badge
+  const stateBadge = g('identity-state-badge');
+  if (stateBadge) {
+    const stateLabels = {
+      UNVERIFIED:        '○ Unverified',
+      VERIFIED:          '✓ Verified',
+      LIMITED:           '~ Limited',
+      SUSPENDED:         '✕ Suspended',
+      REVERIFY_REQUIRED: '⚠ Re-verify Required',
+      REVOKED:           '✕ Revoked',
+    };
+    stateBadge.textContent = stateLabels[state] || state;
+    stateBadge.className   = 'id-state id-state-' + state;
+  }
+
+  // Verification level track (4 pips, levels 0–3)
+  const levelNames = { 0:'Unverified', 1:'Basic', 2:'Strong', 3:'High Assurance' };
+  const isStrong = level >= 2;
+
+  for (let i = 0; i < 4; i++) {
+    const pip = g('pip-' + i);
+    if (!pip) continue;
+    pip.classList.remove('active','strong');
+    if (i < level) {
+      pip.classList.add('active');
+      if (isStrong) pip.classList.add('strong');
+    }
+  }
+
+  const lvlBadge = g('level-badge');
+  if (lvlBadge) {
+    lvlBadge.textContent = 'Level ' + level;
+    lvlBadge.className = 'id-state' + (level >= 2 ? ' id-state-VERIFIED' : ' id-state-UNVERIFIED');
+  }
+
+  const lvlText = g('level-label-text');
+  if (lvlText) lvlText.textContent = 'Level ' + level + ' — ' + (levelNames[level] || 'Unknown');
+
+  // Banners based on state
+  if (state === 'REVERIFY_REQUIRED') {
+    const b = g('reverify-banner');
+    if (b) b.style.display = 'flex';
+  }
+  if (state === 'SUSPENDED' || state === 'REVOKED') {
+    const b = g('suspended-banner');
+    if (b) b.style.display = 'flex';
+  }
+
+  // If already verified, update verify button
+  if (level >= 1) {
+    const btn = g('id-veri-link');
+    if (btn) btn.textContent = 'View Verification →';
+  }
+  // Wire identity-page specific growth slots
+  const session2 = window.Auth && Auth.getSession && Auth.getSession();
+  const hvid2 = session2?.identity_id || session2?.identityId || '';
+  const profileUrl2 = `${window.location.origin}/p.html?id=${encodeURIComponent(hvid2)}`;
+  if (document.getElementById('verify-me-action-slot') && window.Growth) {
+    Growth.verifyMeBtn(document.getElementById('verify-me-action-slot'), { url: profileUrl2 });
+  }
+  if (document.getElementById('view-public-profile-link') && hvid2) {
+    document.getElementById('view-public-profile-link').href = `../p.html?id=${encodeURIComponent(hvid2)}`;
+  }
+})();
+</script>
+</body>
+</html>

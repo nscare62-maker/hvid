@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HVID — Identity Confirmation Infrastructure</title>
+  <meta name="description" content="HVID is a secure and trusted system that ensures every person is verified, every identity is real, and every interaction is built on confidence." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/public.css?v=identity-ui-2" />
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-mark">HV</div>
+        <span class="nav-logo-divider">|</span>
+        <span>HVID</span>
+      </a>
+      <div class="nav-links">
+        <a href="/how-it-works" class="nav-link">How It Works</a>
+        <a href="/for-individuals" class="nav-link">Individuals</a>
+        <a href="/for-businesses" class="nav-link">For Business</a>
+        <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-link">Admin</a>
+      </div>
+      <div class="nav-actions">
+        <a href="auth/login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="auth/login.html" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero Section ── -->
+  <section class="hero-section" id="hero">
+    <div class="container">
+      <div class="hero-grid">
+        
+        <!-- Left: Headline & Search -->
+        <div class="hero-left animate-fadeUp">
+          <div class="hero-eyebrow">
+            <span class="hero-eyebrow-dot"></span>
+            IDENTITY CONFIRMATION INFRASTRUCTURE
+          </div>
+
+          <h1 class="hero-headline">
+            Check Identity
+          </h1>
+
+          <p class="hero-sub">
+            HVID is a secure and trusted system that ensures every person is verified, every identity is real, and every interaction is built on confidence.
+          </p>
+
+          <!-- Floating Pill Search Form -->
+          <div class="search-container">
+            <form class="search-pill-box" id="search-form" role="search" autocomplete="off" onsubmit="event.preventDefault(); triggerSearch();">
+              <div class="search-icon-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <input
+                type="text"
+                class="search-pill-input"
+                id="search-input"
+                name="q"
+                placeholder="Enter identity details..."
+                aria-label="Search identity"
+                spellcheck="false"
+              />
+              <button type="submit" class="search-pill-btn" id="search-submit-btn" aria-label="Submit search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </form>
+
+            <!-- Input type badge (populated by search.js) -->
+            <div class="input-type-row" id="input-type-badge-wrap" style="margin-top:8px"></div>
+
+            <!-- Example tags / chips -->
+            <div class="search-chips-row">
+              <button type="button" class="search-chip-tag" onclick="fillExample('John Doe')">John Doe</button>
+              <button type="button" class="search-chip-tag" onclick="fillExample('Aadhaar')">Aadhaar</button>
+              <button type="button" class="search-chip-tag" onclick="fillExample('PAN')">PAN</button>
+              <button type="button" class="search-chip-tag" onclick="fillExample('+91 9876543210')">Mobile</button>
+              <button type="button" class="search-chip-tag" onclick="fillExample('alex@example.com')">Email</button>
+            </div>
+
+            <!-- Inline preview panel -->
+            <div id="search-result-panel" class="search-result-panel"></div>
+          </div>
+        </div>
+
+        <!-- Right: 3D Holographic Identity Shield & Orbit -->
+        <div class="hero-right animate-fadeIn delay-2">
+          <div class="shield-orbit-stage">
+            
+            <!-- Glowing Blue Aura Background -->
+            <div class="shield-glow-aura"></div>
+
+            <!-- Orbital Rings -->
+            <div class="orbit-ring orbit-ring-1"></div>
+            <div class="orbit-ring orbit-ring-2"></div>
+
+            <!-- Central 3D Shield -->
+            <div class="hero-3d-shield">
+              <!-- Shield SVG Outer Shape with gradient fill -->
+              <svg class="shield-outer-svg" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="shieldGrad" x1="20" y1="0" x2="180" y2="240" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#3b82f6" />
+                    <stop offset="50%" stop-color="#1d4ed8" />
+                    <stop offset="100%" stop-color="#1e3a8a" />
+                  </linearGradient>
+                  <linearGradient id="shieldBorder" x1="0" y1="0" x2="200" y2="240" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.3" />
+                  </linearGradient>
+                </defs>
+                <path d="M100 8L180 44V120C180 178 142 220 100 234C58 220 20 178 20 120V44L100 8Z" 
+                      fill="url(#shieldGrad)" 
+                      stroke="url(#shieldBorder)" 
+                      stroke-width="3" />
+              </svg>
+
+              <!-- Central White Frosted User Badge inside Shield -->
+              <div class="shield-inner-badge">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Floating Frosted Badges around orbit -->
+            <!-- 1. Fingerprint (Top Left) -->
+            <div class="floating-badge floating-badge-1" title="Biometric Confirmation">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"></path>
+                <path d="M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2"></path>
+                <path d="M17.29 21.02c.12-.6.18-1.23.18-1.87 0-2.85-.73-5.5-2.03-7.79"></path>
+                <path d="M12 10a2 2 0 0 0-2 2c0 3 1.5 6 3 8.5"></path>
+                <path d="M8.65 22c.21-.66.45-1.32.75-2"></path>
+                <path d="M14 13.12c0 2.38 0 4.38-1.5 6.88"></path>
+              </svg>
+            </div>
+
+            <!-- 2. Document (Top Right) -->
+            <div class="floating-badge floating-badge-2" title="Official Documents Verified">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+
+            <!-- 3. Shield Badge (Bottom Left) -->
+            <div class="floating-badge floating-badge-3" title="Cryptographic Shield">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+
+            <!-- 4. Check Shield Badge (Bottom Right) -->
+            <div class="floating-badge floating-badge-4" title="Identity Confirmed">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+              </svg>
+            </div>
+
+          </div>
+
+          <!-- Vertical Pillar Slogan -->
+          <div class="hero-pillar-text">
+            <span>REAL PEOPLE</span>
+            <span class="dash">—</span>
+            <span>REAL IDENTITIES</span>
+            <span class="dash">—</span>
+            <span>MORE TRUST</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 1: What HVID Confirms (Three Layers) ── -->
+  <section class="section" id="features" style="background:#ffffff; border-top: 1px solid #edf2f7; border-bottom: 1px solid #edf2f7;">
+    <div class="container">
+      <div style="text-align:center; max-width:680px; margin:0 auto;">
+        <div class="section-label">WHAT HVID CONFIRMS</div>
+        <h2 class="section-title">Three layers of identity assurance</h2>
+        <p class="section-sub" style="margin: 0 auto;">
+          HVID goes beyond basic verification to give you deeper, more reliable insights about every identity.
+        </p>
+      </div>
+
+      <div class="confirm-grid">
+        <!-- Layer 1: Existence Certainty -->
+        <div class="confirm-card animate-fadeUp delay-1">
+          <div class="confirm-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </div>
+          <h3 class="confirm-card-title">Existence Certainty</h3>
+          <p class="confirm-card-desc">
+            Confirms a real human identity is behind the given details.
+          </p>
+          <div class="confirm-card-arrow">→</div>
+        </div>
+
+        <!-- Layer 2: Ownership Certainty -->
+        <div class="confirm-card animate-fadeUp delay-2">
+          <div class="confirm-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <polyline points="16 11 18 13 22 9"></polyline>
+            </svg>
+          </div>
+          <h3 class="confirm-card-title">Ownership Certainty</h3>
+          <p class="confirm-card-desc">
+            Verifies that the person owns the linked account or identity.
+          </p>
+          <div class="confirm-card-arrow">→</div>
+        </div>
+
+        <!-- Layer 3: Continuity Certainty -->
+        <div class="confirm-card animate-fadeUp delay-3">
+          <div class="confirm-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          <h3 class="confirm-card-title">Continuity Certainty</h3>
+          <p class="confirm-card-desc">
+            Ensures the identity remains active and consistent over time.
+          </p>
+          <div class="confirm-card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 2: Safe Verification Without Overreach ── -->
+  <section class="section" id="scope">
+    <div class="container">
+      <div class="split-layout">
+        
+        <!-- Left: Copy -->
+        <div>
+          <div class="section-label">WHAT HVID DOES NOT DO</div>
+          <h2 class="section-title">Safe verification without overreach</h2>
+          <p class="section-sub">
+            HVID is designed to provide identity-level truth, not assumptions, judgments or public claims.
+          </p>
+          <div class="accent-bar"></div>
+        </div>
+
+        <!-- Right: 3 Negative Cards -->
+        <div class="negative-list">
+          <div class="negative-card">
+            <div class="negative-card-content">
+              <div class="negative-icon">✕</div>
+              <div>
+                <div class="negative-card-title">No judgments or conclusions</div>
+                <div class="negative-card-desc">HVID does not make assumptions about a person's intentions, behavior or character.</div>
+              </div>
+            </div>
+            <div class="negative-arrow">→</div>
+          </div>
+
+          <div class="negative-card">
+            <div class="negative-card-content">
+              <div class="negative-icon">✕</div>
+              <div>
+                <div class="negative-card-title">No public accusations</div>
+                <div class="negative-card-desc">HVID does not link an identity to more than one person or make it publicly known.</div>
+              </div>
+            </div>
+            <div class="negative-arrow">→</div>
+          </div>
+
+          <div class="negative-card">
+            <div class="negative-card-content">
+              <div class="negative-icon">✕</div>
+              <div>
+                <div class="negative-card-title">No trust scores</div>
+                <div class="negative-card-desc">HVID does not assign scores or ratings to any identity, individual or account.</div>
+              </div>
+            </div>
+            <div class="negative-arrow">→</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 3: The HVID Approach (Timeline) ── -->
+  <section class="section" id="approach" style="background:#f8fbff; border-top: 1px solid #edf2f7;">
+    <div class="container">
+      <div class="split-layout">
+        
+        <!-- Left: Copy -->
+        <div>
+          <div class="section-label">THE HVID APPROACH</div>
+          <h2 class="section-title">Identity-level truth only</h2>
+          <p class="section-sub">
+            HVID focuses only on what can be verified — not what can be assumed, inferred or guessed.
+          </p>
+          <div class="accent-bar"></div>
+        </div>
+
+        <!-- Right: Connected Check Timeline -->
+        <div class="timeline-list">
+          <div class="timeline-item">
+            <div class="timeline-icon">✓</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Real human exists</div>
+              <div class="timeline-desc">Confirms a genuine person is behind the identity.</div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-icon">✓</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Account ownership confirmed</div>
+              <div class="timeline-desc">Verifies the identity owns the linked account.</div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-icon">✓</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Traceability preserved</div>
+              <div class="timeline-desc">Maintains a clear and continuous record over time.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 4: Bottom CTA Banner ── -->
+  <div class="container cta-banner-wrap">
+    <div class="cta-banner">
+      <div class="cta-banner-left">
+        <div class="cta-shield-graphic">
+          <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ctaShieldGrad" x1="0" y1="0" x2="100" y2="120" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#60a5fa" />
+                <stop offset="100%" stop-color="#1d4ed8" />
+              </linearGradient>
+            </defs>
+            <path d="M50 4L90 22V60C90 89 71 110 50 117C29 110 10 89 10 60V22L50 4Z" 
+                  fill="url(#ctaShieldGrad)" 
+                  stroke="#93c5fd" 
+                  stroke-width="2" />
+            <!-- Inner Lock Icon -->
+            <rect x="40" y="52" width="20" height="18" rx="3" fill="#ffffff" />
+            <path d="M44 52V45C44 41.6863 46.6863 39 50 39C53.3137 39 56 41.6863 56 45V52" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+            <circle cx="50" cy="60" r="2" fill="#1d4ed8" />
+          </svg>
+        </div>
+        <div class="cta-banner-text">
+          <h2 class="cta-banner-title">Verify your identity.<br/>Own your presence.</h2>
+        </div>
+      </div>
+      
+      <div class="cta-banner-actions">
+        <a href="auth/login.html" class="btn btn-cta-primary">Create Your HVID</a>
+        <a href="/how-it-works" class="btn btn-cta-ghost">Learn How It Works</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-brand-name">HVID</div>
+          <p class="footer-brand-desc">Human Verification Identity. The identity confirmation infrastructure for the internet.</p>
+          <p style="font-size:12px;color:var(--color-text-muted);margin-top:var(--space-3);line-height:1.6">
+            HVID confirms identity linkage signals. It does not evaluate behavior, intent, or trustworthiness.
+          </p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <div class="footer-links">
+            <a href="/how-it-works" class="footer-link">How It Works</a>
+            <a href="/for-individuals" class="footer-link">For Individuals</a>
+            <a href="/for-businesses" class="footer-link">For Businesses</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Trust &amp; Safety</div>
+          <div class="footer-links">
+            <a href="/trust-safety" class="footer-link">Trust Principles</a>
+            <a href="/trust-safety" class="footer-link">Reporting System</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Legal</div>
+          <div class="footer-links">
+            <a href="/terms" class="footer-link">Terms of Service</a>
+            <a href="/legal" class="footer-link">Privacy Policy</a>
+            <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <div class="footer-links">
+            <a href="/trust-safety" class="footer-link">About HVID</a>
+            <a href="/trust-safety" class="footer-link">Contact</a>
+            <a href="auth/login.html" class="footer-link">Sign In</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 HVID. All rights reserved.</span>
+        <span class="footer-copy" style="text-align:center">Identity confirmation infrastructure. Not a safety rating. Not a scam detector.</span>
+        <div class="flex gap-4">
+          <a href="/terms" class="footer-link">Terms</a>
+          <a href="/legal" class="footer-link">Privacy</a>
+          <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/tier.js"></script>
+  <script src="/static/js/search.js?v=identity-search-8"></script>
+  <script src="/static/js/smart-input.js"></script>
+  <script src="/static/js/result.js"></script>
+  <script>
+    // Fill example chip → trigger input detection → navigate to result page
+    function fillExample(val) {
+      var input = document.getElementById('search-input');
+      if (!input) return;
+      input.value = val;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      window.location.href = '/result?q=' + encodeURIComponent(val);
+    }
+
+    function triggerSearch() {
+      var input = document.getElementById('search-input');
+      if (!input || !input.value.trim()) return;
+      window.location.href = '/result?q=' + encodeURIComponent(input.value.trim());
+    }
+  </script>
+</body>
+</html>

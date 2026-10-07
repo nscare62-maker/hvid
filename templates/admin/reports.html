@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Queue — HVID Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    /* ── Admin badge ─────────────────────────────────────────── */
+    .admin-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      color: #a78bfa; background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 999px; padding: 3px 10px;
+    }
+
+    /* ── Filter bar ──────────────────────────────────────────── */
+    .filter-bar {
+      display: flex; gap: var(--space-3); flex-wrap: wrap;
+      margin-bottom: var(--space-5); align-items: center;
+    }
+    .filter-bar select {
+      font-family: var(--font-sans); font-size: 13px;
+      background: var(--color-surface-2); color: var(--color-text-primary);
+      border: 1px solid var(--color-border); border-radius: var(--radius-md);
+      padding: 8px 12px; cursor: pointer; outline: none;
+    }
+    .filter-bar select:focus { border-color: var(--color-primary); }
+
+    /* ── Report table ────────────────────────────────────────── */
+    .report-table { width: 100%; border-collapse: collapse; }
+    .report-table th {
+      text-align: left; font-size: 11px; font-weight: 700;
+      color: var(--color-text-muted); text-transform: uppercase;
+      letter-spacing: .07em; padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .report-table td {
+      padding: var(--space-3) var(--space-4); font-size: 13px;
+      color: var(--color-text-secondary); border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .report-table tr { cursor: pointer; transition: background var(--transition-fast); }
+    .report-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+    /* Status pill */
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; border-radius: 999px;
+      padding: 3px 10px; border: 1px solid;
+    }
+    .status-PENDING      { color: #f59e0b; background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.2); }
+    .status-UNDER_REVIEW { color: #818cf8; background: rgba(129,140,248,.08); border-color: rgba(129,140,248,.2); }
+
+    /* Type pill */
+    .type-pill {
+      font-size: 11px; font-weight: 600;
+      color: var(--color-text-muted); background: var(--color-surface-2);
+      border-radius: 6px; padding: 2px 8px;
+    }
+
+    /* Report ID */
+    .report-id { font-family: monospace; font-size: 12px; color: var(--color-text-muted); }
+
+    /* ── Pagination ──────────────────────────────────────────── */
+    .pagination {
+      display: flex; align-items: center; gap: var(--space-3);
+      justify-content: flex-end; margin-top: var(--space-5);
+    }
+    .pagination-info { font-size: 12px; color: var(--color-text-muted); }
+
+    /* ── Empty state ─────────────────────────────────────────── */
+    .empty-state {
+      text-align: center; padding: var(--space-12) var(--space-4);
+      color: var(--color-text-muted);
+    }
+    .empty-state-icon { font-size: 32px; opacity: .35; margin-bottom: var(--space-4); }
+    .empty-state-text { font-size: 14px; color: var(--color-text-secondary); }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-shell">
+  <!-- Admin sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo" style="cursor:default">
+        <div class="sidebar-logo-mark">HV</div>
+        HVID Admin
+      </div>
+      <div style="margin-top:var(--space-3)"><span class="admin-badge">⚑ Internal</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Reports</div>
+        <a href="/admin/reports" class="sidebar-link active"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span> Report Queue</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Review</div>
+        <a href="/admin/kyc-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg></span> KYC Review</a>
+        <a href="/admin/asset-review" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span> Asset Review</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Challenges</div>
+        <a href="/admin/challenges" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span> Challenge Queue</a>
+      </div>
+      <div class="sidebar-nav-section">
+        <div class="sidebar-nav-label">Identities</div>
+        <a href="/admin/identity-search" class="sidebar-link"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Identity Search</a>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div style="font-size:12px;color:var(--color-text-muted);margin-bottom:var(--space-2)">Signed in as admin</div>
+      <a href="/admin/reports" class="sidebar-link" style="color:var(--color-text-muted)"><span class="sidebar-link-icon"><svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg></span> Refresh Reports</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">Report Queue</div>
+      <div class="topbar-right" style="gap:var(--space-3)">
+        <span class="admin-badge">⚑ Admin View</span>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header animate-fadeUp">
+        <h1 class="page-title">Report Queue</h1>
+        <p class="page-subtitle">Review pending reports. All decisions require deliberate action and are logged.</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar animate-fadeUp delay-1">
+        <select id="filter-status" onchange="applyFilters()">
+          <option value="">All statuses</option>
+          <option value="PENDING">Pending</option>
+          <option value="UNDER_REVIEW">Under Review</option>
+        </select>
+        <select id="filter-type" onchange="applyFilters()">
+          <option value="">All types</option>
+          <option value="IMPERSONATION">Impersonation</option>
+          <option value="SCAM">Scam</option>
+          <option value="FAKE_ACCOUNT">Fake Account</option>
+          <option value="OWNERSHIP_DISPUTE">Ownership Dispute</option>
+          <option value="OTHER">Other</option>
+        </select>
+        <select id="filter-target" onchange="applyFilters()">
+          <option value="">All targets</option>
+          <option value="IDENTITY">Identity</option>
+          <option value="ASSET">Asset</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="resetFilters()">Reset</button>
+      </div>
+
+      <!-- Table card -->
+      <div class="card animate-fadeUp delay-2" style="padding:0;overflow:hidden">
+        <div id="queue-loading" style="text-align:center;padding:var(--space-8);font-size:13px;color:var(--color-text-muted)">
+          Loading reports…
+        </div>
+
+        <div id="queue-empty" style="display:none">
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-text">No reports pending review</div>
+          </div>
+        </div>
+
+        <div id="queue-table-wrap" style="display:none;overflow-x:auto">
+          <table class="report-table" id="queue-table">
+            <thead>
+              <tr>
+                <th>Report ID</th>
+                <th>Type</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody id="queue-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination-row" style="display:none">
+        <span class="pagination-info" id="pagination-info"></span>
+        <button class="btn btn-ghost btn-sm" id="btn-prev" onclick="changePage(-1)">← Prev</button>
+        <button class="btn btn-ghost btn-sm" id="btn-next" onclick="changePage(1)">Next →</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+'use strict';
+const API_BASE  = '/api';
+const PAGE_SIZE = 20;
+let currentPage = 0;
+
+// ── Auth helpers ─────────────────────────────────────────────
+// Token stored by HVID_API on login (hvid_token).
+// Admin key stored separately — set once by the admin on first use.
+function getAdminHeaders() {
+  const token    = localStorage.getItem('hvid_token')    || '';
+  const adminKey = localStorage.getItem('hvid_admin_key') || '';
+  return {
+    'Content-Type':  'application/json',
+    'Authorization': `Bearer ${token}`,
+    'X-Admin-Key':   adminKey,
+  };
+}
+
+// Show a blocking auth error instead of proceeding with unauthenticated calls.
+function showAuthError(message) {
+  document.getElementById('queue-loading').style.display = 'none';
+  document.getElementById('queue-table-wrap').style.display = 'none';
+  document.getElementById('queue-empty').style.display = 'block';
+  const txt = document.getElementById('queue-empty').querySelector('.empty-state-text');
+  if (txt) txt.textContent = message;
+}
+
+// ── Filters + pagination ──────────────────────────────────────
+function applyFilters() { currentPage = 0; loadQueue(); }
+function resetFilters()  {
+  document.getElementById('filter-status').value = '';
+  document.getElementById('filter-type').value   = '';
+  document.getElementById('filter-target').value = '';
+  applyFilters();
+}
+
+function changePage(dir) {
+  const newPage = currentPage + dir;
+  if (newPage < 0) return;
+  currentPage = newPage;
+  loadQueue();
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString([], { month:'short', day:'numeric', year:'numeric' });
+}
+
+function renderTypeLabel(type) {
+  const map = {
+    IMPERSONATION: 'Impersonation', SCAM: 'Scam',
+    FAKE_ACCOUNT: 'Fake Account',
+    OWNERSHIP_DISPUTE: 'Ownership Dispute', OTHER: 'Other',
+  };
+  return `<span class="type-pill">${map[type] || type}</span>`;
+}
+
+function renderStatus(status) {
+  const labels = { PENDING: 'Pending', UNDER_REVIEW: 'Under Review' };
+  return `<span class="status-pill status-${status}">● ${labels[status] || status}</span>`;
+}
+
+// ── Load queue ────────────────────────────────────────────────
+async function loadQueue() {
+  const token    = localStorage.getItem('hvid_token');
+  const adminKey = localStorage.getItem('hvid_admin_key');
+
+  if (!token || !adminKey) {
+    showAuthError('Admin authentication required. Please set your token and admin key.');
+    return;
+  }
+
+  const status  = document.getElementById('filter-status').value;
+  const type    = document.getElementById('filter-type').value;
+  const target  = document.getElementById('filter-target').value;
+  const offset  = currentPage * PAGE_SIZE;
+
+  let url = `${API_BASE}/admin/reports?limit=${PAGE_SIZE}&offset=${offset}`;
+  if (status) url += `&status=${status}`;
+  if (type)   url += `&report_type=${type}`;
+  if (target) url += `&target_type=${target}`;
+
+  document.getElementById('queue-loading').style.display    = 'block';
+  document.getElementById('queue-table-wrap').style.display = 'none';
+  document.getElementById('queue-empty').style.display      = 'none';
+  document.getElementById('pagination-row').style.display   = 'none';
+
+  try {
+    const res = await fetch(url, { headers: getAdminHeaders() });
+
+    if (res.status === 401) { showAuthError('Admin authentication required — invalid or expired token (401).'); return; }
+    if (res.status === 403) { showAuthError('Admin access denied — X-Admin-Key incorrect or not configured (403).'); return; }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const body  = await res.json();
+    const items = Array.isArray(body) ? body : (body.data || []);
+
+    document.getElementById('queue-loading').style.display = 'none';
+
+    if (!items || items.length === 0) {
+      document.getElementById('queue-empty').style.display = 'block';
+      const txt = document.getElementById('queue-empty').querySelector('.empty-state-text');
+      if (txt) txt.textContent = 'No reports pending review';
+      return;
+    }
+
+    const tbody = document.getElementById('queue-tbody');
+    tbody.innerHTML = '';
+    items.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.onclick = () => window.location.href = `report-detail.html?id=${r.report_id}`;
+      tr.innerHTML = `
+        <td><span class="report-id">${r.report_id.slice(0,8)}…</span></td>
+        <td>${renderTypeLabel(r.report_type)}</td>
+        <td style="font-size:12px;color:var(--color-text-muted)">${r.target_type}</td>
+        <td>${renderStatus(r.status)}</td>
+        <td style="font-size:12px;color:var(--color-text-muted)">${formatDate(r.created_at)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('queue-table-wrap').style.display = 'block';
+    document.getElementById('pagination-row').style.display   = 'flex';
+    document.getElementById('pagination-info').textContent    =
+      `Page ${currentPage + 1} · ${items.length} items`;
+    document.getElementById('btn-prev').disabled = currentPage === 0;
+    document.getElementById('btn-next').disabled = items.length < PAGE_SIZE;
+
+  } catch (err) {
+    document.getElementById('queue-loading').style.display = 'none';
+    showAuthError(`Could not load reports: ${err.message || 'Network error'}`);
+  }
+}
+
+loadQueue();
+</script>
+</body>
+</html>

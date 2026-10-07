@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Report an Identity — HVID</title>
+  <meta name="description" content="Submit a report about an HVID identity. All reports are reviewed manually by our team.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f; color: #e2e8f0;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 32px 20px;
+    }
+
+    .page-wrap { width: 100%; max-width: 520px; }
+
+    /* ── Header ── */
+    .page-logo {
+      font-size: 12px; font-weight: 800; letter-spacing: .12em;
+      color: rgba(129,140,248,.6); margin-bottom: 32px; display: block;
+      text-decoration: none;
+    }
+    .page-logo:hover { color: #818cf8; }
+
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; }
+    .page-header p  { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.6; }
+
+    /* ── Target pill ── */
+    .target-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 4px 12px;
+      border-radius: 99px; border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.04); color: rgba(255,255,255,.6);
+      margin-bottom: 24px; max-width: 100%; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* ── Form card ── */
+    .form-card {
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px; padding: 28px 24px;
+    }
+
+    /* ── Field groups ── */
+    .field { margin-bottom: 20px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-label {
+      display: block; font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,.5); margin-bottom: 7px; letter-spacing: .04em;
+    }
+    .field-label .req { color: #f87171; }
+
+    .field-select, .field-textarea, .field-input {
+      width: 100%; background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1); border-radius: 10px;
+      color: #e2e8f0; font-family: inherit; font-size: 13px;
+      padding: 10px 14px; outline: none;
+      transition: border-color .2s;
+    }
+    .field-select:focus, .field-textarea:focus, .field-input:focus {
+      border-color: rgba(129,140,248,.4);
+    }
+    .field-select { cursor: pointer; }
+    .field-select option { background: #1a1a2e; }
+    .field-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+    .field-hint { font-size: 11px; color: rgba(255,255,255,.3); margin-top: 5px; }
+    .field-error { font-size: 11px; color: #f87171; margin-top: 5px; display: none; }
+    .field-error.visible { display: block; }
+
+    /* ── Evidence list ── */
+    .evidence-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+    .evidence-item {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .evidence-item .field-input { flex: 1; margin: 0; }
+    .evidence-remove {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+      border: 1px solid rgba(248,113,113,.2); background: rgba(248,113,113,.06);
+      color: #f87171; cursor: pointer; font-size: 14px; font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .evidence-remove:hover { background: rgba(248,113,113,.12); }
+    .add-url-btn {
+      font-size: 12px; font-weight: 600; color: #818cf8;
+      background: rgba(129,140,248,.07); border: 1px dashed rgba(129,140,248,.25);
+      border-radius: 8px; padding: 7px 14px; cursor: pointer;
+      font-family: inherit; width: 100%; text-align: center;
+      transition: background .15s;
+    }
+    .add-url-btn:hover { background: rgba(129,140,248,.12); }
+    .add-url-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ── Notice ── */
+    .notice {
+      border-radius: 10px; padding: 12px 14px;
+      background: rgba(251,191,36,.05); border: 1px solid rgba(251,191,36,.15);
+      font-size: 12px; color: rgba(251,191,36,.75); line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .notice strong { color: #fbbf24; }
+
+    /* ── Submit button ── */
+    .submit-btn {
+      width: 100%; padding: 13px;
+      border-radius: 12px; border: 1px solid rgba(129,140,248,.3);
+      background: rgba(129,140,248,.1); color: #818cf8;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: opacity .15s, transform .1s;
+      letter-spacing: .01em;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: .8; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+    /* ── States: success / error ── */
+    .state-success, .state-error { display: none; text-align: center; padding: 40px 0; }
+    .state-success.show, .state-error.show { display: block; }
+    .state-icon { font-size: 40px; margin-bottom: 16px; }
+    .state-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+    .state-desc  { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.6; }
+    .state-success .state-icon { color: #34d399; }
+    .state-error   .state-icon { color: #f87171; }
+
+    .back-link {
+      display: inline-block; margin-top: 20px; font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,.4); text-decoration: none;
+    }
+    .back-link:hover { color: rgba(255,255,255,.7); }
+
+    /* ── Char counter ── */
+    .char-counter { font-size: 11px; color: rgba(255,255,255,.25); float: right; }
+
+    @media (max-width: 540px) {
+      .form-card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <a href="/" class="page-logo">HVID</a>
+
+  <div class="page-header">
+    <h1>Report an identity</h1>
+    <p>Use this form to flag a concern about an HVID identity.<br>
+       Your report will be reviewed by our team.</p>
+  </div>
+
+  <!-- Target identity pill (populated by JS from URL) -->
+  <div id="target-pill-wrap" style="display:none">
+    <div class="target-pill" id="target-pill">📌 <span id="target-pill-text"></span></div>
+  </div>
+
+  <!-- Notice -->
+  <div class="notice">
+    <strong>Important:</strong> Reports are reviewed manually. Filing a false or abusive report
+    may result in action against your own account. Use neutral, factual language only.
+  </div>
+
+  <!-- Success state -->
+  <div class="state-success" id="state-success">
+    <div class="state-icon">
+      <svg class="hvid-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981"><circle cx="12" cy="12" r="10"></circle><polyline points="16 9 10 15 7 12"></polyline></svg>
+    </div>
+    <div class="state-title">Report submitted for review</div>
+    <div class="state-desc">
+      Your report has been received and will be reviewed privately.<br>
+      We do not share outcomes or reporter identity. Thank you for helping maintain trust.
+    </div>
+    <a href="/" class="back-link">← Back to search</a>
+  </div>
+
+  <!-- Error state -->
+  <div class="state-error" id="state-error">
+    <div class="state-icon">
+      <svg class="hvid-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fbbf24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    </div>
+    <div class="state-title" id="error-title">Submission failed</div>
+    <div class="state-desc"  id="error-desc">Something went wrong. Please try again.</div>
+    <a href="#" class="back-link" onclick="resetError()">← Try again</a>
+  </div>
+
+  <!-- Form -->
+  <form class="form-card" id="report-form" novalidate>
+
+    <!-- Reason -->
+    <div class="field">
+      <label class="field-label" for="report-reason">
+        Reason <span class="req">*</span>
+      </label>
+      <select class="field-select" id="report-reason" required>
+        <option value="">— Select a reason —</option>
+        <option value="SCAM">Risk signal reported</option>
+        <option value="IMPERSONATION">Impersonation</option>
+        <option value="FAKE_ACCOUNT">Identity authenticity concern</option>
+        <option value="OWNERSHIP_DISPUTE">Ownership dispute</option>
+        <option value="OTHER">Other</option>
+      </select>
+      <div class="field-error" id="err-reason">Please select a reason.</div>
+    </div>
+
+    <!-- Description -->
+    <div class="field">
+      <label class="field-label" for="report-desc">
+        Description
+        <span class="char-counter"><span id="char-count">0</span>/1000</span>
+      </label>
+      <textarea
+        class="field-textarea"
+        id="report-desc"
+        placeholder="Describe the issue clearly and factually. Avoid accusations without evidence."
+        maxlength="1000"
+        oninput="updateCharCount()"
+      ></textarea>
+      <div class="field-hint">Optional but recommended. Do not include personal data.</div>
+      <div class="field-error" id="err-desc">Description exceeds 1000 characters.</div>
+    </div>
+
+    <!-- Evidence URLs -->
+    <div class="field">
+      <label class="field-label" for="evidence-url-0">Evidence links (optional)</label>
+      <div class="evidence-list" id="evidence-list">
+        <div class="evidence-item" id="evidence-row-0">
+          <input
+            class="field-input"
+            id="evidence-url-0"
+            type="url"
+            placeholder="https://example.com/screenshot.png"
+            autocomplete="off"
+          >
+        </div>
+      </div>
+      <button type="button" class="add-url-btn" id="add-url-btn" onclick="addUrlRow()">
+        + Add another link
+      </button>
+      <div class="field-hint">URLs to screenshots or public references only. Max 5 links.</div>
+      <div class="field-error" id="err-urls">One or more URLs are invalid (must start with https://).</div>
+    </div>
+
+    <!-- Legal disclaimer + confirmation checkbox -->
+    <div id="report-legal" style="
+      margin-top:20px;padding:14px 16px;
+      background:rgba(129,140,248,.05);
+      border:1px solid rgba(129,140,248,.12);
+      border-radius:12px;
+    ">
+      <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin:0 0 12px">
+        Reports must be accurate and based on real interactions.
+        False reporting may result in access restrictions on your own account.
+        HVID does not act on unverified claims.
+      </p>
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+        <input type="checkbox" id="confirm-truthful" required
+          style="margin-top:2px;accent-color:#818cf8;flex-shrink:0;width:15px;height:15px"
+          onchange="document.getElementById('submit-btn').disabled=!this.checked">
+        <span style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.5">
+          I confirm this report is truthful and based on direct experience or reliable evidence.
+        </span>
+      </label>
+      <div class="field-error" id="err-confirm" style="margin-top:8px">Please confirm before submitting.</div>
+    </div>
+
+    <!-- Submit -->
+    <div style="margin-top:16px">
+      <button type="submit" class="submit-btn" id="submit-btn" disabled>
+        Submit report
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<script src="/static/js/api.js"></script>
+<script>
+'use strict';
+
+// ── Read URL params ──────────────────────────────────────────
+const params     = new URLSearchParams(window.location.search);
+const targetId   = params.get('target_identity_id') || params.get('id') || null;
+const targetHint = params.get('q') || params.get('query') || targetId || null;
+
+// Show target pill if we know who is being reported
+if (targetHint) {
+  document.getElementById('target-pill-text').textContent = targetHint;
+  document.getElementById('target-pill-wrap').style.display = 'block';
+}
+
+// Auth token (if logged in)
+const authToken       = () => localStorage.getItem('hvid_token') || '';
+const reporterIdentityId = () => {
+  try { return JSON.parse(localStorage.getItem('hvid_session') || '{}').identity_id || null; }
+  catch { return null; }
+};
+
+// ── Evidence URL rows (max 5) ─────────────────────────────────
+let urlRowCount = 1;
+const MAX_URLS  = 5;
+
+function addUrlRow() {
+  if (urlRowCount >= MAX_URLS) return;
+  const list = document.getElementById('evidence-list');
+  const row  = document.createElement('div');
+  row.className = 'evidence-item';
+  row.id = `evidence-row-${urlRowCount}`;
+  row.innerHTML = `
+    <input class="field-input" id="evidence-url-${urlRowCount}" type="url"
+      placeholder="https://example.com/evidence.png" autocomplete="off">
+    <button type="button" class="evidence-remove" onclick="removeUrlRow(${urlRowCount})" aria-label="Remove">✕</button>`;
+  list.appendChild(row);
+  urlRowCount++;
+  document.getElementById('add-url-btn').disabled = urlRowCount >= MAX_URLS;
+}
+
+function removeUrlRow(idx) {
+  const row = document.getElementById(`evidence-row-${idx}`);
+  if (row) row.remove();
+  document.getElementById('add-url-btn').disabled = false;
+}
+
+// ── Char counter ─────────────────────────────────────────────
+function updateCharCount() {
+  const v = document.getElementById('report-desc').value;
+  document.getElementById('char-count').textContent = v.length;
+}
+
+// ── Validation helpers ────────────────────────────────────────
+function showErr(id)  { document.getElementById(id).classList.add('visible'); }
+function hideErr(id)  { document.getElementById(id).classList.remove('visible'); }
+
+function collectUrls() {
+  const inputs = document.querySelectorAll('#evidence-list .field-input');
+  return Array.from(inputs)
+    .map(i => i.value.trim())
+    .filter(v => v.length > 0);
+}
+
+function validateUrls(urls) {
+  return urls.every(u => /^https?:\/\/.{3,}/.test(u));
+}
+
+// ── Submit ────────────────────────────────────────────────────
+document.getElementById('report-form').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  // Reset errors
+  ['err-reason','err-desc','err-urls'].forEach(hideErr);
+
+  const reason = document.getElementById('report-reason').value;
+  const desc   = document.getElementById('report-desc').value.trim();
+  const urls   = collectUrls();
+
+  let valid = true;
+  if (!reason)                      { showErr('err-reason'); valid = false; }
+  if (desc.length > 1000)           { showErr('err-desc');   valid = false; }
+  if (urls.length && !validateUrls(urls)) { showErr('err-urls'); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled    = true;
+  btn.textContent = 'Submitting…';
+
+  const body = {
+    reporter_identity_id: reporterIdentityId(),
+    target_identity_id:   targetId || null,
+    report_type:          reason,
+    description:          desc || undefined,
+    evidence_urls:        urls.length ? urls : undefined,
+  };
+
+  try {
+    // Use HVID_API for full error normalization (429/403/401/500)
+    const data = window.HVID_API
+      ? await HVID_API.report.submit(body)
+      : await fetch('/api/report/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(authToken() ? { 'Authorization': `Bearer ${authToken()}` } : {}) },
+          body: JSON.stringify(body),
+        }).then(r => r.ok ? r.json() : Promise.reject(r));
+
+    if (window.HVID_API && HVID_API.isError(data)) {
+      if (data.__rateLimit)  throw new Error('Daily report limit reached. Please try again tomorrow.');
+      if (data.__enforced)   { HVID_API.handleEnforcement(data); return; }
+      if (data.__unauthorized) return; // redirected by HVID_API
+      throw new Error(HVID_API.errorMessage(data));
+    }
+
+    if (data && !data.success && data.message) throw new Error(data.message);
+    if (data && data.statusCode >= 400) throw new Error(data.message || `Request failed (${data.statusCode})`);
+
+    // ── Success ────────────────────────────────────────────────
+    document.getElementById('report-form').style.display   = 'none';
+    document.getElementById('target-pill-wrap').style.display = 'none';
+    document.querySelector('.notice').style.display        = 'none';
+    document.getElementById('state-success').classList.add('show');
+
+  } catch (err) {
+    btn.disabled    = false;
+    btn.textContent = 'Submit report';
+    document.getElementById('error-desc').textContent =
+      err?.message || 'Something went wrong. Please try again.';
+    document.getElementById('report-form').style.display = 'none';
+    document.getElementById('state-error').classList.add('show');
+  }
+});
+
+function resetError() {
+  document.getElementById('state-error').classList.remove('show');
+  document.getElementById('report-form').style.display = 'block';
+}
+</script>
+<script src="/static/js/components/disclaimer-banner.js?v=layout-2"></script>
+</body>
+</html>

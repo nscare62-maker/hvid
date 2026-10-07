@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create your HVID — HVID</title>
+  <meta name="description" content="Create your HVID identity account with a one-time verification code sent to your phone." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/global.css" />
+  <link rel="stylesheet" href="/static/css/auth.css" />
+  <style>
+    /* ── Enhanced Login Page Styles ──────────────────────── */
+
+    /* Animated gradient background orbs */
+    .auth-orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+      opacity: 0.12;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+    .auth-orb-1 {
+      width: 480px; height: 480px;
+      top: -120px; left: -80px;
+      background: radial-gradient(circle, #5b5fef, #818cf8);
+      animation-delay: 0s;
+    }
+    .auth-orb-2 {
+      width: 360px; height: 360px;
+      bottom: -80px; right: -60px;
+      background: radial-gradient(circle, #7c3aed, #a78bfa);
+      animation-delay: -4s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50%       { transform: translateY(-30px) scale(1.04); }
+    }
+
+    /* Card polish */
+    .auth-card {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(20, 20, 35, 0.85);
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow:
+        0 0 0 1px rgba(91,95,239,0.08),
+        0 24px 60px rgba(0,0,0,0.5),
+        0 4px 20px rgba(91,95,239,0.12);
+    }
+
+    /* Logo mark animation */
+    .auth-logo-mark {
+      animation: logoPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes logoPop {
+      0%   { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    /* OTP input styling */
+    #otp {
+      letter-spacing: .35em;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      caret-color: #818cf8;
+    }
+    #otp::placeholder { letter-spacing: 0.2em; opacity: 0.3; }
+
+    /* Step visibility */
+    #otp-step-2 {
+      display: none;
+      animation: fadeUp 0.3s ease-out;
+    }    #otp-step-2[aria-hidden="false"] {
+      display: block;
+    }
+    /* OTP sub-label */
+    .otp-subtext {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-top: 10px;
+      line-height: 1.7;
+    }
+    .otp-back-link {
+      background: none; border: none; padding: 0;
+      font-size: 12px; color: #818cf8;
+      cursor: pointer; text-decoration: underline;
+      text-underline-offset: 2px;
+      font-family: inherit;
+      transition: color 0.15s;
+    }
+    .otp-back-link:hover { color: #a5b4fc; }
+
+    /* Phone prefix badge */
+    .phone-display {
+      display: inline-block;
+      background: rgba(91,95,239,0.12);
+      border: 1px solid rgba(91,95,239,0.25);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-family: monospace;
+      color: #818cf8;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    /* Resend timer */
+    #resend-timer {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* Trust badges strip */
+    .auth-trust-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: var(--space-6);
+      padding-top: var(--space-4);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .auth-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+    .auth-trust-icon {
+      width: 14px; height: 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(52,211,153,0.1);
+      border-radius: 50%;
+      font-size: 8px;
+      color: #34d399;
+    }
+
+    /* Loading spinner on button */
+    .auth-btn-full.loading {
+      opacity: 0.75;
+      pointer-events: none;
+      position: relative;
+    }
+    .auth-btn-full.loading::after {
+      content: '';
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* OTP digit boxes visual hint */
+    .otp-boxes {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .otp-box {
+      width: 40px; height: 48px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700; font-family: monospace;
+      color: var(--color-text-primary);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .otp-box.filled {
+      border-color: rgba(91,95,239,0.5);
+      background: rgba(91,95,239,0.08);
+    }
+    .otp-box.active {
+      border-color: #5b5fef;
+      background: rgba(91,95,239,0.1);
+      box-shadow: 0 0 0 3px rgba(91,95,239,0.15);
+    }
+
+    /* Individual OTP digit inputs */
+    .otp-digit {
+      width: 44px;
+      height: 52px;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      caret-color: #818cf8;
+    }
+    .otp-digit:focus {
+      border-color: #5b5fef;
+      background: rgba(91,95,239,0.1);
+      box-shadow: 0 0 0 3px rgba(91,95,239,0.18);
+    }
+    .otp-digit.filled {
+      border-color: rgba(91,95,239,0.5);
+      background: rgba(91,95,239,0.08);
+    }
+
+    /* Hidden real input */
+    #otp-real {
+      position: absolute !important;
+      left: -9999px !important;
+      opacity: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+      pointer-events: none !important;
+    }
+    .otp-input-wrap { position: relative; }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* Secure notice */
+    .secure-notice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(52,211,153,0.04);
+      border: 1px solid rgba(52,211,153,0.1);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: var(--space-4);
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    .secure-notice-icon { color: #34d399; font-size: 14px; }
+
+    .account-type-label { display:block; font-size:12px; font-weight:700; color:var(--color-text-secondary); margin-bottom:9px; }
+    .account-type-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .account-type-option { position:relative; }
+    .account-type-option input { position:absolute; opacity:0; pointer-events:none; }
+    .account-type-card { display:block; padding:14px; border:1px solid rgba(255,255,255,.1); border-radius:11px; background:rgba(255,255,255,.03); cursor:pointer; transition:border-color .2s, background .2s, transform .2s; }
+    .account-type-card:hover { transform:translateY(-1px); border-color:rgba(129,140,248,.45); }
+    .account-type-option input:checked + .account-type-card { border-color:#818cf8; background:rgba(91,95,239,.13); box-shadow:0 0 0 3px rgba(91,95,239,.12); }
+    .account-type-icon { font-size:20px; display:block; margin-bottom:7px; }
+    .account-type-name { display:block; color:var(--color-text-primary); font-size:13px; font-weight:700; }
+    .account-type-desc { display:block; color:var(--color-text-muted); font-size:11px; line-height:1.45; margin-top:3px; }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient orbs -->
+  <div class="auth-orb auth-orb-1" aria-hidden="true"></div>
+  <div class="auth-orb auth-orb-2" aria-hidden="true"></div>
+
+  <nav class="auth-nav" role="navigation" aria-label="Site navigation">
+    <a href="/" class="auth-nav-logo" id="nav-logo-link">
+      <div style="width:28px;height:28px;font-size:11px;border-radius:7px;background:var(--color-primary);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 2px 10px rgba(91,95,239,0.4)">HV</div>
+      HVID
+    </a>
+  </nav>
+
+  <main class="auth-page" role="main">
+    <div class="auth-card animate-fadeUp" style="max-width:480px;border-radius:20px;padding:36px 32px">
+
+      <!-- Logo -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px">
+        <div style="width:36px;height:36px;border-radius:10px;background:#1b64f2;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;box-shadow:0 4px 14px rgba(27,100,242,0.4)">HV</div>
+        <span style="font-size:22px;font-weight:800;color:var(--color-text-primary);letter-spacing:-0.02em">HVID</span>
+      </div>
+
+      <!-- Headings -->
+      <h1 class="auth-heading" style="font-size:24px;margin-bottom:6px" id="auth-heading">Create Your HVID</h1>
+      <p class="auth-sub" style="font-size:13px;margin-bottom:24px" id="auth-sub">Join HVID and get your identity verified securely.</p>
+
+      <!-- Error display -->
+      <div id="form-error" class="input-error" role="alert" aria-live="polite" style="text-align:center;margin-bottom:var(--space-3);font-size:13px;"></div>
+      
+      <!-- Backend status warning -->
+      <div id="backend-warning" style="display:none;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:12px;margin-bottom:var(--space-4);font-size:12px;color:#fbbf24">
+        <strong style="display:inline-flex;align-items:center;gap:6px">
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Cannot reach backend server
+        </strong><br>
+        <span style="color:var(--color-text-muted);margin-top:4px;display:block">
+          Please start the backend: <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:3px;font-family:monospace">python app.py</code>
+        </span>
+      </div>
+
+      <form class="auth-form" id="auth-form" data-auth-mode="signup" novalidate autocomplete="off">
+
+        <!-- ────── Step 1: Username + Phone input ────── -->
+        <div id="otp-step-1">
+          <div class="input-group">
+            <span class="account-type-label">Select Account Type</span>
+            <div class="account-type-options" role="radiogroup" aria-label="Account type">
+              <label class="account-type-option">
+                <input type="radio" name="account_type" value="INDIVIDUAL" checked />
+                <span class="account-type-card">
+                  <span class="account-type-icon" style="color:#1b64f2">
+                    <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  </span>
+                  <span class="account-type-name">Individual</span>
+                  <span class="account-type-desc">Personal identity and everyday verification.</span>
+                </span>
+              </label>
+              <label class="account-type-option">
+                <input type="radio" name="account_type" value="BUSINESS" />
+                <span class="account-type-card">
+                  <span class="account-type-icon" style="color:#1b64f2">
+                    <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                  </span>
+                  <span class="account-type-name">Business</span>
+                  <span class="account-type-desc">Business identity with paid verification access.</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="username">Full Name / Username</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon" aria-hidden="true">
+                <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </span>
+              <input
+                type="text"
+                class="input"
+                id="username"
+                name="username"
+                placeholder="Rahul Kumar"
+                autocomplete="username"
+                required
+                aria-required="true"
+                aria-describedby="username-hint"
+              />
+            </div>
+            <div id="username-hint" style="font-size:11px;color:var(--color-text-muted);margin-top:6px">
+              This name will be associated with your verified HVID.
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="country-code">Country code</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon" aria-hidden="true">
+                <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              </span>
+              <select id="country-code" class="input" aria-label="Country code">
+                <option value="+1">United States (+1)</option>
+                <option value="+44">United Kingdom (+44)</option>
+                <option value="+91" selected>India (+91)</option>
+                <option value="+61">Australia (+61)</option>
+                <option value="+49">Germany (+49)</option>
+                <option value="+33">France (+33)</option>
+                <option value="+81">Japan (+81)</option>
+                <option value="+234">Nigeria (+234)</option>
+                <option value="+86">China (+86)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="phone-number">Phone number</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon" aria-hidden="true">
+                <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+              </span>
+              <input
+                type="tel"
+                class="input"
+                id="phone-number"
+                name="phone"
+                placeholder="98765 43210"
+                autocomplete="tel"
+                inputmode="tel"
+                required
+                aria-required="true"
+                aria-describedby="phone-hint"
+              />
+            </div>
+            <div id="phone-hint" style="font-size:11px;color:var(--color-text-muted);margin-top:6px">
+              Select your country code and enter your mobile number.
+            </div>
+          </div>
+
+          <div style="margin:10px 0">
+            <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--color-text-secondary);cursor:pointer">
+              <input type="checkbox" checked required style="margin-top:2px" />
+              <span>I agree to the <a href="/terms" style="color:#1b64f2;font-weight:600">Terms</a> &amp; <a href="/legal" style="color:#1b64f2;font-weight:600">Privacy Policy</a></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ────── Step 2: OTP input ────── -->
+        <div id="otp-step-2" aria-hidden="true">
+          <div class="input-group">
+            <label class="input-label">Verification code</label>
+            <p id="phone-sent-label" style="font-size:13px;color:var(--color-text-muted);margin-bottom:16px;text-align:center">
+              A 6-digit code was sent to <span id="phone-echo" style="color:#1b64f2;font-weight:600"></span>
+            </p>
+
+            <!-- 6 individual digit inputs -->
+            <div class="otp-boxes" id="otp-boxes" role="group" aria-label="Enter 6-digit verification code">
+              <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" aria-label="Digit 1" />
+              <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" aria-label="Digit 2" />
+              <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" aria-label="Digit 3" />
+              <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" aria-label="Digit 4" />
+              <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" aria-label="Digit 5" />
+              <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" aria-label="Digit 6" />
+            </div>
+
+            <!-- Hidden combined value read by auth.js -->
+            <input type="hidden" id="otp-real" name="otp" />
+            <input type="hidden" id="otp" />
+
+            <div class="otp-subtext">
+              Didn't receive it?
+              <button type="button" class="otp-back-link" id="otp-back-btn">Use a different number</button>
+            </div>
+            <div id="resend-timer" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-btn-full" id="login-submit-btn" aria-label="Create Account" style="background:#1b64f2;color:#fff;border-radius:10px;font-weight:600">
+          Create Account
+        </button>
+
+      </form>
+
+      <p class="auth-footer-note" style="margin-top:20px;text-align:center;font-size:13px">
+        Already have an account? <a href="/auth/login" id="login-link" style="color:#1b64f2;font-weight:600">Sign in</a>
+      </p>
+
+      <div class="divider" style="margin:var(--space-6) 0" role="separator"></div>
+
+      <!-- Trust badges with SVG icons -->
+      <div class="auth-trust-strip" aria-label="Security certifications">
+        <div class="auth-trust-item">
+          <svg class="hvid-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>End-to-end encrypted</span>
+        </div>
+        <div class="auth-trust-item">
+          <svg class="hvid-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>No passwords stored</span>
+        </div>
+        <div class="auth-trust-item">
+          <svg class="hvid-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Bank-level security</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth-utils.js"></script>
+  <script src="/static/js/auth.js?v=account-types-2"></script>
+  <script src="/static/js/auth-context.js"></script>
+
+  <script>
+  'use strict';
+
+  /* ── OTP digit inputs wiring ──────────────────────────── */
+  (function initOtpDigits() {
+    const digits  = Array.from(document.querySelectorAll('.otp-digit'));
+    const hidden  = document.getElementById('otp-real');  // auth.js reads this
+    const hidden2 = document.getElementById('otp');       // legacy
+    const form    = document.getElementById('auth-form');
+
+    function collect() {
+      return digits.map(d => d.value).join('');
+    }
+
+    function sync() {
+      const val = collect();
+      if (hidden)  hidden.value  = val;
+      if (hidden2) hidden2.value = val;
+      digits.forEach(d => d.classList.toggle('filled', d.value !== ''));
+    }
+
+    digits.forEach(function(input, idx) {
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+          if (input.value === '' && idx > 0) {
+            digits[idx - 1].value = '';
+            digits[idx - 1].focus();
+          } else {
+            input.value = '';
+          }
+          sync();
+          e.preventDefault();
+        } else if (e.key === 'ArrowLeft' && idx > 0) {
+          digits[idx - 1].focus();
+        } else if (e.key === 'ArrowRight' && idx < 5) {
+          digits[idx + 1].focus();
+        }
+      });
+
+      input.addEventListener('input', function() {
+        // Keep only last digit typed
+        const v = input.value.replace(/\D/g, '');
+        input.value = v.slice(-1);
+        sync();
+        if (input.value && idx < 5) {
+          digits[idx + 1].focus();
+        }
+        // Auto-submit when all 6 filled
+        if (collect().length === 6 && form) {
+          setTimeout(function() {
+            if (typeof form.requestSubmit === 'function') form.requestSubmit();
+            else form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+          }, 80);
+        }
+      });
+
+      // Handle paste on any digit
+      input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const pasted = (e.clipboardData || window.clipboardData)
+          .getData('text').replace(/\D/g, '').slice(0, 6);
+        pasted.split('').forEach(function(ch, i) {
+          if (digits[i]) digits[i].value = ch;
+        });
+        sync();
+        const next = Math.min(pasted.length, 5);
+        digits[next].focus();
+        if (pasted.length === 6 && form) {
+          setTimeout(function() {
+            if (typeof form.requestSubmit === 'function') form.requestSubmit();
+            else form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+          }, 80);
+        }
+      });
+    });
+
+    sync();
+  })();
+
+  /* ── Show step 2: update heading + focus first digit ─── */
+  (function watchStep2() {
+    const step2 = document.getElementById('otp-step-2');
+    if (!step2) return;
+    const obs = new MutationObserver(function() {
+      const visible = step2.style.display !== 'none';
+      if (visible) {
+        document.getElementById('auth-heading').textContent = 'Enter your code';
+        document.getElementById('auth-sub').textContent     = 'Check your phone for the verification code';
+        step2.setAttribute('aria-hidden', 'false');
+        const phoneEl   = document.getElementById('phone-number');
+        const countryEl = document.getElementById('country-code');
+        const echoEl    = document.getElementById('phone-echo');
+        if (phoneEl && echoEl) {
+          echoEl.textContent = (countryEl ? countryEl.value : '') + ' ' + phoneEl.value.trim();
+        }
+        setTimeout(function() {
+          const first = document.querySelector('.otp-digit');
+          if (first) first.focus();
+        }, 80);
+      } else {
+        document.getElementById('auth-heading').textContent = 'Create your HVID';
+        document.getElementById('auth-sub').textContent     = 'Enter your username and phone number to get started';
+        step2.setAttribute('aria-hidden', 'true');
+        document.querySelectorAll('.otp-digit').forEach(function(d) { d.value = ''; d.classList.remove('filled'); });
+        const h  = document.getElementById('otp-real');
+        const h2 = document.getElementById('otp');
+        if (h)  h.value  = '';
+        if (h2) h2.value = '';
+      }
+    });
+    obs.observe(step2, { attributes: true, attributeFilter: ['style'] });
+  })();
+  </script>
+</body>
+</html>
