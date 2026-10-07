@@ -27,7 +27,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 IS_RENDER = os.environ.get('RENDER') == 'true'
-IS_PRODUCTION = IS_RENDER or os.environ.get('FLASK_ENV') == 'production'
+IS_RAILWAY = os.environ.get('RAILWAY_ENVIRONMENT') is not None or os.environ.get('RAILWAY_SERVICE_ID') is not None
+IS_PRODUCTION = IS_RENDER or IS_RAILWAY or os.environ.get('FLASK_ENV') == 'production'
 
 
 def _database_url():
@@ -189,7 +190,7 @@ app.config.update(
     RAZORPAY_KEY_ID               = os.environ.get('RAZORPAY_KEY_ID', ''),
     RAZORPAY_KEY_SECRET           = os.environ.get('RAZORPAY_KEY_SECRET', ''),
     ADMIN_KEY                     = os.environ.get('ADMIN_KEY', 'hvid-admin-2024' if not IS_PRODUCTION else ''),
-    AUTO_CREATE_DB                = os.environ.get('AUTO_CREATE_DB', 'false' if IS_PRODUCTION else 'true').lower() in ('1', 'true', 'yes'),
+    AUTO_CREATE_DB                = os.environ.get('AUTO_CREATE_DB', 'true').lower() in ('1', 'true', 'yes'),
 )
 
 # ── CORS (API only) ───────────────────────────────────────────────
