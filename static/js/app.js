@@ -14,6 +14,82 @@
   onScroll();
 })();
 
+// ── Public nav mobile menu toggle ─────────────────────────
+(function initPublicMobileNav() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+
+  const inner = nav.querySelector('.nav-inner');
+  if (!inner) return;
+
+  // Create toggle button if not present
+  let toggle = nav.querySelector('.nav-mobile-toggle');
+  if (!toggle) {
+    toggle = document.createElement('button');
+    toggle.className = 'nav-mobile-toggle';
+    toggle.id = 'nav-mobile-toggle';
+    toggle.setAttribute('aria-label', 'Toggle Navigation Menu');
+    toggle.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+    inner.appendChild(toggle);
+  }
+
+  // Create mobile drawer if not present
+  let drawer = nav.querySelector('.nav-mobile-menu');
+  if (!drawer) {
+    drawer = document.createElement('div');
+    drawer.className = 'nav-mobile-menu';
+    drawer.id = 'nav-mobile-menu';
+
+    // Copy links from nav-links
+    const links = nav.querySelectorAll('.nav-links .nav-link');
+    let linksHtml = '';
+    const current = window.location.pathname;
+    links.forEach(function(l) {
+      const href = l.getAttribute('href');
+      const isActive = href && (href === current || current.endsWith(href));
+      linksHtml += '<a href="' + href + '" class="nav-mobile-link' + (isActive ? ' active' : '') + '">' + l.textContent.trim() + '</a>';
+    });
+
+    drawer.innerHTML = linksHtml +
+      '<div class="nav-mobile-divider"></div>' +
+      '<div class="nav-mobile-actions">' +
+      '  <a href="/auth/login" class="btn btn-ghost">Sign In</a>' +
+      '  <a href="/auth/signup" class="btn btn-primary">Get Started</a>' +
+      '</div>';
+
+    nav.appendChild(drawer);
+  }
+
+  let isOpen = false;
+  function toggleMenu() {
+    isOpen = !isOpen;
+    drawer.classList.toggle('open', isOpen);
+    nav.classList.toggle('menu-open', isOpen);
+    if (isOpen) {
+      toggle.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    } else {
+      toggle.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+    }
+  }
+
+  toggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  document.addEventListener('click', function(e) {
+    if (isOpen && !nav.contains(e.target)) {
+      toggleMenu();
+    }
+  });
+
+  drawer.querySelectorAll('.nav-mobile-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (isOpen) toggleMenu();
+    });
+  });
+})();
+
 // ── Active public nav link ─────────────────────────────────
 (function setActiveNavLink() {
   const links   = document.querySelectorAll('.nav-link');
