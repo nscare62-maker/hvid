@@ -20,16 +20,38 @@
     <div class="nav-inner">
       <a href="/" class="nav-logo">
         <div class="nav-logo-mark">HV</div>
-        HVID
+        <span class="nav-logo-divider">|</span>
+        <span>HVID</span>
       </a>
       <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
         <a href="/how-it-works" class="nav-link">How It Works</a>
+        <a href="/for-individuals" class="nav-link">Individuals</a>
         <a href="/for-businesses" class="nav-link">For Business</a>
         <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-link">Admin</a>
       </div>
       <div class="nav-actions">
-        <a href="auth/login.html" class="btn btn-ghost btn-sm" id="nav-login-btn">Sign In</a>
-        <a href="auth/login.html" class="btn btn-primary btn-sm" id="nav-signup-btn">Get Started</a>
+        <a href="/auth/login" class="btn btn-ghost btn-sm" id="nav-login-btn">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-sm" id="nav-signup-btn">Get Started</a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Mobile Dropdown Menu -->
+      <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="/" class="nav-mobile-link">Home</a>
+        <a href="/how-it-works" class="nav-mobile-link">How It Works</a>
+        <a href="/for-individuals" class="nav-mobile-link">Individuals</a>
+        <a href="/for-businesses" class="nav-mobile-link">For Business</a>
+        <a href="/trust-safety" class="nav-mobile-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-mobile-link">Admin</a>
+        <div class="nav-mobile-divider"></div>
+        <a href="/auth/login" class="btn btn-ghost btn-full" style="margin-bottom:8px">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-full">Get Started</a>
       </div>
     </div>
   </nav>
@@ -101,7 +123,7 @@
             <a href="/dashboard/reports" class="btn btn-ghost btn-sm" id="result-report-link">Report this identity</a>
             <!-- Challenge entry point — shown only when result identity matches logged-in user -->
             <a href="#" class="btn btn-ghost btn-sm" id="result-challenge-link" style="display:none">Challenge Report</a>
-            <a href="auth/login.html" class="btn btn-primary btn-sm" id="result-signup-link">Verify Your Identity</a>
+            <a href="/auth/login" class="btn btn-primary btn-sm" id="result-signup-link">Verify Your Identity</a>
           </div>
         </div>
 

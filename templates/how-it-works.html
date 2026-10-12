@@ -9,27 +9,81 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/global.css" />
-  <link rel="stylesheet" href="/static/css/public.css?v=hiw-ui-2" />
+  <link rel="stylesheet" href="/static/css/public.css" />
   <style>
-    .hiw-hero {
-      padding: calc(var(--nav-height) + 50px) 0 60px;
+    /* ==========================================================
+       HVID — Ultra-Modern How It Works Page Styles
+       ========================================================== */
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fbff;
+      color: var(--color-text-primary);
+      overflow-x: hidden;
     }
+
+    .hiw-hero {
+      position: relative;
+      padding: calc(var(--nav-height) + 50px) 0 60px;
+      background: radial-gradient(circle at 50% 15%, rgba(27, 100, 242, 0.08) 0%, rgba(248, 251, 255, 0) 70%), #f8fbff;
+    }
+
+    .hiw-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      background: #ffffff;
+      border: 1px solid rgba(27, 100, 242, 0.2);
+      box-shadow: 0 4px 14px rgba(27, 100, 242, 0.08);
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #1b64f2;
+      margin-bottom: 20px;
+    }
+
+    .hiw-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: hiwPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes hiwPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.7; }
+    }
+
     .hiw-hero-header {
       margin-bottom: 48px;
     }
+
     .hiw-hero-title {
-      font-size: clamp(34px, 4.5vw, 48px);
+      font-size: clamp(34px, 4.5vw, 52px);
       font-weight: 800;
-      color: var(--color-text-primary);
+      color: #0b192c;
       letter-spacing: -0.03em;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
+
+    .hiw-text-gradient {
+      background: linear-gradient(135deg, #1b64f2 0%, #2563eb 50%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     .hiw-hero-sub {
-      font-size: 16px;
-      color: var(--color-text-secondary);
-      max-width: 600px;
-      line-height: 1.6;
+      font-size: 16.5px;
+      color: #475569;
+      max-width: 620px;
+      line-height: 1.65;
+      margin: 0;
     }
+
     .hiw-layout-grid {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
@@ -37,32 +91,38 @@
       align-items: center;
       margin-bottom: 80px;
     }
+
     @media (max-width: 900px) {
       .hiw-layout-grid {
         grid-template-columns: 1fr;
         gap: 40px;
       }
     }
+
     .hiw-steps-list {
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 24px;
     }
+
     .hiw-step-row {
       display: flex;
       align-items: flex-start;
       gap: 20px;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl);
-      padding: 24px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 24px 26px;
       transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03);
     }
+
     .hiw-step-row:hover {
       transform: translateY(-2px);
       border-color: rgba(27, 100, 242, 0.4);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 14px 34px rgba(27, 100, 242, 0.09);
     }
+
     .hiw-step-badge {
       width: 44px;
       height: 44px;
@@ -77,22 +137,26 @@
       flex-shrink: 0;
       box-shadow: 0 4px 14px rgba(27, 100, 242, 0.35);
     }
+
     .hiw-step-content {
       flex: 1;
     }
+
     .hiw-step-title {
       font-size: 18px;
       font-weight: 700;
-      color: var(--color-text-primary);
+      color: #0b192c;
       margin-bottom: 6px;
       letter-spacing: -0.01em;
     }
+
     .hiw-step-desc {
       font-size: 14px;
-      color: var(--color-text-secondary);
+      color: #64748b;
       line-height: 1.6;
       margin: 0;
     }
+
     /* Right Stage: 3D Glowing Shield Card */
     .hiw-shield-stage {
       position: relative;
@@ -101,63 +165,78 @@
       justify-content: center;
       min-height: 420px;
     }
-    .hiw-shield-glow {
-      position: absolute;
-      width: 340px;
-      height: 340px;
-      background: radial-gradient(circle, rgba(27, 100, 242, 0.25) 0%, rgba(59, 130, 246, 0.1) 45%, transparent 70%);
-      filter: blur(40px);
-      pointer-events: none;
-      z-index: 0;
+
+    .hiw-shield-stage img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 20px;
+      filter: drop-shadow(0 20px 40px rgba(27, 100, 242, 0.15));
+      transition: transform 0.3s ease;
     }
-    .hiw-card-visual {
-      position: relative;
-      z-index: 1;
-      width: 320px;
-      height: 380px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 28px;
-      padding: 32px 24px;
+
+    .hiw-shield-stage:hover img {
+      transform: translateY(-4px);
+    }
+
+    /* Principles section */
+    .hiw-principles-section {
+      padding: 80px 0;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .hiw-principles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .hiw-principle-card {
+      background: #f8fbff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 30px 24px;
+      transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
-    [data-theme="light"] .hiw-card-visual {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 246, 255, 0.9) 100%);
-      border: 1px solid rgba(27, 100, 242, 0.15);
-      box-shadow: 0 25px 50px rgba(27, 100, 242, 0.12), inset 0 1px 0 #ffffff;
+
+    .hiw-principle-card:hover {
+      background: #ffffff;
+      transform: translateY(-4px);
+      border-color: rgba(27, 100, 242, 0.35);
+      box-shadow: 0 16px 36px rgba(27, 100, 242, 0.08);
     }
-    .hiw-shield-svg-wrap {
-      width: 140px;
-      height: 160px;
+
+    .hiw-principle-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 24px;
-      filter: drop-shadow(0 12px 24px rgba(27, 100, 242, 0.3));
+      margin-bottom: 20px;
+      transition: all 0.25s ease;
     }
-    .hiw-verified-card-pill {
-      background: rgba(27, 100, 242, 0.1);
-      border: 1px solid rgba(27, 100, 242, 0.25);
-      border-radius: 99px;
-      padding: 8px 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #1b64f2;
+
+    .hiw-principle-card:hover .hiw-principle-icon {
+      transform: scale(1.06);
+    }
+
+    @media (max-width: 900px) {
+      .hiw-principles-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- ── Navigation ── -->
+  <!-- Navigation -->
   <nav class="nav" id="main-nav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">
@@ -165,6 +244,8 @@
         <span class="nav-logo-divider">|</span>
         <span>HVID</span>
       </a>
+
+      <!-- Desktop Links (All 6 Pages Included) -->
       <div class="nav-links">
         <a href="/" class="nav-link">Home</a>
         <a href="/how-it-works" class="nav-link active">How It Works</a>
@@ -173,35 +254,58 @@
         <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
         <a href="/admin/verification-review" class="nav-link">Admin</a>
       </div>
+
       <div class="nav-actions">
         <a href="/auth/login" class="btn btn-ghost btn-sm">Sign In</a>
         <a href="/auth/signup" class="btn btn-primary btn-sm">Get Started</a>
       </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Mobile Dropdown Menu -->
+      <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="/" class="nav-mobile-link">Home</a>
+        <a href="/how-it-works" class="nav-mobile-link active">How It Works</a>
+        <a href="/for-individuals" class="nav-mobile-link">Individuals</a>
+        <a href="/for-businesses" class="nav-mobile-link">For Business</a>
+        <a href="/trust-safety" class="nav-mobile-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-mobile-link">Admin</a>
+        <div class="nav-mobile-divider"></div>
+        <a href="/auth/login" class="btn btn-ghost btn-full" style="margin-bottom:8px">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-full">Get Started</a>
+      </div>
     </div>
   </nav>
 
-  <!-- ── How It Works Hero & Layout ── -->
+  <!-- How It Works Hero & Layout -->
   <section class="section hiw-hero">
     <div class="container">
       
       <div class="hiw-hero-header animate-fadeUp">
-        <h1 class="hiw-hero-title">How It Works</h1>
+        <div class="hiw-pill-badge">
+          <span class="hiw-pill-dot"></span>
+          <span>Verification Protocol &amp; Architecture</span>
+        </div>
+        <h1 class="hiw-hero-title">How It <span class="hiw-text-gradient">Works</span></h1>
         <p class="hiw-hero-sub">
-          Get verified in a few simple steps and enjoy a safer, more trusted digital experience.
+          Get verified in three simple steps. Anchor your digital presence to a permanent, privacy-preserving human identity.
         </p>
       </div>
 
       <div class="hiw-layout-grid">
         
-        <!-- Left: 3 Simple Steps from Mockup -->
+        <!-- Left: 3 Simple Steps -->
         <div class="hiw-steps-list animate-fadeUp delay-1">
           
           <!-- Step 1 -->
           <div class="hiw-step-row">
             <div class="hiw-step-badge">1</div>
             <div class="hiw-step-content">
-              <h3 class="hiw-step-title">1&nbsp;&nbsp;Create Your Account</h3>
-              <p class="hiw-step-desc">Sign up with your basic details.</p>
+              <h3 class="hiw-step-title">Create Your Free Account</h3>
+              <p class="hiw-step-desc">Enter your phone number and confirm with a fast, secure one-time passcode. No endless questionnaires or sensitive password storage.</p>
             </div>
           </div>
 
@@ -209,8 +313,8 @@
           <div class="hiw-step-row">
             <div class="hiw-step-badge">2</div>
             <div class="hiw-step-content">
-              <h3 class="hiw-step-title">2&nbsp;&nbsp;Verify Your Identity</h3>
-              <p class="hiw-step-desc">Complete the verification process.</p>
+              <h3 class="hiw-step-title">Verify Your Human Presence</h3>
+              <p class="hiw-step-desc">Complete cryptographic liveness verification. Your biometric signature is converted into a zero-knowledge hash and raw images are instantly deleted.</p>
             </div>
           </div>
 
@@ -218,50 +322,16 @@
           <div class="hiw-step-row">
             <div class="hiw-step-badge">3</div>
             <div class="hiw-step-content">
-              <h3 class="hiw-step-title">3&nbsp;&nbsp;Get Your HVID</h3>
-              <p class="hiw-step-desc">Access your verified identity.</p>
+              <h3 class="hiw-step-title">Receive Your Permanent HVID</h3>
+              <p class="hiw-step-desc">Link your social handles, professional domains, and portfolio accounts. Share your verified badge across the web with full confidence.</p>
             </div>
           </div>
 
         </div>
 
-        <!-- Right: Glowing 3D Glass Shield Graphic -->
+        <!-- Right: Image 4.png -->
         <div class="hiw-shield-stage animate-fadeIn delay-2">
-          <div class="hiw-shield-glow"></div>
-          
-          <div class="hiw-card-visual">
-            <div class="hiw-shield-svg-wrap">
-              <svg width="120" height="135" viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="hiwShieldGrad" x1="10" y1="5" x2="90" y2="110" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#3b82f6" />
-                    <stop offset="50%" stop-color="#1d4ed8" />
-                    <stop offset="100%" stop-color="#1e3a8a" />
-                  </linearGradient>
-                  <linearGradient id="hiwInnerGrad" x1="20" y1="15" x2="80" y2="95" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.85" />
-                    <stop offset="100%" stop-color="#2563eb" stop-opacity="0.4" />
-                  </linearGradient>
-                </defs>
-                <!-- Shield Base -->
-                <path d="M50 5 L88 20 C88 65 50 102 50 102 C50 102 12 65 12 20 Z" fill="url(#hiwShieldGrad)" />
-                <!-- Shield Highlight Inner -->
-                <path d="M50 12 L82 25 C82 61 50 94 50 94 C50 94 18 25 Z" fill="url(#hiwInnerGrad)" />
-                <!-- Verified Checkmark Document Center -->
-                <rect x="33" y="38" width="34" height="42" rx="6" fill="#ffffff" />
-                <path d="M41 58 L47 64 L59 52" stroke="#1b64f2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-                <rect x="40" y="46" width="20" height="3" rx="1.5" fill="#93c5fd" />
-                <rect x="40" y="71" width="14" height="2.5" rx="1.2" fill="#bfdbfe" />
-              </svg>
-            </div>
-            
-            <div class="hiw-verified-card-pill">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span>Instant Trust Signal</span>
-            </div>
-          </div>
+          <img src="/static/assets/4.png" alt="Trust Signal" />
         </div>
 
       </div>
@@ -269,133 +339,147 @@
     </div>
   </section>
 
-  <div class="container"><div class="divider"></div></div>
-
-  <!-- ── Built on Certainties (Principles with Vector SVGs) ── -->
-  <section class="section">
+  <!-- Built on Certainties (Principles with Vector SVGs) -->
+  <section class="hiw-principles-section">
     <div class="container">
-      <div style="text-align:center;max-width:560px;margin:0 auto var(--space-12)">
-        <div class="section-label">Core Principles</div>
-        <h2 class="section-title">Built on verified certainties</h2>
-        <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.7;margin-top:12px">
-          HVID provides objective identity proof without judgment or surveillance.
+      <div style="text-align:center;max-width:580px;margin:0 auto 56px">
+        <div class="hiw-pill-badge" style="background:#f1f5f9;border-color:#e2e8f0;margin-bottom:12px">
+          <span class="hiw-pill-dot" style="background:#1b64f2"></span>
+          <span>Core Engineering Tenets</span>
+        </div>
+        <h2 class="hiw-hero-title" style="font-size:clamp(26px,3.8vw,38px);margin-bottom:12px">Built on Verified Certainties</h2>
+        <p style="font-size:15px;color:#64748b;line-height:1.6;margin:0">
+          HVID provides deterministic identity proof without behavioral surveillance, social scores, or opinion algorithms.
         </p>
       </div>
 
-      <div class="grid-3" style="max-width:960px;margin:0 auto">
+      <div class="hiw-principles-grid">
         
-        <div class="card animate-fadeUp delay-1">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(27,100,242,0.1);display:flex;align-items:center;justify-content:center;color:#1b64f2;margin-bottom:var(--space-4)">
-            <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <div class="hiw-principle-card animate-fadeUp delay-1">
+          <div class="hiw-principle-icon" style="background:rgba(27,100,242,0.1);color:#1b64f2">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           </div>
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:var(--space-2);color:var(--color-text-primary)">Privacy First</h3>
-          <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">No personal identification information is ever displayed publicly. All data is encrypted at rest and in transit.</p>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:#0b192c">Privacy First</h3>
+          <p style="font-size:13.5px;color:#64748b;line-height:1.6;margin:0">No personal identification documents are ever displayed publicly. All data is encrypted with TLS 1.3 in transit and AES-256 at rest.</p>
         </div>
 
-        <div class="card animate-fadeUp delay-2">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;color:#10b981;margin-bottom:var(--space-4)">
-            <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <div class="hiw-principle-card animate-fadeUp delay-2">
+          <div class="hiw-principle-icon" style="background:rgba(16,185,129,0.1);color:#10b981">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           </div>
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:var(--space-2);color:var(--color-text-primary)">One Human, One Identity</h3>
-          <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">Each individual may hold a single HVID. Automated biometric and KYC duplicate checks prevent sybil accounts.</p>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:#0b192c">1 Human = 1 Identity</h3>
+          <p style="font-size:13.5px;color:#64748b;line-height:1.6;margin:0">Each person may hold only one persistent HVID anchor. Anti-sybil algorithms guarantee no bot duplicates or sockpuppet accounts.</p>
         </div>
 
-        <div class="card animate-fadeUp delay-3">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;color:#8b5cf6;margin-bottom:var(--space-4)">
-            <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <div class="hiw-principle-card animate-fadeUp delay-3">
+          <div class="hiw-principle-icon" style="background:rgba(139,92,246,0.1);color:#8b5cf6">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
           </div>
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:var(--space-2);color:var(--color-text-primary)">One Asset, One Owner</h3>
-          <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">No digital account, handle, or website can be linked to more than one verified HVID simultaneously.</p>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:#0b192c">1 Asset = 1 Verified Owner</h3>
+          <p style="font-size:13.5px;color:#64748b;line-height:1.6;margin:0">No digital handle, Instagram profile, or web domain can be linked to more than one verified HVID at any given moment.</p>
         </div>
 
-        <div class="card animate-fadeUp delay-4">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;color:#f59e0b;margin-bottom:var(--space-4)">
-            <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+        <div class="hiw-principle-card animate-fadeUp delay-4">
+          <div class="hiw-principle-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
           </div>
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:var(--space-2);color:var(--color-text-primary)">Continuous Proof</h3>
-          <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">Identity continuity is verified continuously. Compromised credentials trigger immediate protective holds.</p>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:#0b192c">Continuous Proof</h3>
+          <p style="font-size:13.5px;color:#64748b;line-height:1.6;margin:0">Identity continuity is monitored autonomously. Compromised credentials or ownership disconnects trigger immediate protective holds.</p>
         </div>
 
-        <div class="card animate-fadeUp delay-5">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(236,72,153,0.1);display:flex;align-items:center;justify-content:center;color:#ec4899;margin-bottom:var(--space-4)">
-            <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <div class="hiw-principle-card animate-fadeUp delay-5">
+          <div class="hiw-principle-icon" style="background:rgba(236,72,153,0.1);color:#ec4899">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           </div>
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:var(--space-2);color:var(--color-text-primary)">Cryptographic Audit</h3>
-          <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">Public checks query cryptographic proofs. Verification status is mathematically verifiable anytime.</p>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:#0b192c">Cryptographic Audit</h3>
+          <p style="font-size:13.5px;color:#64748b;line-height:1.6;margin:0">Public match lookups query deterministic mathematical proofs. Verification certainty is reproducible across platforms anytime.</p>
         </div>
 
-        <div class="card animate-fadeUp delay-6">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,0.1);display:flex;align-items:center;justify-content:center;color:#06b6d4;margin-bottom:var(--space-4)">
-            <svg class="hvid-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <div class="hiw-principle-card animate-fadeUp delay-6">
+          <div class="hiw-principle-icon" style="background:rgba(6,182,212,0.1);color:#06b6d4">
+            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
           </div>
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:var(--space-2);color:var(--color-text-primary)">Minimal Claims</h3>
-          <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">HVID only confirms identity status facts without behavioral scoring, algorithms, or biased labels.</p>
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:#0b192c">Minimal Claims</h3>
+          <p style="font-size:13.5px;color:#64748b;line-height:1.6;margin:0">HVID confirms identity linkage status only — leaving moral, behavioral, and commercial judgments to independent discernment.</p>
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- ── Bottom Banner: Verify your identity. Own your presence. ── -->
-  <div class="cta-banner-section">
+  <!-- CTA Banner -->
+  <div class="cta-banner-wrap">
     <div class="container">
-      <div class="cta-banner-box">
+      <div class="cta-banner" style="background-image: url('/assets/2.png'); background-size: cover; background-position: center;">
         <div class="cta-banner-left">
-          <div class="cta-banner-shield">
-            <svg class="cta-banner-shield-svg" viewBox="0 0 60 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M30 4 L54 14 C54 44 30 64 30 64 C30 64 6 44 6 14 Z" fill="#1b64f2" stroke="#3b82f6" stroke-width="2" />
-              <rect x="23" y="27" width="14" height="18" rx="3" fill="#ffffff" />
-              <path d="M26 27 V23 A4 4 0 0 1 34 23 V27" stroke="#ffffff" stroke-width="2.5" fill="none" />
-              <circle cx="30" cy="35" r="2" fill="#1b64f2" />
+          <div class="cta-shield-graphic">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
             </svg>
           </div>
-          <div class="cta-banner-text">
-            <h2 class="cta-banner-title">Verify your identity.<br/>Own your presence.</h2>
+          <div>
+            <h2 class="cta-banner-title">Verify Your Identity. Own Your Presence.</h2>
+            <p class="cta-banner-desc" style="color: white;">Permanent, free, and privacy-first identity certainty for the modern internet.</p>
           </div>
         </div>
         
         <div class="cta-banner-actions">
           <a href="/auth/signup" class="btn btn-cta-primary">Create Your HVID</a>
-          <a href="/how-it-works" class="btn btn-cta-ghost">Learn How It Works</a>
+          <a href="/trust-safety" class="btn btn-cta-ghost">Our Trust Guarantees</a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── Footer ── -->
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-inner">
         <div class="footer-brand">
-          <div class="footer-brand-name">HVID</div>
-          <p class="footer-brand-desc">Human Verification Identity. The identity confirmation infrastructure for the internet.</p>
+          <a href="/" class="nav-logo" style="margin-bottom:12px;display:inline-flex">
+            <div class="nav-logo-mark">HV</div>
+            <span class="nav-logo-divider">|</span>
+            <span>HVID</span>
+          </a>
+          <p class="footer-brand-desc">
+            Identity confirmation infrastructure for the modern web. Confirming real human presence, ownership, and continuity without invasive surveillance.
+          </p>
         </div>
-        <div>
-          <div class="footer-col-title">Product</div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Platform</div>
           <div class="footer-links">
-            <a href="/how-it-works" class="footer-link">How It Works</a>
+            <a href="/" class="footer-link">Home</a>
+            <a href="/how-it-works" class="footer-link" style="color:#1b64f2;font-weight:700">How It Works</a>
             <a href="/for-individuals" class="footer-link">For Individuals</a>
-            <a href="/for-businesses" class="footer-link">For Businesses</a>
+            <a href="/for-businesses" class="footer-link">For Business</a>
           </div>
         </div>
-        <div>
-          <div class="footer-col-title">Trust &amp; Safety</div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Assurance &amp; Governance</div>
           <div class="footer-links">
-            <a href="/trust-safety" class="footer-link">Trust Principles</a>
-            <a href="/trust-safety" class="footer-link">Reporting System</a>
-          </div>
-        </div>
-        <div>
-          <div class="footer-col-title">Legal</div>
-          <div class="footer-links">
+            <a href="/trust-safety" class="footer-link">Trust &amp; Safety</a>
             <a href="/terms" class="footer-link">Terms of Service</a>
             <a href="/legal" class="footer-link">Privacy Policy</a>
             <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
           </div>
         </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Access</div>
+          <div class="footer-links">
+            <a href="/auth/login" class="footer-link">Sign In</a>
+            <a href="/auth/signup" class="footer-link">Create Account</a>
+            <a href="/admin/verification-review" class="footer-link">Admin Portal</a>
+          </div>
+        </div>
       </div>
+
       <div class="footer-bottom">
-        <span class="footer-copy">&copy; 2026 HVID. All rights reserved.</span>
+        <span class="footer-copy">&copy; 2025 HVID Technologies Inc. All rights reserved.</span>
+        <span class="footer-copy">HVID is an identity confirmation protocol. It does not issue behavioral or moral safety ratings.</span>
         <div class="flex gap-4">
           <a href="/terms" class="footer-link">Terms</a>
           <a href="/legal" class="footer-link">Privacy</a>

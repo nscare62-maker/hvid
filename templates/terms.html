@@ -7,118 +7,469 @@
   <meta name="description" content="HVID Terms of Service — understand what HVID provides, what it does not guarantee, and your responsibilities as a user." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/global.css" />
   <link rel="stylesheet" href="/static/css/public.css" />
+  <style>
+    /* ==========================================================
+       HVID — Ultra-Modern Legal & Terms UI Styles
+       ========================================================== */
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fbff;
+      color: var(--color-text-primary);
+    }
+
+    .terms-hero {
+      padding: calc(var(--nav-height) + 54px) 0 44px;
+      background: radial-gradient(circle at 50% 20%, rgba(27, 100, 242, 0.07) 0%, rgba(248, 251, 255, 0) 70%), #f8fbff;
+      text-align: center;
+      position: relative;
+    }
+
+    .terms-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(27, 100, 242, 0.2);
+      box-shadow: 0 4px 14px rgba(27, 100, 242, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #1b64f2;
+      margin-bottom: 20px;
+    }
+
+    .terms-title {
+      font-size: clamp(32px, 4.5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0b192c;
+      margin-bottom: 12px;
+    }
+
+    .terms-meta {
+      font-size: 14.5px;
+      color: #64748b;
+      margin-bottom: 28px;
+    }
+
+    /* Key highlights grid */
+    .terms-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      max-width: 980px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .terms-summary-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+      transition: all 0.2s ease;
+    }
+
+    .terms-summary-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(27, 100, 242, 0.35);
+      box-shadow: 0 10px 24px rgba(27, 100, 242, 0.07);
+    }
+
+    .terms-summary-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #1b64f2;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .terms-summary-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0b192c;
+      margin-bottom: 6px;
+    }
+
+    .terms-summary-desc {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Main Container & TOC Layout */
+    .terms-layout {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 44px var(--space-4) 80px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    /* Sticky Table of Contents */
+    .terms-toc {
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03);
+    }
+
+    .terms-toc-heading {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .terms-toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .terms-toc-link {
+      font-size: 13.5px;
+      color: #475569;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: block;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .terms-toc-link:hover {
+      background: #eff6ff;
+      color: #1b64f2;
+      font-weight: 600;
+    }
+
+    /* Content Cards */
+    .terms-content {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .terms-section-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.02);
+      scroll-margin-top: calc(var(--nav-height) + 20px);
+    }
+
+    .terms-sec-num {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #1b64f2;
+      background: rgba(27, 100, 242, 0.08);
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+    }
+
+    .terms-sec-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0b192c;
+      letter-spacing: -0.015em;
+      margin: 0 0 16px;
+    }
+
+    .terms-p {
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.7;
+      margin: 0 0 16px;
+    }
+
+    .terms-p:last-child {
+      margin-bottom: 0;
+    }
+
+    .terms-list {
+      margin: 0 0 16px;
+      padding-left: 20px;
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .terms-list li {
+      margin-bottom: 8px;
+    }
+
+    .terms-callout {
+      background: #f8fbff;
+      border-left: 4px solid #1b64f2;
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-top: 16px;
+      font-size: 14px;
+      color: #1e3a8a;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .terms-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .terms-toc {
+        position: static;
+      }
+      .terms-highlights {
+        grid-template-columns: 1fr;
+      }
+      .terms-section-card {
+        padding: 24px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Navigation -->
   <nav class="nav" id="main-nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo"><div class="nav-logo-mark">HV</div>HVID</a>
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-mark">HV</div>
+        <span class="nav-logo-divider">|</span>
+        <span>HVID</span>
+      </a>
+
+      <!-- Desktop Links (All 6 Pages Included) -->
       <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
         <a href="/how-it-works" class="nav-link">How It Works</a>
+        <a href="/for-individuals" class="nav-link">Individuals</a>
+        <a href="/for-businesses" class="nav-link">For Business</a>
         <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
-        <a href="/legal" class="nav-link">Legal</a>
+        <a href="/admin/verification-review" class="nav-link">Admin</a>
       </div>
+
       <div class="nav-actions">
-        <a href="auth/login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="auth/signup.html" class="btn btn-primary btn-sm">Get Started</a>
+        <a href="/auth/login" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Mobile Dropdown Menu -->
+      <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="/" class="nav-mobile-link">Home</a>
+        <a href="/how-it-works" class="nav-mobile-link">How It Works</a>
+        <a href="/for-individuals" class="nav-mobile-link">Individuals</a>
+        <a href="/for-businesses" class="nav-mobile-link">For Business</a>
+        <a href="/trust-safety" class="nav-mobile-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-mobile-link">Admin</a>
+        <div class="nav-mobile-divider"></div>
+        <a href="/auth/login" class="btn btn-ghost btn-full" style="margin-bottom:8px">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-full">Get Started</a>
       </div>
     </div>
   </nav>
 
-  <div class="policy-wrap">
-    <h1 class="policy-title">Terms of Service</h1>
-    <p class="policy-meta">Effective date: 1 April 2025 · Last updated: 12 April 2025</p>
+  <!-- Hero -->
+  <section class="terms-hero">
+    <div class="container">
+      <div class="terms-badge">Governance &amp; Legal Framework</div>
+      <h1 class="terms-title">Terms of Service</h1>
+      <p class="terms-meta">Version 2.4 · Effective: 1 April 2025 · Last updated: 12 April 2025</p>
 
-    <!-- Disclaimer strip -->
-    <div style="background:rgba(91,95,239,.06);border:1px solid rgba(91,95,239,.18);border-radius:12px;padding:16px 20px;margin-bottom:32px">
-      <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7;margin:0">
-        <strong style="color:var(--color-text-primary)">Important:</strong>
-        HVID confirms identity linkage signals. It does not evaluate behavior, intent, or trustworthiness.
-        All signals are informational only and do not constitute a guarantee of any kind.
-      </p>
+      <!-- Highlights -->
+      <div class="terms-highlights">
+        <div class="terms-summary-card">
+          <div class="terms-summary-tag">CORE PURPOSE</div>
+          <div class="terms-summary-title">Identity Signals Only</div>
+          <p class="terms-summary-desc">HVID confirms human linkage, not subjective moral character, safety, or honesty.</p>
+        </div>
+        <div class="terms-summary-card">
+          <div class="terms-summary-tag">DUE DILIGENCE</div>
+          <div class="terms-summary-title">Independent Judgment</div>
+          <p class="terms-summary-desc">Users remain fully responsible for verifying counterparty intentions and contract terms.</p>
+        </div>
+        <div class="terms-summary-card">
+          <div class="terms-summary-tag">SAFEGUARD</div>
+          <div class="terms-summary-title">No Weaponized Accusations</div>
+          <p class="terms-summary-desc">Private evidence-based misconduct system; fraudulent reporting leads to permanent ban.</p>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="policy-body">
-
-      <h2 class="policy-section-title">1. What HVID Is</h2>
-      <p>HVID (Human Verification Identity) is an identity confirmation infrastructure. HVID allows individuals and organisations to confirm that a digital account or identifier is linked to a registered, persistent human identity.</p>
-      <p>HVID is not a safety rating system, scam detection platform, or behavioural review service. HVID does not evaluate the honesty, intentions, or past behaviour of any person.</p>
-
-      <h2 class="policy-section-title">2. What HVID Provides</h2>
-      <p>HVID provides the following informational signals only:</p>
-      <ul>
-        <li>Confirmation that an account is linked to a registered human identity</li>
-        <li>Confirmation of identity verification level (Unverified, Basic, Strong, High Assurance)</li>
-        <li>Confirmation of identity continuity and ownership consistency</li>
-        <li>System-level enforcement status (Stable, Review, Revalidation, Limited, Suspended)</li>
+  <!-- Layout with Sticky TOC -->
+  <div class="terms-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="terms-toc">
+      <div class="terms-toc-heading">Table of Contents</div>
+      <ul class="terms-toc-list">
+        <li><a href="#sec-1" class="terms-toc-link">1. What HVID Is</a></li>
+        <li><a href="#sec-2" class="terms-toc-link">2. What HVID Provides</a></li>
+        <li><a href="#sec-3" class="terms-toc-link">3. Explicit Non-Guarantees</a></li>
+        <li><a href="#sec-4" class="terms-toc-link">4. User Responsibilities</a></li>
+        <li><a href="#sec-5" class="terms-toc-link">5. Platform Liability</a></li>
+        <li><a href="#sec-6" class="terms-toc-link">6. Restriction &amp; Suspension</a></li>
+        <li><a href="#sec-7" class="terms-toc-link">7. Governing Terms</a></li>
+        <li><a href="#sec-8" class="terms-toc-link">8. Related Policies</a></li>
       </ul>
-      <p>These signals are informational. They do not constitute a recommendation to engage with, transact with, or trust any person.</p>
+    </aside>
 
-      <h2 class="policy-section-title">3. What HVID Does Not Guarantee</h2>
-      <p>HVID makes no guarantee of:</p>
-      <ul>
-        <li>The honesty, safety, or intentions of any verified identity</li>
-        <li>The outcome of any transaction, interaction, or relationship with a verified identity</li>
-        <li>The completeness or accuracy of any linked account information</li>
-        <li>Protection from financial loss, fraud, or harm arising from interactions with verified or unverified identities</li>
-      </ul>
-      <p>Users must perform their own due diligence and exercise independent judgment in all interactions. HVID is one informational signal. It is not a substitute for personal judgment.</p>
+    <!-- Main Content -->
+    <main class="terms-content">
+      <!-- Section 1 -->
+      <div class="terms-section-card" id="sec-1">
+        <span class="terms-sec-num">SECTION 01</span>
+        <h2 class="terms-sec-title">What HVID Is</h2>
+        <p class="terms-p">
+          HVID (Human Verification Identity) is an objective identity confirmation protocol and infrastructure. HVID allows individuals, enterprises, and online communities to confirm that a digital handle, communication address, or profile is linked to a registered, persistent human identity.
+        </p>
+        <p class="terms-p">
+          HVID is not a safety rating agency, social credit system, scam detection platform, or behavioral review clearinghouse. HVID does not evaluate personal morality, trustworthiness, creditworthiness, or private intentions.
+        </p>
+      </div>
 
-      <h2 class="policy-section-title">4. User Responsibilities</h2>
-      <p>By using HVID, you agree to:</p>
-      <ul>
-        <li>Provide accurate information when creating or verifying your identity</li>
-        <li>Not submit false, fabricated, or misleading reports or evidence</li>
-        <li>Not use HVID signals to harass, defame, or accuse any individual publicly</li>
-        <li>Not attempt to de-anonymize, reverse-engineer, or expose private identity data</li>
-        <li>Accept that HVID signals are informational and not legally binding determinations</li>
-      </ul>
+      <!-- Section 2 -->
+      <div class="terms-section-card" id="sec-2">
+        <span class="terms-sec-num">SECTION 02</span>
+        <h2 class="terms-sec-title">What HVID Provides</h2>
+        <p class="terms-p">HVID provides the following objective, informational signals only:</p>
+        <ul class="terms-list">
+          <li>Cryptographic confirmation that an account is linked to a verified human identity</li>
+          <li>Assurance level grading (Unverified, Basic, Strong, High Assurance)</li>
+          <li>Confirmation of identity continuity and account ownership consistency</li>
+          <li>System-level enforcement status (Stable, Review, Revalidation, Suspended)</li>
+        </ul>
+        <div class="terms-callout">
+          <strong>Notice:</strong> These signals are strictly informational. They do not constitute an endorsement, insurance coverage, or recommendation to transact or enter into contractual relationships.
+        </div>
+      </div>
 
-      <h2 class="policy-section-title">5. Platform Liability</h2>
-      <p>HVID and its operators are not liable for:</p>
-      <ul>
-        <li>Losses or damages resulting from interactions with any person, verified or not</li>
-        <li>Incorrect identity signals arising from incomplete or fraudulent data submitted by users</li>
-        <li>Third-party use or misuse of HVID signal data</li>
-        <li>Interruptions, errors, or unavailability of the HVID service</li>
-      </ul>
+      <!-- Section 3 -->
+      <div class="terms-section-card" id="sec-3">
+        <span class="terms-sec-num">SECTION 03</span>
+        <h2 class="terms-sec-title">What HVID Does Not Guarantee</h2>
+        <p class="terms-p">HVID explicitly disclaims any and all warranties or guarantees concerning:</p>
+        <ul class="terms-list">
+          <li>The moral character, safety, integrity, or intentions of any verified user</li>
+          <li>The commercial or personal outcome of any transaction or interaction</li>
+          <li>Protection from financial loss, default, fraud, or damage resulting from dealings with any account</li>
+          <li>Completeness or legal validity of off-platform claims made by users</li>
+        </ul>
+        <p class="terms-p">
+          Users must exercise independent judgment and appropriate caution at all times. HVID serves as one data point among your broader diligence.
+        </p>
+      </div>
 
-      <h2 class="policy-section-title">6. Account Restriction and Suspension</h2>
-      <p>HVID reserves the right to restrict, limit, or suspend any identity record in response to:</p>
-      <ul>
-        <li>Verified reports of misuse or ownership conflict</li>
-        <li>Suspicious activity detected by the system</li>
-        <li>Failure to complete required re-verification</li>
-        <li>Violation of these Terms or the Acceptable Use Policy</li>
-      </ul>
-      <p>Enforcement actions are carried out internally and reflected as system-level signals only. No public accusations are made.</p>
+      <!-- Section 4 -->
+      <div class="terms-section-card" id="sec-4">
+        <span class="terms-sec-num">SECTION 04</span>
+        <h2 class="terms-sec-title">User Responsibilities &amp; Conduct</h2>
+        <p class="terms-p">By accessing or utilizing HVID, you legally covenant and agree to:</p>
+        <ul class="terms-list">
+          <li>Provide truthful and accurate information during enrollment and verification</li>
+          <li>Refrain from submitting fraudulent, weaponized, or fabricated misconduct reports</li>
+          <li>Never use HVID signals to harass, dox, defame, or publicly smear any individual</li>
+          <li>Never attempt to de-anonymize, extract, reverse-engineer, or scrape identity cryptographic hashes</li>
+          <li>Acknowledge that protocol outputs are informational and non-judicial determinations</li>
+        </ul>
+      </div>
 
-      <h2 class="policy-section-title">7. Governing Terms</h2>
-      <p>These Terms are governed by applicable law. If any provision is found unenforceable, the remaining provisions remain in effect. HVID may update these Terms at any time. Continued use constitutes acceptance of the updated Terms.</p>
+      <!-- Section 5 -->
+      <div class="terms-section-card" id="sec-5">
+        <span class="terms-sec-num">SECTION 05</span>
+        <h2 class="terms-sec-title">Limitation of Platform Liability</h2>
+        <p class="terms-p">
+          To the maximum extent permitted by applicable law, HVID and its affiliates, officers, and contributors are not liable for:
+        </p>
+        <ul class="terms-list">
+          <li>Indirect, punitive, incidental, or consequential damages arising from interactions between users</li>
+          <li>Inaccurate signal outputs resulting from user-submitted deception or identity fraud</li>
+          <li>Third-party misuse or unauthorized propagation of public cryptographic signal hashes</li>
+          <li>Scheduled or unscheduled protocol maintenance, network downtime, or service interruptions</li>
+        </ul>
+      </div>
 
-      <h2 class="policy-section-title">8. Related Policies</h2>
-      <ul>
-        <li><a href="/legal" style="color:var(--color-primary)">Privacy Policy</a></li>
-        <li><a href="/acceptable-use" style="color:var(--color-primary)">Acceptable Use Policy</a></li>
-        <li><a href="/trust-safety" style="color:var(--color-primary)">Trust &amp; Safety</a></li>
-      </ul>
+      <!-- Section 6 -->
+      <div class="terms-section-card" id="sec-6">
+        <span class="terms-sec-num">SECTION 06</span>
+        <h2 class="terms-sec-title">Account Restriction and Protocol Suspension</h2>
+        <p class="terms-p">
+          HVID reserves the right to restrict, place under review, or permanently suspend any identity record upon:
+        </p>
+        <ul class="terms-list">
+          <li>Verified evidentiary findings of identity theft, account hijacking, or credential resale</li>
+          <li>Systemic anti-sybil violations or multi-account spoofing attempts</li>
+          <li>Unresolved ownership disputes or failure to complete required re-verification</li>
+          <li>Material violation of these Terms or the Acceptable Use Policy</li>
+        </ul>
+      </div>
 
-    </div>
+      <!-- Section 7 -->
+      <div class="terms-section-card" id="sec-7">
+        <span class="terms-sec-num">SECTION 07</span>
+        <h2 class="terms-sec-title">Governing Terms &amp; Amendments</h2>
+        <p class="terms-p">
+          These Terms are governed by and construed under applicable corporate jurisdiction. If any provision is deemed invalid or unenforceable, all remaining provisions remain in full force. HVID reserves the right to update these Terms periodically; continued use after updates constitutes affirmative acceptance.
+        </p>
+      </div>
+
+      <!-- Section 8 -->
+      <div class="terms-section-card" id="sec-8">
+        <span class="terms-sec-num">SECTION 08</span>
+        <h2 class="terms-sec-title">Related Policies</h2>
+        <p class="terms-p">Please review our companion governance frameworks:</p>
+        <div class="flex gap-4" style="flex-wrap:wrap;margin-top:12px">
+          <a href="/trust-safety" class="btn btn-ghost btn-sm" style="border:1px solid #cbd5e1">Trust &amp; Safety Framework</a>
+          <a href="/legal" class="btn btn-ghost btn-sm" style="border:1px solid #cbd5e1">Privacy Policy</a>
+          <a href="/acceptable-use" class="btn btn-ghost btn-sm" style="border:1px solid #cbd5e1">Acceptable Use Policy</a>
+        </div>
+      </div>
+    </main>
   </div>
 
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-bottom" style="justify-content:center;gap:var(--space-6)">
         <a href="/" class="footer-link">Home</a>
-        <a href="/legal" class="footer-link">Privacy Policy</a>
-        <a href="/terms" class="footer-link" style="color:var(--color-text-secondary)">Terms of Service</a>
-        <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
+        <a href="/how-it-works" class="footer-link">How It Works</a>
         <a href="/trust-safety" class="footer-link">Trust &amp; Safety</a>
+        <a href="/terms" class="footer-link" style="color:#1b64f2;font-weight:700">Terms of Service</a>
+        <a href="/legal" class="footer-link">Privacy Policy</a>
+        <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
       </div>
       <div style="text-align:center;margin-top:var(--space-4)">
-        <span class="footer-copy">HVID is an identity confirmation infrastructure. Not a safety rating. Not a scam detector.</span>
+        <span class="footer-copy">HVID is an identity confirmation protocol. It does not issue behavioral or moral safety ratings.</span>
       </div>
     </div>
   </footer>

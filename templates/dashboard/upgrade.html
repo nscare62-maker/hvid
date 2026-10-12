@@ -32,7 +32,14 @@
     .plan-desc { font-size:13px; color:var(--color-text-muted); margin-bottom:20px; line-height:1.6; }
     .plan-features { list-style:none; padding:0; margin:0 0 24px; }
     .plan-features li { font-size:13px; color:var(--color-text-secondary); padding:5px 0; display:flex; align-items:center; gap:8px; }
-    .plan-features li::before { content:'✓'; color:#34d399; font-weight:700; flex-shrink:0; }
+    .plan-features li::before {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2334d399' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") no-repeat center;
+    }
 
     .btn-upgrade {
       width:100%; background:var(--color-primary); color:#fff; border:none;
@@ -131,22 +138,24 @@
 
   <div class="dashboard-main">
     <header class="topbar">
-      <div class="topbar-search-wrap">
-        <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="Search anything..." aria-label="Search" />
-      </div>
-      <div class="topbar-right">
-        <button class="topbar-icon-btn" aria-label="Notifications" title="Notifications">
-          <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-        </button>
-        <div class="topbar-profile-pill">
-          <div class="topbar-avatar" id="db-avatar">R</div>
-          <span class="topbar-name" id="db-display-name">Rahul Kumar</span>
-          <span class="badge-verified-inline" style="background:#10b981">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
+      <div class="topbar-inner">
+        <div class="topbar-search-wrap">
+          <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search anything..." aria-label="Search" />
         </div>
-        <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace;display:none" id="topbar-hvid"></span>
+        <div class="topbar-right">
+          <button class="topbar-icon-btn" aria-label="Notifications" title="Notifications">
+            <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </button>
+          <div class="topbar-profile-pill">
+            <div class="topbar-avatar" id="db-avatar">R</div>
+            <span class="topbar-name" id="db-display-name">Rahul Kumar</span>
+            <span class="badge-verified-inline" style="background:#10b981">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+          </div>
+          <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace;display:none" id="topbar-hvid"></span>
+        </div>
       </div>
     </header>
     <main class="page-content">
@@ -255,7 +264,7 @@ function renderPlans(plans, purchasedPlanIds) {
       <li>Basic HVID identity</li>
       <li>Public identity lookup</li>
     </ul>
-    <button class="btn-upgrade current" disabled>${currentTier === 'FREE' ? '✓ Current Plan' : 'Included in your plan'}</button>
+    <button class="btn-upgrade current" disabled>${currentTier === 'FREE' ? '<span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>Current Plan</span>' : 'Included in your plan'}</button>
   `;
   grid.appendChild(freeCard);
 
@@ -275,7 +284,7 @@ function renderPlans(plans, purchasedPlanIds) {
       </ul>
       <button class="btn-upgrade ${isPurchased ? 'current' : ''}" ${isPurchased ? 'disabled' : ''}
         onclick="startPayment('${plan.id}', '${plan.name}', ${plan.amount}, '${plan.id === 'PREMIUM' ? 'PREMIUM' : 'KYC'}')">
-        ${isPurchased ? '✓ Purchased' : 'Upgrade for ' + plan.amount_display}
+        ${isPurchased ? '<span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>Purchased</span>' : 'Upgrade for ' + plan.amount_display}
       </button>
     `;
     grid.appendChild(card);
@@ -336,7 +345,7 @@ async function startPayment(planId, planName, amount, purpose = 'UPGRADE') {
               s.tier = vd.tier;
               localStorage.setItem('hvid_session', JSON.stringify(s));
             } catch(_) {}
-            showToast('🎉 ' + vd.message, false, '#34d399');
+            showToast(vd.message, false, '#34d399');
             setTimeout(() => {
               const kycRedirect = vd.redirect_url || (paymentPurpose === 'KYC' ? '/dashboard/verification?payment=success&start=kyc' : null);
               sessionStorage.removeItem('hvid_payment_intent');

@@ -20,7 +20,7 @@ const IdentityTypeUI = (() => {
       color:       '#818cf8',
       bg:          'rgba(129,140,248,.08)',
       border:      'rgba(129,140,248,.18)',
-      icon:        '👤',
+      icon:        '<svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>',
       badgeCls:    'itype-personal',
     },
     PROFESSIONAL: {
@@ -33,7 +33,7 @@ const IdentityTypeUI = (() => {
       color:       '#34d399',
       bg:          'rgba(52,211,153,.08)',
       border:      'rgba(52,211,153,.18)',
-      icon:        '💼',
+      icon:        '<svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>',
       badgeCls:    'itype-professional',
     },
     BUSINESS: {
@@ -46,7 +46,7 @@ const IdentityTypeUI = (() => {
       color:       '#fbbf24',
       bg:          'rgba(251,191,36,.07)',
       border:      'rgba(251,191,36,.2)',
-      icon:        '🏢',
+      icon:        '<svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="22.01"></line><line x1="15" y1="22" x2="15.01" y2="22"></line><line x1="9" y1="6" x2="9" y2="6.01"></line><line x1="15" y1="6" x2="15.01" y2="6"></line><line x1="9" y1="10" x2="9" y2="10.01"></line><line x1="15" y1="10" x2="15.01" y2="10"></line><line x1="9" y1="14" x2="9" y2="14.01"></line><line x1="15" y1="14" x2="15.01" y2="14"></line><line x1="9" y1="18" x2="9" y2="18.01"></line><line x1="15" y1="18" x2="15.01" y2="18"></line></svg>',
       badgeCls:    'itype-business',
     },
   };
@@ -105,7 +105,7 @@ const IdentityTypeUI = (() => {
     const cfg = resolve(type);
     const el = document.createElement('span');
     el.className = `itype-badge ${cfg.badgeCls}`;
-    el.textContent = `${cfg.icon} ${cfg.short}`;
+    el.innerHTML = `${cfg.icon} <span>${cfg.short}</span>`;
     el.title = cfg.desc;
     return el;
   }
@@ -121,7 +121,7 @@ const IdentityTypeUI = (() => {
     el.innerHTML = `
       <div class="itype-check" style="border-color:${isSelected ? cfg.color : 'rgba(255,255,255,.15)'};
         background:${isSelected ? cfg.color : 'transparent'};
-        color:${isSelected ? '#0f0f0f' : 'transparent'}">✓</div>
+        color:${isSelected ? '#0f0f0f' : 'transparent'}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
       <div class="itype-card-icon">${cfg.icon}</div>
       <div class="itype-card-title" style="color:${cfg.color}">${cfg.title}</div>
       <div class="itype-card-desc">${cfg.desc}</div>

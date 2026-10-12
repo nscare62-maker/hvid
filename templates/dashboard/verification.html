@@ -100,12 +100,14 @@
   <!-- Main -->
   <div class="dashboard-main">
     <header class="topbar">
-      <div class="topbar-search-wrap">
-        <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="Search anything..." aria-label="Search" />
-      </div>
-      <div class="topbar-right">
-        <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace" id="topbar-hvid"></span>
+      <div class="topbar-inner">
+        <div class="topbar-search-wrap">
+          <svg class="hvid-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search anything..." aria-label="Search" />
+        </div>
+        <div class="topbar-right">
+          <span style="font-size:12px;color:var(--color-text-muted);font-family:monospace" id="topbar-hvid"></span>
+        </div>
       </div>
     </header>
 
@@ -275,33 +277,31 @@
           <!-- STEP 1 — Contact -->
           <div class="vf-panel active" id="panel-1">
             <div class="vf-panel-card">
-              <div class="vf-panel-title">Contact Verification</div>
-              <div class="vf-panel-desc">We confirm you control the phone number linked to your HVID.</div>
-              <div class="vf-error-strip hidden" id="otp-error">✕ Verification failed — please retry.</div>
+              <div class="vf-error-strip hidden" id="otp-error"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg><span>Verification failed — please retry.</span></div>
               <div class="input-group" style="margin-bottom:var(--space-5)">
                 <label class="input-label">Your phone number</label>
                 <div style="display:flex;gap:var(--space-2);align-items:stretch">
-                  <select id="otp-country-code" class="input" style="width:90px;flex-shrink:0;padding:0 8px;cursor:pointer;font-size:14px">
-                    <option value="+91">🇮🇳 +91</option>
-                    <option value="+1">🇺🇸 +1</option>
-                    <option value="+44">🇬🇧 +44</option>
-                    <option value="+61">🇦🇺 +61</option>
-                    <option value="+971">🇦🇪 +971</option>
-                    <option value="+65">🇸🇬 +65</option>
-                    <option value="+60">🇲🇾 +60</option>
-                    <option value="+880">🇧🇩 +880</option>
-                    <option value="+92">🇵🇰 +92</option>
-                    <option value="+94">🇱🇰 +94</option>
-                    <option value="+977">🇳🇵 +977</option>
-                    <option value="+49">🇩🇪 +49</option>
-                    <option value="+33">🇫🇷 +33</option>
-                    <option value="+81">🇯🇵 +81</option>
-                    <option value="+82">🇰🇷 +82</option>
-                    <option value="+86">🇨🇳 +86</option>
-                    <option value="+55">🇧🇷 +55</option>
-                    <option value="+27">🇿🇦 +27</option>
-                    <option value="+234">🇳🇬 +234</option>
-                    <option value="+254">🇰🇪 +254</option>
+                  <select id="otp-country-code" class="input" style="width:105px;flex-shrink:0;padding:0 8px;cursor:pointer;font-size:13px">
+                    <option value="+91">IN (+91)</option>
+                    <option value="+1">US (+1)</option>
+                    <option value="+44">UK (+44)</option>
+                    <option value="+61">AU (+61)</option>
+                    <option value="+971">AE (+971)</option>
+                    <option value="+65">SG (+65)</option>
+                    <option value="+60">MY (+60)</option>
+                    <option value="+880">BD (+880)</option>
+                    <option value="+92">PK (+92)</option>
+                    <option value="+94">LK (+94)</option>
+                    <option value="+977">NP (+977)</option>
+                    <option value="+49">DE (+49)</option>
+                    <option value="+33">FR (+33)</option>
+                    <option value="+81">JP (+81)</option>
+                    <option value="+82">KR (+82)</option>
+                    <option value="+86">CN (+86)</option>
+                    <option value="+55">BR (+55)</option>
+                    <option value="+27">ZA (+27)</option>
+                    <option value="+234">NG (+234)</option>
+                    <option value="+254">KE (+254)</option>
                   </select>
                   <input type="tel" class="input" id="otp-contact" placeholder="98765 43210" style="flex:1;min-width:0" inputmode="numeric" autocomplete="tel-national" />
                 </div>
@@ -331,7 +331,7 @@
             <div class="vf-panel-card" id="identity-proof-section" style="scroll-margin-top:80px">
               <div class="vf-panel-title">Identity Proof</div>
               <div class="vf-panel-desc">Choose one method to prove your identity. Documents are reviewed once and permanently deleted.</div>
-              <div class="vf-error-strip hidden" id="proof-error">✕ Additional verification required — please try again.</div>
+              <div class="vf-error-strip hidden" id="proof-error">Additional verification required — please try again.</div>
               <div class="proof-methods" id="proof-methods">
                 <div class="proof-method-card" id="method-id" onclick="selectProofMethod('id')">
                   <div class="proof-method-icon">
@@ -367,11 +367,16 @@
           <div class="vf-panel" id="panel-3">
             <div class="vf-panel-card">
               <div class="vf-confirmation">
-                <div class="vf-confirmation-icon">✓</div>
+                <div class="vf-confirmation-icon" style="color:#10b981">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
                 <div class="vf-confirmation-title" id="vf-confirmation-title">Verification Submitted</div>
                 <div class="vf-confirmation-desc" id="vf-confirmation-desc">Your verification status will update automatically after KYC and face review are complete.</div>
                 <div style="margin-bottom:var(--space-6)">
-                  <span class="id-state" id="confirm-status-badge">⏳ Pending Review</span>
+                  <span class="id-state" id="confirm-status-badge" style="display:inline-flex;align-items:center;gap:6px">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>Pending Review</span>
+                  </span>
                 </div>
                 <div style="background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-5);text-align:left">
                   <div style="font-size:12px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:var(--space-3)">What happens next</div>
@@ -432,7 +437,7 @@
 // Catch any JS errors and show them on the otp-error strip
 window.onerror = function(msg, src, line) {
   const el = document.getElementById('otp-error');
-  if (el) { el.textContent = '⚠ JS Error: ' + msg + ' (line ' + line + ')'; el.classList.remove('hidden'); }
+  if (el) { el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> JS Error: ' + msg + ' (line ' + line + ')'; el.classList.remove('hidden'); }
   return false;
 };
 </script>
@@ -468,27 +473,27 @@ function updateConfirmationState(kycStatus, faceStatus) {
   if (!statusBadge || !title || !desc) return;
 
   if (kycStatus === 'VERIFIED' && faceStatus === 'VERIFIED') {
-    statusBadge.textContent = '✅ Level 3 High Trust';
+    statusBadge.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:3px"><polyline points="20 6 9 17 4 12"></polyline></svg> Level 3 High Trust';
     statusBadge.className = 'id-state id-state-VERIFIED';
     title.textContent = 'High Trust Verification Complete';
     desc.textContent = 'KYC and face verification are both approved. Level 3 High Trust is the highest level currently available.';
   } else if (kycStatus === 'VERIFIED' && faceStatus === 'UNDER_REVIEW') {
-    statusBadge.textContent = '🔍 Face Review Under Review';
+    statusBadge.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Face Review Under Review';
     statusBadge.className = 'id-state id-state-UNDER_REVIEW';
     title.textContent = 'KYC Verified - Face Review Pending';
     desc.textContent = 'Your government ID is approved. Level 3 High Trust will complete after the admin approves your face verification.';
   } else if (kycStatus === 'VERIFIED') {
-    statusBadge.textContent = '✓ KYC Verified';
+    statusBadge.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:3px"><polyline points="20 6 9 17 4 12"></polyline></svg> KYC Verified';
     statusBadge.className = 'id-state id-state-VERIFIED';
     title.textContent = 'KYC Verified - Face Verification Required';
     desc.textContent = 'Your government ID is approved. Complete face verification to reach Level 3 High Trust.';
   } else if (kycStatus === 'REJECTED' || faceStatus === 'REJECTED') {
-    statusBadge.textContent = '❌ Review Needs Attention';
+    statusBadge.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:3px"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Review Needs Attention';
     statusBadge.className = 'id-state id-state-REJECTED';
     title.textContent = 'Verification Needs Attention';
     desc.textContent = 'One verification step needs attention. Review the status above and submit a clearer verification.';
   } else {
-    statusBadge.textContent = '⏳ Review In Progress';
+    statusBadge.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Review In Progress';
     statusBadge.className = 'id-state id-state-UNVERIFIED';
     title.textContent = 'Verification Submitted';
     desc.textContent = 'Your verification status will update automatically after KYC and face review are complete.';
@@ -673,11 +678,11 @@ async function verifyOTP() {
   const phone = localNumber ? countryCode + localNumber : (s.phone || null);
 
   if (code.length < 6) {
-    if(errEl){ errEl.classList.remove('hidden'); errEl.textContent='✕ Please enter all 6 digits.'; }
+    if(errEl){ errEl.classList.remove('hidden'); errEl.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>Please enter all 6 digits.'; }
     return;
   }
   if (!phone) {
-    if(errEl){ errEl.classList.remove('hidden'); errEl.textContent='✕ Session phone not found. Please re-login.'; }
+    if(errEl){ errEl.classList.remove('hidden'); errEl.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>Session phone not found. Please re-login.'; }
     return;
   }
 
@@ -701,15 +706,15 @@ async function verifyOTP() {
         sess.verificationLevel = d.verification_level != null ? d.verification_level : sess.verificationLevel;
         localStorage.setItem('hvid_session', JSON.stringify(sess));
       }
-      if(btn){ btn.textContent='Verified ✓'; }
+      if(btn){ btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"></polyline></svg>Verified'; }
       _notify('Phone verified', 'success');
       showStep(2);
     } else {
-      if(errEl){ errEl.classList.remove('hidden'); errEl.textContent='✕ ' + (d.error||'Incorrect code.'); }
+      if(errEl){ errEl.classList.remove('hidden'); errEl.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>' + (d.error||'Incorrect code.'); }
       if(btn){ btn.textContent='Verify Code →'; btn.disabled=false; }
     }
   } catch(e) {
-    if(errEl){ errEl.classList.remove('hidden'); errEl.textContent='✕ Network error. Try again.'; }
+    if(errEl){ errEl.classList.remove('hidden'); errEl.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>Network error. Try again.'; }
     if(btn){ btn.textContent='Verify Code →'; btn.disabled=false; }
   }
 }
@@ -780,7 +785,7 @@ function fileSelected(input) {
   const s = document.getElementById('file-status');
   if (!input.files.length || !s) return;
   s.style.display = 'block';
-  s.textContent   = '✓ ' + input.files[0].name;
+  s.innerHTML     = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"></polyline></svg>' + input.files[0].name;
 }
 
 // ── Step 2: Face capture → redirect to real face capture page ─

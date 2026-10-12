@@ -14,6 +14,38 @@
   onScroll();
 })();
 
+// ── Public nav active link synchronization ─────────────────────
+(function initPublicNavActive() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+
+  function norm(path) {
+    if (!path) return '';
+    let p = path.split('?')[0].split('#')[0].replace(/\/$/, '') || '/';
+    if (p.endsWith('.html')) p = p.slice(0, -5) || '/';
+    return p;
+  }
+
+  const current = norm(window.location.pathname);
+  const links = nav.querySelectorAll('.nav-links .nav-link, .nav-mobile-menu .nav-mobile-link');
+  if (!links.length) return;
+
+  links.forEach(function(l) {
+    const href = l.getAttribute('href');
+    const normHref = norm(href);
+    const isHome = normHref === '/' || normHref === '';
+    const isActive = isHome
+      ? (current === '/' || current === '' || current === '/index')
+      : (current === normHref || current.startsWith(normHref + '/'));
+
+    if (isActive) {
+      l.classList.add('active');
+    } else {
+      l.classList.remove('active');
+    }
+  });
+})();
+
 // ── Public nav mobile menu toggle ─────────────────────────
 (function initPublicMobileNav() {
   const nav = document.querySelector('.nav');
@@ -40,13 +72,24 @@
     drawer.className = 'nav-mobile-menu';
     drawer.id = 'nav-mobile-menu';
 
+    function norm(path) {
+      if (!path) return '';
+      let p = path.split('?')[0].split('#')[0].replace(/\/$/, '') || '/';
+      if (p.endsWith('.html')) p = p.slice(0, -5) || '/';
+      return p;
+    }
+
     // Copy links from nav-links
     const links = nav.querySelectorAll('.nav-links .nav-link');
     let linksHtml = '';
-    const current = window.location.pathname;
+    const current = norm(window.location.pathname);
     links.forEach(function(l) {
       const href = l.getAttribute('href');
-      const isActive = href && (href === current || current.endsWith(href));
+      const normHref = norm(href);
+      const isHome = normHref === '/' || normHref === '';
+      const isActive = isHome
+        ? (current === '/' || current === '' || current === '/index')
+        : (current === normHref || current.startsWith(normHref + '/'));
       linksHtml += '<a href="' + href + '" class="nav-mobile-link' + (isActive ? ' active' : '') + '">' + l.textContent.trim() + '</a>';
     });
 
@@ -180,15 +223,15 @@ const HVID = window.HVID = {
     }
 
     var colors = {
-      info:    { bg: 'rgba(91,95,239,0.15)',   border: 'rgba(91,95,239,0.3)',   icon: '💬' },
-      success: { bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  icon: '✓'  },
-      warning: { bg: 'rgba(251,191,36,0.12)',  border: 'rgba(251,191,36,0.3)',  icon: '⚠'  },
-      error:   { bg: 'rgba(248,113,113,0.12)', border: 'rgba(248,113,113,0.3)', icon: '✕'  },
+      info:    { bg: 'rgba(91,95,239,0.15)',   border: 'rgba(91,95,239,0.3)',   icon: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>' },
+      success: { bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  icon: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>'  },
+      warning: { bg: 'rgba(251,191,36,0.12)',  border: 'rgba(251,191,36,0.3)',  icon: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'  },
+      error:   { bg: 'rgba(248,113,113,0.12)', border: 'rgba(248,113,113,0.3)', icon: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'  },
     };
     var c = colors[type] || colors.info;
 
     var toast = document.createElement('div');
-    toast.innerHTML = '<span style="margin-right:8px;opacity:0.8">' + c.icon + '</span>' + message;
+    toast.innerHTML = '<span style="margin-right:8px;display:inline-flex;align-items:center">' + c.icon + '</span>' + message;
     Object.assign(toast.style, {
       background: c.bg, border: '1px solid ' + c.border,
       color: '#F0F0FA', padding: '12px 18px', borderRadius: '10px',

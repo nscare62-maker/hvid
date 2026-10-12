@@ -7,146 +7,464 @@
   <meta name="description" content="HVID Privacy Policy — how we collect, store, protect, and use your data. Minimal data collection philosophy." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/global.css" />
   <link rel="stylesheet" href="/static/css/public.css" />
+  <style>
+    /* ==========================================================
+       HVID — Ultra-Modern Privacy Policy Styles
+       ========================================================== */
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fbff;
+      color: var(--color-text-primary);
+    }
+
+    .legal-hero {
+      padding: calc(var(--nav-height) + 54px) 0 44px;
+      background: radial-gradient(circle at 50% 20%, rgba(16, 185, 129, 0.07) 0%, rgba(248, 251, 255, 0) 70%), #f8fbff;
+      text-align: center;
+      position: relative;
+    }
+
+    .legal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #059669;
+      margin-bottom: 20px;
+    }
+
+    .legal-title {
+      font-size: clamp(32px, 4.5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0b192c;
+      margin-bottom: 12px;
+    }
+
+    .legal-meta {
+      font-size: 14.5px;
+      color: #64748b;
+      margin-bottom: 28px;
+    }
+
+    /* Key highlights grid */
+    .legal-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      max-width: 980px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .legal-summary-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+      transition: all 0.2s ease;
+    }
+
+    .legal-summary-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 10px 24px rgba(16, 185, 129, 0.07);
+    }
+
+    .legal-summary-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #059669;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .legal-summary-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0b192c;
+      margin-bottom: 6px;
+    }
+
+    .legal-summary-desc {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Main Container & TOC Layout */
+    .legal-layout {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 44px var(--space-4) 80px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    /* Sticky Table of Contents */
+    .legal-toc {
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03);
+    }
+
+    .legal-toc-heading {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .legal-toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .legal-toc-link {
+      font-size: 13.5px;
+      color: #475569;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: block;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .legal-toc-link:hover {
+      background: #ecfdf5;
+      color: #059669;
+      font-weight: 600;
+    }
+
+    /* Content Cards */
+    .legal-content {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .legal-section-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.02);
+      scroll-margin-top: calc(var(--nav-height) + 20px);
+    }
+
+    .legal-sec-num {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #059669;
+      background: rgba(16, 185, 129, 0.08);
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+    }
+
+    .legal-sec-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0b192c;
+      letter-spacing: -0.015em;
+      margin: 0 0 16px;
+    }
+
+    .legal-p {
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.7;
+      margin: 0 0 16px;
+    }
+
+    .legal-p:last-child {
+      margin-bottom: 0;
+    }
+
+    .legal-list {
+      margin: 0 0 16px;
+      padding-left: 20px;
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .legal-list li {
+      margin-bottom: 8px;
+    }
+
+    .legal-callout {
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-top: 16px;
+      font-size: 14px;
+      color: #065f46;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .legal-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .legal-toc {
+        position: static;
+      }
+      .legal-highlights {
+        grid-template-columns: 1fr;
+      }
+      .legal-section-card {
+        padding: 24px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
+  <!-- Navigation -->
   <nav class="nav" id="main-nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo"><div class="nav-logo-mark">HV</div>HVID</a>
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-mark">HV</div>
+        <span class="nav-logo-divider">|</span>
+        <span>HVID</span>
+      </a>
+
+      <!-- Desktop Links (All 6 Pages Included) -->
       <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
         <a href="/how-it-works" class="nav-link">How It Works</a>
+        <a href="/for-individuals" class="nav-link">Individuals</a>
+        <a href="/for-businesses" class="nav-link">For Business</a>
         <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
-        <a href="/legal" class="nav-link active">Legal</a>
+        <a href="/admin/verification-review" class="nav-link">Admin</a>
       </div>
+
       <div class="nav-actions">
-        <a href="auth/login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="auth/signup.html" class="btn btn-primary btn-sm">Get Started</a>
+        <a href="/auth/login" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Mobile Dropdown Menu -->
+      <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="/" class="nav-mobile-link">Home</a>
+        <a href="/how-it-works" class="nav-mobile-link">How It Works</a>
+        <a href="/for-individuals" class="nav-mobile-link">Individuals</a>
+        <a href="/for-businesses" class="nav-mobile-link">For Business</a>
+        <a href="/trust-safety" class="nav-mobile-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-mobile-link">Admin</a>
+        <div class="nav-mobile-divider"></div>
+        <a href="/auth/login" class="btn btn-ghost btn-full" style="margin-bottom:8px">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-full">Get Started</a>
       </div>
     </div>
   </nav>
 
-  <div class="policy-wrap">
+  <!-- Hero -->
+  <section class="legal-hero">
+    <div class="container">
+      <div class="legal-badge">Privacy Architecture &amp; Data Governance</div>
+      <h1 class="legal-title">Privacy Policy</h1>
+      <p class="legal-meta">Version 2.4 · Effective: 1 April 2025 · Last updated: 12 April 2025</p>
 
-    <!-- Page nav -->
-    <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-8);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border)">
-      <a href="/legal" class="btn btn-primary btn-sm" style="font-size:12px">Privacy Policy</a>
-      <a href="/terms" class="btn btn-ghost btn-sm" style="font-size:12px">Terms of Service</a>
-      <a href="/acceptable-use" class="btn btn-ghost btn-sm" style="font-size:12px">Acceptable Use</a>
+      <!-- Highlights -->
+      <div class="legal-highlights">
+        <div class="legal-summary-card">
+          <div class="legal-summary-tag">MINIMAL DATA</div>
+          <div class="legal-summary-title">Zero Honey-Pot Architecture</div>
+          <p class="legal-summary-desc">We collect only what is strictly necessary to prove identity. Raw ID documents are permanently purged.</p>
+        </div>
+        <div class="legal-summary-card">
+          <div class="legal-summary-tag">SECURITY</div>
+          <div class="legal-summary-title">Cryptographic One-Way Hashes</div>
+          <p class="legal-summary-desc">Biometrics and personal identifiers are stored as irreversible cryptographic hashes, not raw files.</p>
+        </div>
+        <div class="legal-summary-card">
+          <div class="legal-summary-tag">NO ADS OR DATA BROKERS</div>
+          <div class="legal-summary-title">Never Sold or Monetized</div>
+          <p class="legal-summary-desc">We never sell personal data to advertisers, credit bureaus, data brokers, or marketing syndicates.</p>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <h1 class="policy-title">Privacy Policy</h1>
-    <p class="policy-meta">Effective date: 1 April 2025 · Last updated: 12 April 2025</p>
-
-    <!-- Core philosophy strip -->
-    <div style="background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.18);border-radius:12px;padding:16px 20px;margin-bottom:32px">
-      <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7;margin:0">
-        <strong style="color:var(--color-text-primary)">Minimal data philosophy:</strong>
-        HVID collects only what is strictly necessary to operate the identity confirmation system.
-        We do not sell personal data. We do not share it for advertising. We store only what we must.
-      </p>
-    </div>
-
-    <div class="policy-body">
-
-      <h2 class="policy-section-title">1. What Data We Collect</h2>
-      <p>HVID collects a minimal set of data required to operate the identity system:</p>
-      <ul>
-        <li><strong>Account data:</strong> Email address or phone number used to create your HVID account</li>
-        <li><strong>Identity verification data:</strong> Documents or face-capture representations submitted during verification — stored only for the duration of the review process, then permanently deleted</li>
-        <li><strong>Linked account identifiers:</strong> Account handles, URLs, or identifiers you choose to link to your HVID (stored as references only, not their content)</li>
-        <li><strong>System activity logs:</strong> Match queries, login events, and enforcement actions — retained for security and abuse prevention</li>
+  <!-- Layout with Sticky TOC -->
+  <div class="legal-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="legal-toc">
+      <div class="legal-toc-heading">Table of Contents</div>
+      <ul class="legal-toc-list">
+        <li><a href="#sec-1" class="legal-toc-link">1. Minimal Data Collection</a></li>
+        <li><a href="#sec-2" class="legal-toc-link">2. Cryptographic Encryption</a></li>
+        <li><a href="#sec-3" class="legal-toc-link">3. Permitted Data Uses</a></li>
+        <li><a href="#sec-4" class="legal-toc-link">4. Search Query Logging</a></li>
+        <li><a href="#sec-5" class="legal-toc-link">5. What We Never Do</a></li>
+        <li><a href="#sec-6" class="legal-toc-link">6. Retention &amp; Deletion</a></li>
+        <li><a href="#sec-7" class="legal-toc-link">7. Third-Party Disclosures</a></li>
+        <li><a href="#sec-8" class="legal-toc-link">8. Your Statutory Rights</a></li>
+        <li><a href="#sec-9" class="legal-toc-link">9. Privacy Inquiries</a></li>
       </ul>
-      <p>We do not collect: your real name (unless provided voluntarily), financial information, location data, or browsing history outside the HVID platform.</p>
+    </aside>
 
-      <h2 class="policy-section-title">2. Encryption of Sensitive Data</h2>
-      <p>All sensitive identity data is encrypted in transit and at rest. This includes:</p>
-      <ul>
-        <li>Verification documents — encrypted during transmission and immediately queued for deletion after review</li>
-        <li>Contact information (email, phone) — encrypted at rest; displayed only in masked form within your dashboard</li>
-        <li>Face capture representations — stored as an encrypted hash only. The original image is never stored.</li>
-        <li>Identity records — protected by access controls; only you and authorised HVID systems can read your record</li>
-      </ul>
+    <!-- Main Content -->
+    <main class="legal-content">
+      <!-- Section 1 -->
+      <div class="legal-section-card" id="sec-1">
+        <span class="legal-sec-num">SECTION 01</span>
+        <h2 class="legal-sec-title">What Data We Collect</h2>
+        <p class="legal-p">
+          HVID is engineered on a strict principle of data minimization. We collect only what is technically required to maintain an unforgeable identity anchor:
+        </p>
+        <ul class="legal-list">
+          <li><strong>Authentication Credentials:</strong> Telephone number or email address required for multi-factor login sessions.</li>
+          <li><strong>Verification Telemetry:</strong> Ephemeral selfie and document images utilized solely during active review, then permanently purged.</li>
+          <li><strong>Claimed Public Assets:</strong> Social handles, web domains, and storefront URLs you explicitly request to link to your HVID.</li>
+          <li><strong>Audit &amp; Security Logs:</strong> Match query timestamps and authorization attempts for rate-limiting and anti-abuse defense.</li>
+        </ul>
+        <div class="legal-callout">
+          <strong>Explicit Non-Collection:</strong> HVID never collects financial records, credit scores, real-time GPS locations, or web browsing histories outside of direct platform interactions.
+        </div>
+      </div>
 
-      <h2 class="policy-section-title">3. How We Use Your Data</h2>
-      <p>Data collected by HVID is used only for the following purposes:</p>
-      <ul>
-        <li><strong>Security:</strong> Detecting and preventing unauthorised access, account takeovers, and identity fraud</li>
-        <li><strong>Abuse prevention:</strong> Identifying misuse of the match engine, false reports, and system manipulation</li>
-        <li><strong>System integrity:</strong> Maintaining accurate identity records, ownership continuity, and enforcement actions</li>
-        <li><strong>Service operation:</strong> Providing the identity verification, match, and dashboard features</li>
-      </ul>
+      <!-- Section 2 -->
+      <div class="legal-section-card" id="sec-2">
+        <span class="legal-sec-num">SECTION 02</span>
+        <h2 class="legal-sec-title">Encryption &amp; Storage Architecture</h2>
+        <p class="legal-p">All data handled by HVID is protected by institutional-grade cryptography:</p>
+        <ul class="legal-list">
+          <li><strong>In Transit:</strong> TLS 1.3 encryption with strict HSTS policies across all web and API endpoints.</li>
+          <li><strong>At Rest:</strong> AES-256 encrypted database volumes and salted cryptographic hashing.</li>
+          <li><strong>Biometric Privacy:</strong> Raw biometric captures are translated into mathematical vectors and irreversibly salted. The original image is deleted upon completed review.</li>
+        </ul>
+      </div>
 
-      <h2 class="policy-section-title">4. Match Query Logging</h2>
-      <p>When someone performs a search using the HVID match engine, the query is logged for the following reasons:</p>
-      <ul>
-        <li>Detecting bulk scraping or abuse of the match system</li>
-        <li>Maintaining rate limits and system stability</li>
-        <li>Investigating reports of misuse</li>
-      </ul>
-      <p>Query logs are retained for a limited period and are not used to build profiles of searchers. Logged queries are not associated with identities unless required to investigate abuse.</p>
+      <!-- Section 3 -->
+      <div class="legal-section-card" id="sec-3">
+        <span class="legal-sec-num">SECTION 03</span>
+        <h2 class="legal-sec-title">How Data Is Utilized</h2>
+        <p class="legal-p">Collected information is exclusively utilized for:</p>
+        <ul class="legal-list">
+          <li>Preventing account takeovers and automated sybil bot networks</li>
+          <li>Maintaining deterministic identity continuity signals across linked assets</li>
+          <li>Operating the private, evidence-based misconduct review queue</li>
+          <li>Ensuring uninterrupted protocol availability and API reliability</li>
+        </ul>
+      </div>
 
-      <h2 class="policy-section-title">5. What We Do Not Do</h2>
-      <ul>
-        <li>We do not sell personal data to third parties</li>
-        <li>We do not share data with advertisers or data brokers</li>
-        <li>We do not use identity data for profiling, targeting, or classification beyond system integrity</li>
-        <li>We do not expose verification documents, face data, or contact details publicly</li>
-        <li>We do not disclose reporter identities in the reports system</li>
-      </ul>
+      <!-- Section 4 -->
+      <div class="legal-section-card" id="sec-4">
+        <span class="legal-sec-num">SECTION 04</span>
+        <h2 class="legal-sec-title">Match Query Logging &amp; Anti-Scraping</h2>
+        <p class="legal-p">
+          When an external user or platform submits a public lookup to the HVID match engine, metadata is transiently logged to detect bulk scrapers and distributed denial-of-service attempts. Query logs are never sold, never used for retargeting, and never attached to individual browsing profiles.
+        </p>
+      </div>
 
-      <h2 class="policy-section-title">6. Data Retention</h2>
-      <ul>
-        <li><strong>Verification documents:</strong> Permanently deleted after review is complete</li>
-        <li><strong>Identity records:</strong> Retained while your account is active. Revoked identities retain a non-identifiable record for system integrity</li>
-        <li><strong>Query logs:</strong> Retained for up to 90 days, then automatically deleted</li>
-        <li><strong>Report submissions:</strong> Retained for the duration of the review process and associated enforcement period</li>
-      </ul>
+      <!-- Section 5 -->
+      <div class="legal-section-card" id="sec-5">
+        <span class="legal-sec-num">SECTION 05</span>
+        <h2 class="legal-sec-title">What HVID Explicitly Never Does</h2>
+        <ul class="legal-list">
+          <li>We never sell, rent, or lease personal information to commercial third parties.</li>
+          <li>We never supply consumer profile data to data brokers or advertising exchanges.</li>
+          <li>We never perform behavioral tracking across external websites.</li>
+          <li>We never disclose reporter identities to reported counterparties in misconduct reviews.</li>
+        </ul>
+      </div>
 
-      <h2 class="policy-section-title">7. Third-Party Disclosure</h2>
-      <p>HVID does not share your personal data with third parties except:</p>
-      <ul>
-        <li>Where required by a valid legal order, court subpoena, or law enforcement request</li>
-        <li>Where necessary to protect the safety of the system or its users from imminent harm</li>
-        <li>With infrastructure providers under strict data processing agreements (e.g., encrypted storage, CDN)</li>
-      </ul>
-      <p>All law enforcement requests are directed to: <span style="color:var(--color-primary)">legal@hvid.io</span></p>
+      <!-- Section 6 -->
+      <div class="legal-section-card" id="sec-6">
+        <span class="legal-sec-num">SECTION 06</span>
+        <h2 class="legal-sec-title">Data Retention and Immediate Deletion</h2>
+        <p class="legal-p">
+          Unprocessed verification media is automatically queued for irreversible hardware shredding within hours of review completion. Inactive accounts may request complete deletion at any time through their dashboard settings.
+        </p>
+      </div>
 
-      <h2 class="policy-section-title">8. Your Rights</h2>
-      <p>Depending on your jurisdiction, you may have the right to:</p>
-      <ul>
-        <li>Access the data HVID holds about your identity</li>
-        <li>Request correction of inaccurate data</li>
-        <li>Request deletion of your identity record</li>
-        <li>Request restriction of processing in specific circumstances</li>
-      </ul>
-      <p>To exercise these rights, contact: <span style="color:var(--color-primary)">privacy@hvid.io</span></p>
+      <!-- Section 7 -->
+      <div class="legal-section-card" id="sec-7">
+        <span class="legal-sec-num">SECTION 07</span>
+        <h2 class="legal-sec-title">Third-Party &amp; Law Enforcement Disclosures</h2>
+        <p class="legal-p">
+          HVID does not share private data with outside parties except when legally compelled by valid court orders or statutory subpoenas under verified legal process.
+        </p>
+      </div>
 
-      <h2 class="policy-section-title">9. Changes to This Policy</h2>
-      <p>HVID may update this Privacy Policy over time. The effective date at the top of this page will reflect the latest version. Continued use of HVID following an update constitutes acceptance of the revised policy.</p>
+      <!-- Section 8 -->
+      <div class="legal-section-card" id="sec-8">
+        <span class="legal-sec-num">SECTION 08</span>
+        <h2 class="legal-sec-title">Statutory Privacy Rights (GDPR &amp; CCPA)</h2>
+        <p class="legal-p">
+          Regardless of your physical jurisdiction, HVID extends full data sovereignty rights: you retain the right to access, inspect, export, correct, and irreversibly delete your account record.
+        </p>
+      </div>
 
-      <h2 class="policy-section-title">10. Related Policies</h2>
-      <ul>
-        <li><a href="/terms" style="color:var(--color-primary)">Terms of Service</a></li>
-        <li><a href="/acceptable-use" style="color:var(--color-primary)">Acceptable Use Policy</a></li>
-        <li><a href="/trust-safety" style="color:var(--color-primary)">Trust &amp; Safety</a></li>
-      </ul>
-
-    </div>
+      <!-- Section 9 -->
+      <div class="legal-section-card" id="sec-9">
+        <span class="legal-sec-num">SECTION 09</span>
+        <h2 class="legal-sec-title">Contact the Privacy Office</h2>
+        <p class="legal-p">
+          For formal privacy inquiries, data export requests, or regulatory communications, contact our data protection officer directly at:
+        </p>
+        <div style="margin-top:14px">
+          <a href="mailto:privacy@hvid.io" class="btn btn-primary btn-sm">Email privacy@hvid.io</a>
+        </div>
+      </div>
+    </main>
   </div>
 
+  <!-- Footer -->
   <footer>
     <div class="container">
-      <div class="footer-bottom">
-        <span class="footer-copy">&copy; 2025 HVID. All rights reserved.</span>
-        <span class="footer-copy">Identity confirmation infrastructure. Not a safety rating. Not a scam detector.</span>
-        <div class="flex gap-4">
-          <a href="/terms" class="footer-link">Terms</a>
-          <a href="/legal" class="footer-link" style="color:var(--color-text-secondary)">Privacy</a>
-          <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
-        </div>
+      <div class="footer-bottom" style="justify-content:center;gap:var(--space-6)">
+        <a href="/" class="footer-link">Home</a>
+        <a href="/how-it-works" class="footer-link">How It Works</a>
+        <a href="/trust-safety" class="footer-link">Trust &amp; Safety</a>
+        <a href="/terms" class="footer-link">Terms of Service</a>
+        <a href="/legal" class="footer-link" style="color:#10b981;font-weight:700">Privacy Policy</a>
+        <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
+      </div>
+      <div style="text-align:center;margin-top:var(--space-4)">
+        <span class="footer-copy">HVID is an identity confirmation protocol. It does not issue behavioral or moral safety ratings.</span>
       </div>
     </div>
   </footer>

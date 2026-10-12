@@ -43,12 +43,12 @@
 
   // ── Status labels ─────────────────────────────────────────────
   const STATUS_UI = {
-    PENDING:      { icon: '⏳', label: 'Verification in progress',   color: '#818cf8' },
-    UNDER_REVIEW: { icon: '🔍', label: 'Under review',               color: '#fbbf24' },
-    VERIFIED:     { icon: '✅', label: 'Verification successful',    color: '#34d399' },
-    REJECTED:     { icon: '❌', label: 'Verification failed — retry', color: '#f87171' },
-    EXPIRED:      { icon: '⚠️', label: 'Verification expired',       color: '#f87171' },
-    UNKNOWN:      { icon: '❓', label: 'Status unknown',              color: 'rgba(255,255,255,.4)' },
+    PENDING:      { icon: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>', label: 'Verification in progress',   color: '#818cf8' },
+    UNDER_REVIEW: { icon: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>', label: 'Under review',               color: '#fbbf24' },
+    VERIFIED:     { icon: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle"><polyline points="20 6 9 17 4 12"></polyline></svg>', label: 'Verification successful',    color: '#34d399' },
+    REJECTED:     { icon: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>', label: 'Verification failed — retry', color: '#f87171' },
+    EXPIRED:      { icon: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>', label: 'Verification expired',       color: '#f87171' },
+    UNKNOWN:      { icon: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>', label: 'Status unknown',              color: 'rgba(255,255,255,.4)' },
   };
 
   function statusUI(s) { return STATUS_UI[s] || STATUS_UI.UNKNOWN; }
@@ -224,7 +224,7 @@
           background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.15);
           font-size:12px;color:rgba(52,211,153,.75);line-height:1.6
         ">
-          🔒 <strong style="color:#34d399">We use secure external providers.</strong>
+          <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" style="vertical-align:middle;margin-right:4px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><strong style="color:#34d399">We use secure external providers.</strong>
           No documents or biometric data are stored on HVID servers.
           You will be redirected to a verified third-party service to complete the check.
         </div>

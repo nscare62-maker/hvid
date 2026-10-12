@@ -178,7 +178,7 @@ const Growth = (() => {
   function copyText(text, btn, label = 'Copy link') {
     if (!btn) { navigator.clipboard.writeText(text).catch(() => {}); return; }
     navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = '✓ Copied!';
+      btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!</span>';
       setTimeout(() => { btn.textContent = label; }, 2000);
     }).catch(() => {
       btn.textContent = label;
@@ -201,7 +201,7 @@ const Growth = (() => {
             <div class="growth-modal-title">Share your verified identity</div>
             <div class="growth-modal-sub">Let others verify who they're dealing with.</div>
           </div>
-          <button class="growth-modal-close" id="growth-modal-close-btn" aria-label="Close">✕</button>
+          <button class="growth-modal-close" id="growth-modal-close-btn" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         </div>
         <div class="growth-modal-body">
           <!-- Link row -->
@@ -214,13 +214,13 @@ const Growth = (() => {
           <!-- Share buttons -->
           <div class="growth-share-actions">
             <button class="growth-share-btn" id="gs-native">
-              <span class="growth-share-btn-icon">↑</span>Share
+              <span class="growth-share-btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg></span>Share
             </button>
             <button class="growth-share-btn" id="gs-copy-msg">
-              <span class="growth-share-btn-icon">📋</span>Copy message
+              <span class="growth-share-btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></span>Copy message
             </button>
             <button class="growth-share-btn" id="gs-email">
-              <span class="growth-share-btn-icon">✉</span>Email
+              <span class="growth-share-btn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span>Email
             </button>
           </div>
         </div>
@@ -301,7 +301,7 @@ const Growth = (() => {
     const btn = document.createElement('button');
     btn.className = opts.className || 'growth-cta-btn';
     btn.style.cssText = opts.style || `background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2);color:#34d399`;
-    btn.innerHTML = `<span>✓</span> Verify Me`;
+    btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Verify Me</span>`;
     btn.onclick = () => openShareModal(profileUrl);
     targetEl.appendChild(btn);
     return btn;

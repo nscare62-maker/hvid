@@ -28,7 +28,7 @@ const TierUI = (() => {
       bg:       'rgba(107,114,128,0.10)',
       border:   'rgba(107,114,128,0.22)',
       dot:      '#6b7280',
-      icon:     '○',
+      icon:     '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"></circle></svg>',
       order:    0,
     },
     PROFESSIONAL: {
@@ -40,7 +40,7 @@ const TierUI = (() => {
       bg:       'rgba(96,165,250,0.10)',
       border:   'rgba(96,165,250,0.22)',
       dot:      '#60a5fa',
-      icon:     '●',
+      icon:     '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"></circle></svg>',
       order:    1,
     },
     PREMIUM: {
@@ -52,7 +52,7 @@ const TierUI = (() => {
       bg:       'rgba(167,139,250,0.12)',
       border:   'rgba(167,139,250,0.25)',
       dot:      '#a78bfa',
-      icon:     '★',
+      icon:     '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
       order:    2,
     },
   };
@@ -194,7 +194,7 @@ const TierUI = (() => {
 
       const node = document.createElement('div');
       node.className = 'tier-step-node';
-      node.textContent = step.icon;
+      node.innerHTML = step.icon;
       node.style.cssText = isActive
         ? `background:${step.bg};border-color:${step.color};color:${step.color};` +
           (isCurrent ? `box-shadow:0 0 0 3px ${step.bg}` : '')
@@ -235,8 +235,12 @@ const TierUI = (() => {
       el.style.background = unlocked
         ? 'rgba(255,255,255,.03)' : 'rgba(0,0,0,.15)';
 
+      const iconHtml = unlocked
+        ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" style="display:inline-block"><polyline points="20 6 9 17 4 12"></polyline></svg>'
+        : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="display:inline-block"><circle cx="12" cy="12" r="9"></circle><line x1="5.7" y1="5.7" x2="18.3" y2="18.3"></line></svg>';
+
       el.innerHTML = `
-        <span class="tier-feature-icon">${unlocked ? '✓' : '⊘'}</span>
+        <span class="tier-feature-icon">${iconHtml}</span>
         <span class="tier-feature-label" style="color:${unlocked ? 'var(--color-text-primary,#fff)' : 'rgba(255,255,255,.35)'}">
           ${f.label}
         </span>
@@ -304,7 +308,7 @@ const TierUI = (() => {
       const ach = document.createElement('div');
       ach.className = 'tier-cta';
       ach.innerHTML = `
-        <div class="tier-cta-title" style="color:#a78bfa">★ Highest trust level achieved</div>
+        <div class="tier-cta-title" style="color:#a78bfa;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Highest trust level achieved</div>
         <div class="tier-cta-desc">
           Your identity has the strongest verification available.
           No further upgrades are required.

@@ -191,6 +191,7 @@ app.config.update(
     RAZORPAY_KEY_SECRET           = os.environ.get('RAZORPAY_KEY_SECRET', ''),
     ADMIN_KEY                     = os.environ.get('ADMIN_KEY', 'hvid-admin-2024' if not IS_PRODUCTION else ''),
     AUTO_CREATE_DB                = os.environ.get('AUTO_CREATE_DB', 'true').lower() in ('1', 'true', 'yes'),
+    TEMPLATES_AUTO_RELOAD         = True,
 )
 
 # ── CORS (API only) ───────────────────────────────────────────────
@@ -340,6 +341,11 @@ def asset_by_identity(identity_id):
 # ══════════════════════════════════════════════════════════════════
 
 # Root / public pages
+@app.route('/assets/<path:filename>')
+@app.route('/asset/<path:filename>')
+def serve_assets(filename):
+    return send_from_directory('assets', filename)
+
 @app.route('/')
 def index():
     return render_template('index.html')

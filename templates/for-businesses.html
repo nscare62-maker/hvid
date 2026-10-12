@@ -9,10 +9,291 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/global.css" />
-  <link rel="stylesheet" href="/static/css/public.css?v=for-biz-2" />
+  <link rel="stylesheet" href="/static/css/public.css" />
+  <style>
+    /* ==========================================================
+       HVID — Ultra-Modern Business Page Styles
+       ========================================================== */
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fbff;
+      color: var(--color-text-primary);
+      overflow-x: hidden;
+    }
+
+    .biz-hero-section {
+      position: relative;
+      padding: calc(var(--nav-height) + 48px) 0 68px;
+      background: radial-gradient(circle at 60% 18%, rgba(27, 100, 242, 0.08) 0%, rgba(248, 251, 255, 0) 70%), #f8fbff;
+      overflow: hidden;
+    }
+
+    .biz-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      background: #ffffff;
+      border: 1px solid rgba(27, 100, 242, 0.2);
+      box-shadow: 0 4px 14px rgba(27, 100, 242, 0.08);
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #1b64f2;
+      margin-bottom: 22px;
+    }
+
+    .biz-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: bizPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes bizPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.7; }
+    }
+
+    .biz-headline {
+      font-size: clamp(34px, 4.6vw, 54px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.035em;
+      color: #0b192c;
+      margin-bottom: 18px;
+    }
+
+    .biz-text-gradient {
+      background: linear-gradient(135deg, #1b64f2 0%, #2563eb 50%, #059669 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .biz-sub {
+      font-size: clamp(16px, 1.8vw, 18.5px);
+      color: #475569;
+      line-height: 1.65;
+      max-width: 580px;
+      margin-bottom: 32px;
+    }
+
+    /* Showcase card for image 5.png */
+    .biz-hero-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .biz-visual-glow {
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(27, 100, 242, 0.18) 0%, rgba(16, 185, 129, 0.08) 50%, transparent 70%);
+      filter: blur(50px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .biz-image-card {
+      position: relative;
+      z-index: 1;
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      max-width: 100%;
+    }
+
+    .biz-image-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 28px 60px rgba(27, 100, 242, 0.12);
+    }
+
+    .biz-hero-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 16px;
+      display: block;
+    }
+
+    .biz-floating-badge {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      border: 1px solid rgba(27, 100, 242, 0.25);
+      box-shadow: 0 8px 24px rgba(27, 100, 242, 0.15);
+      border-radius: 99px;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1b64f2;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    /* Use cases Grid */
+    .biz-cases-section {
+      padding: 80px 0;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .biz-section-header {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 56px;
+    }
+
+    .biz-section-eyebrow {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #1b64f2;
+      margin-bottom: 8px;
+    }
+
+    .biz-section-title {
+      font-size: clamp(26px, 3.8vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #0b192c;
+      margin-bottom: 14px;
+    }
+
+    .biz-section-subtitle {
+      font-size: 16px;
+      color: #64748b;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .biz-cases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .biz-case-card {
+      background: #f8fbff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 32px 26px;
+      transition: all 0.28s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .biz-case-card:hover {
+      background: #ffffff;
+      transform: translateY(-4px);
+      border-color: rgba(27, 100, 242, 0.35);
+      box-shadow: 0 16px 36px rgba(27, 100, 242, 0.08);
+    }
+
+    .biz-case-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(27, 100, 242, 0.08);
+      color: #1b64f2;
+      border: 1px solid rgba(27, 100, 242, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+      transition: all 0.25s ease;
+    }
+
+    .biz-case-card:hover .biz-case-icon {
+      background: #1b64f2;
+      color: #ffffff;
+      transform: scale(1.06);
+    }
+
+    .biz-case-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0b192c;
+      margin: 0 0 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .biz-case-desc {
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* API Showcase */
+    .biz-api-section {
+      padding: 84px 0;
+      background: #f8fbff;
+    }
+
+    .biz-api-box {
+      background: #0f172a;
+      border-radius: 20px;
+      padding: 28px;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 13.5px;
+      line-height: 1.7;
+      box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18);
+      overflow-x: auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .biz-api-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .biz-api-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .biz-api-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 960px) {
+      .biz-cases-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .split-section {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+    }
+  </style>
 </head>
 <body>
 
+  <!-- Navigation -->
   <nav class="nav" id="main-nav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">
@@ -20,6 +301,8 @@
         <span class="nav-logo-divider">|</span>
         <span>HVID</span>
       </a>
+
+      <!-- Desktop Links (All 6 Pages Included) -->
       <div class="nav-links">
         <a href="/" class="nav-link">Home</a>
         <a href="/how-it-works" class="nav-link">How It Works</a>
@@ -28,165 +311,270 @@
         <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
         <a href="/admin/verification-review" class="nav-link">Admin</a>
       </div>
+
       <div class="nav-actions">
         <a href="/auth/login" class="btn btn-ghost btn-sm">Sign In</a>
         <a href="/auth/signup" class="btn btn-primary btn-sm">Get Started</a>
       </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Mobile Dropdown Menu -->
+      <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="/" class="nav-mobile-link">Home</a>
+        <a href="/how-it-works" class="nav-mobile-link">How It Works</a>
+        <a href="/for-individuals" class="nav-mobile-link">Individuals</a>
+        <a href="/for-businesses" class="nav-mobile-link active">For Business</a>
+        <a href="/trust-safety" class="nav-mobile-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-mobile-link">Admin</a>
+        <div class="nav-mobile-divider"></div>
+        <a href="/auth/login" class="btn btn-ghost btn-full" style="margin-bottom:8px">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-full">Get Started</a>
+      </div>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="section" style="padding-top: calc(var(--nav-height) + var(--space-16));text-align:center;">
+  <!-- Hero Section -->
+  <section class="biz-hero-section">
     <div class="container">
-      <div class="hero-eyebrow" style="display:inline-flex;margin-bottom:var(--space-5);align-items:center;gap:6px">
-        <svg class="hvid-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-        <span>For Businesses</span>
-      </div>
-      <h1 class="section-title" style="font-size:clamp(28px,4.5vw,52px);font-weight:800;letter-spacing:-0.03em;margin-bottom:var(--space-5);max-width:680px;margin-left:auto;margin-right:auto">
-        Identity certainty for every interaction
-      </h1>
-      <p class="section-sub" style="margin:0 auto var(--space-10);max-width:560px">
-        Integrate HVID verification signals into your platform, marketplace, or workflow. Know that the accounts you interact with belong to real, verified, accountable humans.
-      </p>
-      <div class="flex justify-center gap-4">
-        <a href="/auth/signup" class="btn btn-primary btn-lg" id="biz-signup-btn">Get Business Access</a>
-        <a href="/how-it-works" class="btn btn-ghost btn-lg">See How It Works</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="container" style="margin-top:var(--space-12)"><div class="divider"></div></div>
-
-  <!-- Use cases -->
-  <section class="section">
-    <div class="container">
-      <div style="text-align:center;max-width:520px;margin:0 auto var(--space-12)">
-        <div class="section-label">Use Cases</div>
-        <h2 class="section-title">Where businesses use HVID</h2>
-        <p class="section-sub">Infrastructure-level identity signals, built for integration.</p>
-      </div>
-      <div class="grid-3">
-        <div class="pillar-card animate-fadeUp delay-1">
-          <div class="pillar-icon">
-            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+      <div class="split-section" style="align-items:center;gap:48px">
+        
+        <!-- Left: Headline & Description -->
+        <div class="animate-fadeUp">
+          <div class="biz-pill-badge">
+            <span class="biz-pill-dot"></span>
+            <span>Enterprise Identity Assurance</span>
           </div>
-          <h3 class="pillar-title">Marketplaces</h3>
-          <p class="pillar-desc">Confirm that sellers are real, verified humans before allowing transactions. Reduce fraudulent listings without invasive KYC.</p>
-        </div>
-        <div class="pillar-card animate-fadeUp delay-2">
-          <div class="pillar-icon">
-            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          </div>
-          <h3 class="pillar-title">B2B Partnerships</h3>
-          <p class="pillar-desc">Verify the identity behind business accounts before entering agreements or sharing sensitive information.</p>
-        </div>
-        <div class="pillar-card animate-fadeUp delay-3">
-          <div class="pillar-icon">
-            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-          </div>
-          <h3 class="pillar-title">Communications</h3>
-          <p class="pillar-desc">Surface HVID verification status alongside usernames so recipients know they are communicating with a real person.</p>
-        </div>
-        <div class="pillar-card animate-fadeUp delay-4">
-          <div class="pillar-icon">
-            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-          </div>
-          <h3 class="pillar-title">Financial Services</h3>
-          <p class="pillar-desc">Layer HVID identity certainty on top of your existing compliance workflow. Legal traceability without KYC overhead.</p>
-        </div>
-        <div class="pillar-card animate-fadeUp delay-5">
-          <div class="pillar-icon">
-            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 16 12 12 8"></polygon></svg>
-          </div>
-          <h3 class="pillar-title">Creator Platforms</h3>
-          <p class="pillar-desc">Verify that a creator's handles, portfolios, and storefronts are all owned by the same verified person.</p>
-        </div>
-        <div class="pillar-card animate-fadeUp delay-5">
-          <div class="pillar-icon">
-            <svg class="hvid-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-          </div>
-          <h3 class="pillar-title">SaaS &amp; Enterprise</h3>
-          <p class="pillar-desc">Embed verified identity signals into onboarding flows. Replace multiple fragmented verification steps with a single HVID check.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="container"><div class="divider"></div></div>
-
-  <!-- Signal explained -->
-  <section class="section">
-    <div class="container">
-      <div class="split-section">
-        <div>
-          <div class="section-label">The Signal</div>
-          <h2 class="section-title">One signal. Three facts.</h2>
-          <p class="section-sub" style="margin-bottom:var(--space-8)">
-            An HVID check returns a structured signal confirming three identity-level facts — nothing more. No behavioral data. No opinion.
+          <h1 class="biz-headline">
+            Identity Certainty For <span class="biz-text-gradient">Every Interaction</span>
+          </h1>
+          <p class="biz-sub">
+            Integrate HVID verification signals into your platform, marketplace, or enterprise onboarding. Know with cryptographic certainty that accounts belong to real, verified, accountable humans.
           </p>
-          <div class="benefit-list">
-            <div class="benefit-item">
-              <div class="benefit-icon">
-                <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-              </div>
-              <div class="benefit-text">
-                <strong>Real human exists</strong>
-                <p>A verified, accountable person is behind this account.</p>
-              </div>
-            </div>
-            <div class="benefit-item">
-              <div class="benefit-icon">
-                <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-              </div>
-              <div class="benefit-text">
-                <strong>Account ownership confirmed</strong>
-                <p>This specific asset belongs to that verified identity.</p>
-              </div>
-            </div>
-            <div class="benefit-item">
-              <div class="benefit-icon">
-                <svg class="hvid-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
-              </div>
-              <div class="benefit-text">
-                <strong>Ownership is current</strong>
-                <p>Continuity has not been broken. No takeover detected.</p>
-              </div>
+          <div class="flex gap-4" style="flex-wrap:wrap">
+            <a href="/auth/signup" class="btn btn-primary btn-lg" id="biz-signup-btn">Get Enterprise Access</a>
+            <a href="/how-it-works" class="btn btn-ghost btn-lg">See Technical Specs</a>
+          </div>
+        </div>
+
+        <!-- Right: Visual Card with Image 5.png -->
+        <div class="biz-hero-visual animate-fadeIn delay-1">
+          <div class="biz-visual-glow"></div>
+          <div class="biz-image-card">
+            <img src="/static/assets/5.png" alt="HVID for Business" class="biz-hero-img" />
+            <div class="biz-floating-badge">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1b64f2" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Enterprise API &amp; Webhook Ready</span>
             </div>
           </div>
         </div>
 
-        <!-- Mock API response card -->
-        <div class="animate-fadeUp delay-2">
-          <div class="card" style="font-family:'Courier New',monospace;font-size:13px;line-height:1.8;color:var(--color-text-secondary)">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:var(--space-4)">
-              <div style="width:10px;height:10px;border-radius:50%;background:#F87171"></div>
-              <div style="width:10px;height:10px;border-radius:50%;background:#FBBF24"></div>
-              <div style="width:10px;height:10px;border-radius:50%;background:#34D399"></div>
-              <span style="font-family:Inter,sans-serif;font-size:11px;color:var(--color-text-muted);margin-left:8px">HVID Identity Signal</span>
-            </div>
-            <pre style="white-space:pre-wrap;overflow-x:auto">{
-  "<span style="color:#A78BFA">query</span>": "instagram.com/alex.morgan",
-  "<span style="color:#A78BFA">hvid</span>": "<span style="color:#34D399">HVID-4A72F9</span>",
-  "<span style="color:#A78BFA">verified</span>": <span style="color:#34D399">true</span>,
-  "<span style="color:#A78BFA">human_confirmed</span>": <span style="color:#34D399">true</span>,
-  "<span style="color:#A78BFA">ownership_current</span>": <span style="color:#34D399">true</span>,
-  "<span style="color:#A78BFA">continuity_intact</span>": <span style="color:#34D399">true</span>,
-  "<span style="color:#A78BFA">checked_at</span>": "<span style="color:#FBBF24">2026-10-07T10:04:22Z</span>"
-}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Business Use Cases Section -->
+  <section class="biz-cases-section">
+    <div class="container">
+      <div class="biz-section-header">
+        <div class="biz-section-eyebrow">Integration Models</div>
+        <h2 class="biz-section-title">Where Platforms Deploy HVID</h2>
+        <p class="biz-section-subtitle">
+          Lightweight, privacy-first identity infrastructure engineered for frictionless integration.
+        </p>
+      </div>
+
+      <div class="biz-cases-grid">
+        <!-- Case 1 -->
+        <div class="biz-case-card animate-fadeUp">
+          <div class="biz-case-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
           </div>
+          <h3 class="biz-case-title">E-Commerce &amp; Marketplaces</h3>
+          <p class="biz-case-desc">
+            Confirm seller personhood before enabling payouts or listings. Eliminate fraudulent storefronts and duplicate seller accounts without burdensome document collection.
+          </p>
+        </div>
+
+        <!-- Case 2 -->
+        <div class="biz-case-card animate-fadeUp delay-1">
+          <div class="biz-case-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <h3 class="biz-case-title">B2B Contractor Verification</h3>
+          <p class="biz-case-desc">
+            Verify the human identity behind external contractors, consultants, and offshore teams before granting confidential repository or data access.
+          </p>
+        </div>
+
+        <!-- Case 3 -->
+        <div class="biz-case-card animate-fadeUp delay-2">
+          <div class="biz-case-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <h3 class="biz-case-title">Creator &amp; Media Platforms</h3>
+          <p class="biz-case-desc">
+            Tie creator revenue channels, verified badges, and intellectual property portfolios to a single persistent human identity to block deepfake imposters.
+          </p>
+        </div>
+
+        <!-- Case 4 -->
+        <div class="biz-case-card animate-fadeUp delay-3">
+          <div class="biz-case-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+          </div>
+          <h3 class="biz-case-title">Fintech &amp; High-Value Flows</h3>
+          <p class="biz-case-desc">
+            Add an anti-sybil and persistent continuity check on top of your payment pipeline. Deter account takeovers and automated money mule rings.
+          </p>
+        </div>
+
+        <!-- Case 5 -->
+        <div class="biz-case-card animate-fadeUp delay-4">
+          <div class="biz-case-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 16 12 12 8"></polygon></svg>
+          </div>
+          <h3 class="biz-case-title">Communities &amp; Gaming</h3>
+          <p class="biz-case-desc">
+            Block banned cheaters and toxic sockpuppet accounts from returning under newly generated burner credentials. 1 Human = 1 Persistent Account.
+          </p>
+        </div>
+
+        <!-- Case 6 -->
+        <div class="biz-case-card animate-fadeUp delay-5">
+          <div class="biz-case-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          </div>
+          <h3 class="biz-case-title">SaaS &amp; API Integrations</h3>
+          <p class="biz-case-desc">
+            Query the HVID REST API directly or embed lightweight client-side verification chips. Sub-100ms response times with 99.99% uptime.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Technical API Showcase Section -->
+  <section class="biz-api-section">
+    <div class="container">
+      <div class="split-section" style="align-items:center;gap:48px">
+        <div>
+          <div class="biz-section-eyebrow">Deterministic Payload</div>
+          <h2 class="biz-section-title">One API Query. Three Proven Invariants.</h2>
+          <p class="biz-sub">
+            An HVID verification query returns a structured machine-readable JSON signal confirming strictly objective identity facts — zero behavioral scores, zero tracking cookies, zero opinion algorithms.
+          </p>
+          <div class="flex gap-4">
+            <a href="/auth/signup" class="btn btn-primary">Generate API Key</a>
+            <a href="/trust-safety" class="btn btn-ghost">Our Trust Guarantees</a>
+          </div>
+        </div>
+
+        <!-- Interactive API Code Window -->
+        <div class="biz-api-box animate-fadeUp">
+          <div class="biz-api-header">
+            <div class="biz-api-dots">
+              <div class="biz-api-dot" style="background:#ef4444"></div>
+              <div class="biz-api-dot" style="background:#f59e0b"></div>
+              <div class="biz-api-dot" style="background:#10b981"></div>
+            </div>
+            <span style="font-size:11.5px;color:#94a3b8;font-family:Inter,sans-serif">GET /api/match?query=storefront.acme</span>
+          </div>
+<pre style="margin:0;color:#e2e8f0">{
+  <span style="color:#93c5fd">"query"</span>: <span style="color:#a7f3d0">"storefront.acme"</span>,
+  <span style="color:#93c5fd">"hvid"</span>: <span style="color:#6ee7b7">"HVID-4A72F9"</span>,
+  <span style="color:#93c5fd">"status"</span>: <span style="color:#6ee7b7">"VERIFIED"</span>,
+  <span style="color:#93c5fd">"human_confirmed"</span>: <span style="color:#6ee7b7">true</span>,
+  <span style="color:#93c5fd">"ownership_current"</span>: <span style="color:#6ee7b7">true</span>,
+  <span style="color:#93c5fd">"continuity_intact"</span>: <span style="color:#6ee7b7">true</span>,
+  <span style="color:#93c5fd">"assurance_level"</span>: <span style="color:#fcd34d">"HIGH_ASSURANCE"</span>,
+  <span style="color:#93c5fd">"sybil_risk"</span>: <span style="color:#6ee7b7">"ZERO_DUPLICATE"</span>,
+  <span style="color:#93c5fd">"timestamp"</span>: <span style="color:#fcd34d">"2026-10-08T08:14:22Z"</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner Section -->
+  <div class="cta-banner-wrap">
+    <div class="container">
+      <div class="cta-banner" style="background-image: url('/assets/2.png'); background-size: cover; background-position: center;">
+        <div class="cta-banner-left">
+          <div class="cta-shield-graphic">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+          </div>
+          <div>
+            <h2 class="cta-banner-title">Build On Verified Human Identity</h2>
+           <p class="cta-banner-desc" style="color: white;">Empower your platform with deterministic identity certainty today.</p>
+          </div>
+        </div>
+        <div class="cta-banner-actions">
+          <a href="/auth/signup" class="btn btn-cta-primary">Get Business Access</a>
+          <a href="/how-it-works" class="btn btn-cta-ghost">Read Integration Docs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
   <footer>
     <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo" style="margin-bottom:12px;display:inline-flex">
+            <div class="nav-logo-mark">HV</div>
+            <span class="nav-logo-divider">|</span>
+            <span>HVID</span>
+          </a>
+          <p class="footer-brand-desc">
+            Identity confirmation infrastructure for the modern web. Confirming real human presence, ownership, and continuity without invasive surveillance.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Platform</div>
+          <div class="footer-links">
+            <a href="/" class="footer-link">Home</a>
+            <a href="/how-it-works" class="footer-link">How It Works</a>
+            <a href="/for-individuals" class="footer-link">For Individuals</a>
+            <a href="/for-businesses" class="footer-link" style="color:#1b64f2;font-weight:700">For Business</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Assurance &amp; Governance</div>
+          <div class="footer-links">
+            <a href="/trust-safety" class="footer-link">Trust &amp; Safety</a>
+            <a href="/terms" class="footer-link">Terms of Service</a>
+            <a href="/legal" class="footer-link">Privacy Policy</a>
+            <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Access</div>
+          <div class="footer-links">
+            <a href="/auth/login" class="footer-link">Sign In</a>
+            <a href="/auth/signup" class="footer-link">Create Account</a>
+            <a href="/admin/verification-review" class="footer-link">Admin Portal</a>
+          </div>
+        </div>
+      </div>
+
       <div class="footer-bottom">
-        <a href="/" class="footer-copy" style="color:var(--color-text-secondary);font-weight:600">HVID</a>
-        <span class="footer-copy">&copy; 2026 HVID. Privacy-first identity infrastructure.</span>
-        <div class="flex gap-6">
-          <a href="/legal" class="footer-link">Legal</a>
-          <a href="/trust-safety" class="footer-link">Trust &amp; Safety</a>
+        <span class="footer-copy">&copy; 2025 HVID Technologies Inc. All rights reserved.</span>
+        <span class="footer-copy">HVID is an identity confirmation protocol. It does not issue behavioral or moral safety ratings.</span>
+        <div class="flex gap-4">
+          <a href="/terms" class="footer-link">Terms</a>
+          <a href="/legal" class="footer-link">Privacy</a>
+          <a href="/acceptable-use" class="footer-link">Acceptable Use</a>
         </div>
       </div>
     </div>

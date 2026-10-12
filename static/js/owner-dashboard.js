@@ -13,21 +13,7 @@
 
 (function OwnerDashboard() {
 
-  // ── Fallback data when API unavailable ────────────────────────
-  const MOCK = {
-    security:       { status: 'ACTIVE', lastActivityAt: new Date().toISOString(), flagCount: 0 },
-    activity:       [
-      { icon: '✓', text: 'Identity created', time: 'Today', type: 'success' },
-      { icon: '⚠', text: 'Verification pending', time: 'Today', type: 'warn' },
-    ],
-    matchCount:     0,
-    verif:          { phone: false, kyc: false, face: false },
-    tier:           'BASIC',
-    trustSignal:    'MODERATE',
-    identityStatus: 'ACTIVE',
-  };
-
-  // ── Clean SVG icons for events ──
+  // ── Clean SVG icons for events & trust display ──
   const I_CHECK  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
   const I_WARN   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
   const I_CAMERA = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
@@ -35,6 +21,25 @@
   const I_LINK   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>';
   const I_LOCK   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
   const I_SHIELD = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>';
+
+  const I_CHECK_SM  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="display:inline-block;vertical-align:-1px"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  const I_WARN_SM   = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:-1px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+  const I_RELOAD_SM = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:-1px"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>';
+  const I_CROSS_SM  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:-1px"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+
+  // ── Fallback data when API unavailable ────────────────────────
+  const MOCK = {
+    security:       { status: 'ACTIVE', lastActivityAt: new Date().toISOString(), flagCount: 0 },
+    activity:       [
+      { icon: I_CHECK, text: 'Identity created', time: 'Today', type: 'success' },
+      { icon: I_WARN,  text: 'Verification pending', time: 'Today', type: 'warn' },
+    ],
+    matchCount:     0,
+    verif:          { phone: false, kyc: false, face: false },
+    tier:           'BASIC',
+    trustSignal:    'MODERATE',
+    identityStatus: 'ACTIVE',
+  };
 
   // ── Event type → timeline UI map (matches HistoryEventType enum) ─
   const EVENT_MAP = {
@@ -62,17 +67,17 @@
     QUERY_PATTERN_DETECTED:     { icon: I_WARN,   text: 'Query pattern detected' },
   };
 
-  // ── Signal palette for trust display ──────────
+  // ── Signal palette for trust display (SVG icon based) ──────────
   const TRUST_CFG = {
-    STABLE:                { label: 'Stable Identity',       color: '#10b981', icon: '✓' },
-    UNDER_REVIEW:          { label: 'Under Review',          color: '#f59e0b', icon: '⚠' },
-    REQUIRES_REVALIDATION: { label: 'Revalidation Required', color: '#fb923c', icon: '⟳' },
-    LIMITED:               { label: 'Limited Trust',         color: '#ef4444', icon: '✕' },
-    SUSPENDED:             { label: 'Suspended Identity',    color: '#991b1b', icon: '✕' },
-    STRONG:    { label: 'Stable Identity',       color: '#10b981', icon: '✓' },
-    MODERATE:  { label: 'Under Review',          color: '#f59e0b', icon: '⚠' },
-    CAUTION:   { label: 'Revalidation Required', color: '#fb923c', icon: '⟳' },
-    HIGH_RISK: { label: 'Limited Trust',         color: '#ef4444', icon: '✕' },
+    STABLE:                { label: 'Stable Identity',       color: '#10b981', icon: I_CHECK_SM },
+    UNDER_REVIEW:          { label: 'Under Review',          color: '#f59e0b', icon: I_WARN_SM },
+    REQUIRES_REVALIDATION: { label: 'Revalidation Required', color: '#fb923c', icon: I_RELOAD_SM },
+    LIMITED:               { label: 'Limited Trust',         color: '#ef4444', icon: I_CROSS_SM },
+    SUSPENDED:             { label: 'Suspended Identity',    color: '#991b1b', icon: I_CROSS_SM },
+    STRONG:                { label: 'Stable Identity',       color: '#10b981', icon: I_CHECK_SM },
+    MODERATE:              { label: 'Under Review',          color: '#f59e0b', icon: I_WARN_SM },
+    CAUTION:               { label: 'Revalidation Required', color: '#fb923c', icon: I_RELOAD_SM },
+    HIGH_RISK:             { label: 'Limited Trust',         color: '#ef4444', icon: I_CROSS_SM },
   };
 
   const STATUS_CFG = {
@@ -200,10 +205,10 @@
     if (sigEl) {
       sigEl.style.color = '';
       sigEl.innerHTML =
-        '<span style="font-weight:700;color:' + ts.color + '">' +
+        '<span style="font-weight:700;color:' + ts.color + ';display:inline-flex;align-items:center;gap:6px">' +
           (ts.icon || '') + ' ' + (ts.title || ts.label) +
         '</span>' +
-        '<span style="display:block;font-size:11px;color:rgba(255,255,255,.38);margin-top:3px">' +
+        '<span style="display:block;font-size:11px;color:var(--color-text-muted);margin-top:3px">' +
           (ts.desc || '') +
         '</span>';
     }
@@ -233,11 +238,13 @@
       if (banner) {
         banner.style.display = 'flex';
         banner.innerHTML = `
-          <div style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px;width:100%">
-            <div style="font-size:24px">🔁</div>
+          <div style="background:#fff7ed;border:1px solid #ffedd5;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px;width:100%">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(251,146,60,0.15);color:#fb923c;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            </div>
             <div style="flex:1">
-              <div style="font-weight:700;color:#fb923c;margin-bottom:2px">Re-verification Required</div>
-              <div style="font-size:12px;color:rgba(255,255,255,.5)">Your verification has expired or suspicious activity was detected. Re-verify to restore full trust.</div>
+              <div style="font-weight:700;color:#c2410c;margin-bottom:2px">Re-verification Required</div>
+              <div style="font-size:12px;color:var(--color-text-secondary)">Your verification has expired or suspicious activity was detected. Re-verify to restore full trust.</div>
             </div>
             <a href="/dashboard/verification" class="btn btn-primary btn-sm" style="background:#fb923c;border-color:#fb923c">Reverify Now</a>
           </div>`;
@@ -322,13 +329,13 @@
     ];
     el.innerHTML = items.map(it => `
       <div class="profile-verif-item">
-        <span class="profile-verif-check" style="${it.done ? '' : 'background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.2)'}">
-          ${it.done ? '✓' : '○'}
+        <span class="profile-verif-check" style="${it.done ? 'background:#ecfdf5;border-color:#d1fae5;color:#10b981' : 'background:#f1f5f9;border-color:#e2e8f0;color:#94a3b8'}">
+          ${it.done ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>' : '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>'}
         </span>
-        <span style="color:${it.done ? 'var(--color-text-secondary)' : 'var(--color-text-muted)'};font-size:13px">
+        <span style="color:${it.done ? 'var(--color-text-primary)' : 'var(--color-text-muted)'};font-size:13px;font-weight:${it.done ? '600' : '400'}">
           ${esc(it.label)}
         </span>
-        ${it.done ? '' : `<a href="/dashboard/verification" style="font-size:11px;color:#818cf8;text-decoration:none;margin-left:auto">Add →</a>`}
+        ${it.done ? '' : `<a href="/dashboard/verification" style="font-size:11px;color:#1b64f2;font-weight:600;text-decoration:none;margin-left:auto">Add →</a>`}
       </div>`).join('');
   }
 
@@ -357,15 +364,16 @@
     const hasAny   = assets.length > 0;
     const hasCustomOnly = hasAny && !hasInsta && !hasWeb;
 
-    // Task 1: Checklist
+    const svgDone = '<span class="guidance-check-icon done"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>';
+    const svgPending = '<span class="guidance-check-icon pending"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="12" cy="12" r="9"></circle></svg></span>';
+
     const checklist = `
       <div class="db-guidance-checklist">
-        <div class="db-guidance-item done">✓ Verify phone</div>
-        <div class="db-guidance-item ${hasInsta ? 'done' : ''}">${hasInsta ? '✓' : '○'} Add Instagram</div>
-        <div class="db-guidance-item ${hasWeb ? 'done' : ''}">${hasWeb ? '✓' : '○'} Add Website</div>
+        <div class="db-guidance-item done">${svgDone}<span>Verify phone</span></div>
+        <div class="db-guidance-item ${hasInsta ? 'done' : ''}">${hasInsta ? svgDone : svgPending}<span>Add Instagram</span></div>
+        <div class="db-guidance-item ${hasWeb ? 'done' : ''}">${hasWeb ? svgDone : svgPending}<span>Add Website</span></div>
       </div>`;
 
-    // Task 2: Suggestion
     let suggestion = '';
     if (!hasAny) {
       suggestion = 'Add your first verified account to establish trust.';
@@ -374,24 +382,33 @@
     } else if (!hasInsta || !hasWeb) {
       suggestion = 'Complete your profile with more verified signals.';
     } else {
-      slot.style.display = 'none'; // Everything done
+      slot.style.display = 'none';
       return;
     }
 
-    // Task 3: Prompts
     const prompts = [];
-    if (!hasInsta) prompts.push(`<a href="/dashboard/linked-accounts" class="db-guidance-cta">Verify Instagram →</a>`);
-    if (!hasWeb)   prompts.push(`<a href="/dashboard/linked-accounts" class="db-guidance-cta">Verify Website →</a>`);
+    if (!hasInsta) prompts.push(`<a href="/dashboard/linked-accounts" class="db-guidance-btn">Verify Instagram <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg></a>`);
+    if (!hasWeb)   prompts.push(`<a href="/dashboard/linked-accounts" class="db-guidance-btn">Verify Website <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg></a>`);
 
     slot.innerHTML = `
       <div class="db-guidance">
-        <div class="db-guidance-title">✨ Complete your identity</div>
-        ${checklist}
-        <div class="db-guidance-next">
-          <span style="font-size:18px">💡</span>
-          ${suggestion}
+        <div class="db-guidance-header">
+          <div class="db-guidance-title">
+            <span class="db-guidance-badge-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
+            </span>
+            <span>Complete your identity</span>
+          </div>
+          <span class="db-guidance-step-count">${hasInsta && hasWeb ? '3 of 3 completed' : (hasInsta || hasWeb ? '2 of 3 completed' : '1 of 3 completed')}</span>
         </div>
-        <div style="display:flex;gap:12px">${prompts.join('')}</div>
+        ${checklist}
+        <div class="db-guidance-footer">
+          <div class="db-guidance-next">
+            <svg class="db-guidance-tip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span>${suggestion}</span>
+          </div>
+          <div class="db-guidance-actions">${prompts.join('')}</div>
+        </div>
       </div>`;
   }
 
@@ -429,7 +446,9 @@
             <div class="growth-modal-title" id="freeze-modal-title">Freeze your identity?</div>
             <div class="growth-modal-sub">This will temporarily restrict all activity.</div>
           </div>
-          <button class="growth-modal-close" id="freeze-modal-close" aria-label="Close">✕</button>
+          <button class="growth-modal-close" id="freeze-modal-close" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
         </div>
         <div class="growth-modal-body" style="padding:16px 24px 20px">
           <div style="font-size:13px;color:var(--color-text-muted);margin-bottom:16px;line-height:1.6">
@@ -537,14 +556,19 @@
             <div class="growth-modal-title" id="recovery-modal-title">Complete Recovery</div>
             <div class="growth-modal-sub">Re-verify your identity to restore full access.</div>
           </div>
-          <button class="growth-modal-close" id="recovery-modal-close" aria-label="Close">✕</button>
+          <button class="growth-modal-close" id="recovery-modal-close" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
         </div>
         <div class="growth-modal-body" style="padding:16px 24px 20px">
           <div style="font-size:13px;color:var(--color-text-muted);margin-bottom:20px;line-height:1.7">
             Your identity is now in recovery mode. Click <strong>Complete Recovery</strong> below to finalise.
           </div>
           <div style="display:flex;gap:10px;flex-direction:column">
-            <button id="recovery-complete-btn" class="btn btn-primary btn-sm">✓ Complete Recovery</button>
+            <button id="recovery-complete-btn" class="btn btn-primary btn-sm" style="display:flex;align-items:center;justify-content:center;gap:6px">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Complete Recovery</span>
+            </button>
             <a href="/dashboard/verification" class="btn btn-ghost btn-sm" style="text-align:center;text-decoration:none">Re-verify identity →</a>
           </div>
           <div id="recovery-result" style="font-size:12px;margin-top:12px;text-align:center" role="status" aria-live="polite"></div>

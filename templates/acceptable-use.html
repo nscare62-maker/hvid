@@ -7,113 +7,465 @@
   <meta name="description" content="HVID Acceptable Use Policy — rules governing how the HVID platform may and may not be used." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/global.css" />
   <link rel="stylesheet" href="/static/css/public.css" />
+  <style>
+    /* ==========================================================
+       HVID — Ultra-Modern Acceptable Use Policy Styles
+       ========================================================== */
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fbff;
+      color: var(--color-text-primary);
+    }
+
+    .aup-hero {
+      padding: calc(var(--nav-height) + 54px) 0 44px;
+      background: radial-gradient(circle at 50% 20%, rgba(245, 158, 11, 0.08) 0%, rgba(248, 251, 255, 0) 70%), #f8fbff;
+      text-align: center;
+      position: relative;
+    }
+
+    .aup-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.1);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #d97706;
+      margin-bottom: 20px;
+    }
+
+    .aup-title {
+      font-size: clamp(32px, 4.5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #0b192c;
+      margin-bottom: 12px;
+    }
+
+    .aup-meta {
+      font-size: 14.5px;
+      color: #64748b;
+      margin-bottom: 28px;
+    }
+
+    /* Key highlights grid */
+    .aup-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      max-width: 980px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .aup-summary-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+      transition: all 0.2s ease;
+    }
+
+    .aup-summary-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 10px 24px rgba(245, 158, 11, 0.09);
+    }
+
+    .aup-summary-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #d97706;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .aup-summary-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0b192c;
+      margin-bottom: 6px;
+    }
+
+    .aup-summary-desc {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Main Container & TOC Layout */
+    .aup-layout {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 44px var(--space-4) 80px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    /* Sticky Table of Contents */
+    .aup-toc {
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03);
+    }
+
+    .aup-toc-heading {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .aup-toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .aup-toc-link {
+      font-size: 13.5px;
+      color: #475569;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: block;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .aup-toc-link:hover {
+      background: #fffbeb;
+      color: #b45309;
+      font-weight: 600;
+    }
+
+    /* Content Cards */
+    .aup-content {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .aup-section-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.02);
+      scroll-margin-top: calc(var(--nav-height) + 20px);
+    }
+
+    .aup-sec-num {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #d97706;
+      background: rgba(245, 158, 11, 0.1);
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+    }
+
+    .aup-sec-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0b192c;
+      letter-spacing: -0.015em;
+      margin: 0 0 16px;
+    }
+
+    .aup-p {
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.7;
+      margin: 0 0 16px;
+    }
+
+    .aup-p:last-child {
+      margin-bottom: 0;
+    }
+
+    .aup-list {
+      margin: 0 0 16px;
+      padding-left: 20px;
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .aup-list li {
+      margin-bottom: 8px;
+    }
+
+    .aup-callout-warning {
+      background: #fff7ed;
+      border-left: 4px solid #f97316;
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-top: 16px;
+      font-size: 14px;
+      color: #9a3412;
+      line-height: 1.6;
+    }
+
+    .aup-callout-success {
+      background: #ecfdf5;
+      border-left: 4px solid #10b981;
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-top: 16px;
+      font-size: 14px;
+      color: #065f46;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .aup-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .aup-toc {
+        position: static;
+      }
+      .aup-highlights {
+        grid-template-columns: 1fr;
+      }
+      .aup-section-card {
+        padding: 24px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Navigation -->
   <nav class="nav" id="main-nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo"><div class="nav-logo-mark">HV</div>HVID</a>
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-mark">HV</div>
+        <span class="nav-logo-divider">|</span>
+        <span>HVID</span>
+      </a>
+
+      <!-- Desktop Links (All 6 Pages Included) -->
       <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
         <a href="/how-it-works" class="nav-link">How It Works</a>
+        <a href="/for-individuals" class="nav-link">Individuals</a>
+        <a href="/for-businesses" class="nav-link">For Business</a>
         <a href="/trust-safety" class="nav-link">Trust &amp; Safety</a>
-        <a href="/legal" class="nav-link">Legal</a>
+        <a href="/admin/verification-review" class="nav-link">Admin</a>
       </div>
+
       <div class="nav-actions">
-        <a href="auth/login.html" class="btn btn-ghost btn-sm">Sign In</a>
-        <a href="auth/signup.html" class="btn btn-primary btn-sm">Get Started</a>
+        <a href="/auth/login" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Mobile Dropdown Menu -->
+      <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="/" class="nav-mobile-link">Home</a>
+        <a href="/how-it-works" class="nav-mobile-link">How It Works</a>
+        <a href="/for-individuals" class="nav-mobile-link">Individuals</a>
+        <a href="/for-businesses" class="nav-mobile-link">For Business</a>
+        <a href="/trust-safety" class="nav-mobile-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-mobile-link">Admin</a>
+        <div class="nav-mobile-divider"></div>
+        <a href="/auth/login" class="btn btn-ghost btn-full" style="margin-bottom:8px">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-full">Get Started</a>
       </div>
     </div>
   </nav>
 
-  <div class="policy-wrap">
-    <h1 class="policy-title">Acceptable Use Policy</h1>
-    <p class="policy-meta">Effective date: 1 April 2025 · Last updated: 12 April 2025</p>
+  <!-- Hero -->
+  <section class="aup-hero">
+    <div class="container">
+      <div class="aup-badge">Platform Integrity &amp; Community Standards</div>
+      <h1 class="aup-title">Acceptable Use Policy</h1>
+      <p class="aup-meta">Version 2.4 · Effective: 1 April 2025 · Last updated: 12 April 2025</p>
 
-    <div class="policy-body">
-
-      <p>This Acceptable Use Policy governs how you may use the HVID platform and its outputs. Violation of this policy may result in restriction, suspension, or revocation of your HVID identity record.</p>
-
-      <h2 class="policy-section-title">1. Permitted Uses</h2>
-      <p>You may use HVID to:</p>
-      <ul>
-        <li>Verify whether an account or identifier is linked to a registered human identity</li>
-        <li>Create and manage your own HVID identity record</li>
-        <li>Link accounts that you own and control</li>
-        <li>Submit evidence-based, factual reports regarding identity ownership conflicts</li>
-      </ul>
-
-      <h2 class="policy-section-title">2. Prohibited Uses — Harassment</h2>
-      <p>You must NOT use HVID to:</p>
-      <ul>
-        <li>Harass, intimidate, or target any individual using system signals or result data</li>
-        <li>Publicly accuse any person of dishonesty, fraud, or wrongdoing using HVID results</li>
-        <li>Combine HVID data with other sources to build defamatory profiles of individuals</li>
-        <li>Use HVID signals as the basis for public shaming or coordinated attacks</li>
-      </ul>
-
-      <h2 class="policy-section-title">3. Prohibited Uses — Identity Privacy</h2>
-      <p>You must NOT:</p>
-      <ul>
-        <li>Attempt to de-anonymize or expose the private identity of any HVID user</li>
-        <li>Reverse-engineer or infer personal information from HVID signals</li>
-        <li>Attempt to link HVID records to personally identifiable information not provided by the identity holder</li>
-        <li>Circumvent privacy protections built into the HVID match engine</li>
-      </ul>
-
-      <h2 class="policy-section-title">4. Prohibited Uses — False Reports</h2>
-      <p>You must NOT:</p>
-      <ul>
-        <li>Submit reports containing fabricated, speculative, or unverified claims</li>
-        <li>Use the reporting system to target or harm individuals you have a personal dispute with</li>
-        <li>Submit multiple false reports against the same identity</li>
-        <li>Coordinate with others to submit reports designed to trigger system enforcement unfairly</li>
-      </ul>
-
-      <h2 class="policy-section-title">5. Prohibited Uses — System Abuse</h2>
-      <p>You must NOT:</p>
-      <ul>
-        <li>Scrape, crawl, or bulk-query the HVID match engine by automated means</li>
-        <li>Attempt to access identity records not returned through normal search results</li>
-        <li>Reverse-engineer or abuse the API or matching algorithm</li>
-        <li>Create multiple HVID accounts to circumvent enforcement actions on a prior account</li>
-      </ul>
-
-      <h2 class="policy-section-title">6. Consequences of Violation</h2>
-      <p>Violations of this policy may result in:</p>
-      <ul>
-        <li>Warning or identity status downgrade</li>
-        <li>Restriction of match search privileges</li>
-        <li>Suspension of your HVID identity record</li>
-        <li>Permanent revocation of HVID access</li>
-        <li>Referral to relevant legal authorities where required by law</li>
-      </ul>
-
-      <h2 class="policy-section-title">7. Reporting Violations</h2>
-      <p>If you believe this policy is being violated by another user, you may submit an evidence-based report through the Reports system in your dashboard. All reports are reviewed privately by the HVID team.</p>
-
-      <h2 class="policy-section-title">8. Related Policies</h2>
-      <ul>
-        <li><a href="/terms" style="color:var(--color-primary)">Terms of Service</a></li>
-        <li><a href="/legal" style="color:var(--color-primary)">Privacy Policy</a></li>
-        <li><a href="/trust-safety" style="color:var(--color-primary)">Trust &amp; Safety</a></li>
-      </ul>
-
+      <!-- Highlights -->
+      <div class="aup-highlights">
+        <div class="aup-summary-card">
+          <div class="aup-summary-tag">SAFEGUARD</div>
+          <div class="aup-summary-title">Zero Public Smears</div>
+          <p class="aup-summary-desc">HVID outputs must never be used to harass, dox, or coordinate targeted online harassment.</p>
+        </div>
+        <div class="aup-summary-card">
+          <div class="aup-summary-tag">ACCURACY</div>
+          <div class="aup-summary-title">Evidence-Based Submissions</div>
+          <p class="aup-summary-desc">Fabricated, retaliatory, or speculative reports result in immediate permanent banning.</p>
+        </div>
+        <div class="aup-summary-card">
+          <div class="aup-summary-tag">SECURITY</div>
+          <div class="aup-summary-title">Anti-Scraping &amp; Anti-Sybil</div>
+          <p class="aup-summary-desc">Automated scraping, multi-accounting, and bot spoofing are strictly prohibited.</p>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <!-- Layout with Sticky TOC -->
+  <div class="aup-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="aup-toc">
+      <div class="aup-toc-heading">Table of Contents</div>
+      <ul class="aup-toc-list">
+        <li><a href="#sec-1" class="aup-toc-link">1. Permitted Uses</a></li>
+        <li><a href="#sec-2" class="aup-toc-link">2. Harassment &amp; Doxxing</a></li>
+        <li><a href="#sec-3" class="aup-toc-link">3. Privacy &amp; De-anonymization</a></li>
+        <li><a href="#sec-4" class="aup-toc-link">4. False Reporting</a></li>
+        <li><a href="#sec-5" class="aup-toc-link">5. System Abuse &amp; Scraping</a></li>
+        <li><a href="#sec-6" class="aup-toc-link">6. Enforcement Consequences</a></li>
+        <li><a href="#sec-7" class="aup-toc-link">7. Reporting Violations</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="aup-content">
+      <!-- Section 1 -->
+      <div class="aup-section-card" id="sec-1">
+        <span class="aup-sec-num">SECTION 01</span>
+        <h2 class="aup-sec-title">Permitted Uses</h2>
+        <p class="aup-p">The HVID platform and its signals are designed solely for legitimate identity verification and trust assurance:</p>
+        <ul class="aup-list">
+          <li>Verifying that an online counterparty, contractor, or seller is anchored to a real, accountable human.</li>
+          <li>Registering and linking digital handles, websites, and business domains that you lawfully own and control.</li>
+          <li>Submitting factual, documented misconduct claims regarding impersonation or account takeovers.</li>
+          <li>Querying public status signals via official user interfaces or verified enterprise API integrations.</li>
+        </ul>
+        <div class="aup-callout-success">
+          <strong>Authorized Operation:</strong> You are encouraged to display your verified HVID badge on social channels, professional resumes, and web storefronts.
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="aup-section-card" id="sec-2">
+        <span class="aup-sec-num">SECTION 02</span>
+        <h2 class="aup-sec-title">Prohibited Conduct: Harassment &amp; Public Shaming</h2>
+        <p class="aup-p">You must NEVER utilize HVID to:</p>
+        <ul class="aup-list">
+          <li>Intimidate, harass, threaten, or stalk any individual based on their identity status signals.</li>
+          <li>Publish public cancellation or accusation lists citing HVID match engine results.</li>
+          <li>Compile dossiers or scrape signal outputs to fuel online brigading campaigns.</li>
+          <li>Weaponize unverified disputes in public forums or social media.</li>
+        </ul>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="aup-section-card" id="sec-3">
+        <span class="aup-sec-num">SECTION 03</span>
+        <h2 class="aup-sec-title">Prohibited Conduct: Privacy &amp; De-Anonymization</h2>
+        <p class="aup-p">You must NEVER attempt to:</p>
+        <ul class="aup-list">
+          <li>De-anonymize or reveal private real-world identities of users beyond what they publicly declare.</li>
+          <li>Reverse-engineer salted cryptographic hashes stored in the identity registry.</li>
+          <li>Correlate HVID telemetry with third-party tracking databases or surveillance toolkits.</li>
+          <li>Bypass rate limits, query throttling, or privacy guards built into the public match engine.</li>
+        </ul>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="aup-section-card" id="sec-4">
+        <span class="aup-sec-num">SECTION 04</span>
+        <h2 class="aup-sec-title">Prohibited Conduct: Fraudulent &amp; Weaponized Reports</h2>
+        <p class="aup-p">HVID operates an audited misconduct resolution protocol. Submitting false claims undermines the integrity of the entire ecosystem:</p>
+        <ul class="aup-list">
+          <li>Fabricated documents, manipulated screenshots, or forged police records are strictly prohibited.</li>
+          <li>Filing coordinated mass reports against commercial competitors or personal rivals is grounds for immediate termination.</li>
+          <li>Submitting claims without factual basis, documentation, or verifiable proof.</li>
+        </ul>
+        <div class="aup-callout-warning">
+          <strong>Zero Tolerance:</strong> Intentionally filing a fraudulent misconduct claim results in permanent identity revocation and referral to judicial authorities.
+        </div>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="aup-section-card" id="sec-5">
+        <span class="aup-sec-num">SECTION 05</span>
+        <h2 class="aup-sec-title">Prohibited Conduct: System Abuse &amp; Scraping</h2>
+        <p class="aup-p">You must NEVER engage in:</p>
+        <ul class="aup-list">
+          <li>Bulk scraping, headless browser crawling, or automated harvesting of match signals.</li>
+          <li>Multi-accounting or sybil spoofing to circumvent suspensions on prior accounts.</li>
+          <li>Exploitation of application flaws, security bugs, or denial-of-service vulnerabilities.</li>
+          <li>Unauthorized resale, subleasing, or redistribution of HVID API key credentials.</li>
+        </ul>
+      </div>
+
+      <!-- Section 6 -->
+      <div class="aup-section-card" id="sec-6">
+        <span class="aup-sec-num">SECTION 06</span>
+        <h2 class="aup-sec-title">Enforcement Consequences &amp; Remediation</h2>
+        <p class="aup-p">Violations of this policy are actively investigated by the HVID Trust Team and subject to graduated enforcement:</p>
+        <ul class="aup-list">
+          <li>Formal warning and temporary freeze of match query privileges.</li>
+          <li>Identity status downgrade to <em>Under Review</em> or <em>Restricted</em>.</li>
+          <li>Permanent protocol suspension and non-reversible revocation of HVID verification.</li>
+          <li>Formal civil litigation or criminal referral in instances of egregious fraud.</li>
+        </ul>
+      </div>
+
+      <!-- Section 7 -->
+      <div class="aup-section-card" id="sec-7">
+        <span class="aup-sec-num">SECTION 07</span>
+        <h2 class="aup-sec-title">Reporting Policy Violations</h2>
+        <p class="aup-p">
+          To report platform abuse, automated scraping, or coordinated harassment campaigns, contact our security desk with documented logs:
+        </p>
+        <div style="margin-top:14px">
+          <a href="mailto:abuse@hvid.io" class="btn btn-primary btn-sm">Report Abuse to abuse@hvid.io</a>
+        </div>
+      </div>
+    </main>
   </div>
 
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-bottom" style="justify-content:center;gap:var(--space-6)">
         <a href="/" class="footer-link">Home</a>
-        <a href="/legal" class="footer-link">Privacy Policy</a>
-        <a href="/terms" class="footer-link">Terms of Service</a>
-        <a href="/acceptable-use" class="footer-link" style="color:var(--color-text-secondary)">Acceptable Use</a>
+        <a href="/how-it-works" class="footer-link">How It Works</a>
         <a href="/trust-safety" class="footer-link">Trust &amp; Safety</a>
+        <a href="/terms" class="footer-link">Terms of Service</a>
+        <a href="/legal" class="footer-link">Privacy Policy</a>
+        <a href="/acceptable-use" class="footer-link" style="color:#d97706;font-weight:700">Acceptable Use</a>
       </div>
       <div style="text-align:center;margin-top:var(--space-4)">
-        <span class="footer-copy">HVID is an identity confirmation infrastructure. Not a safety rating. Not a scam detector.</span>
+        <span class="footer-copy">HVID is an identity confirmation protocol. It does not issue behavioral or moral safety ratings.</span>
       </div>
     </div>
   </footer>

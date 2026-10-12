@@ -22,6 +22,7 @@
         <span>HVID</span>
       </a>
       <div class="nav-links">
+        <a href="/" class="nav-link active">Home</a>
         <a href="/how-it-works" class="nav-link">How It Works</a>
         <a href="/for-individuals" class="nav-link">Individuals</a>
         <a href="/for-businesses" class="nav-link">For Business</a>
@@ -31,6 +32,24 @@
       <div class="nav-actions">
         <a href="/auth/login" class="btn btn-ghost btn-sm">Sign In</a>
         <a href="/auth/signup" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Mobile Dropdown Menu -->
+      <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="/" class="nav-mobile-link active">Home</a>
+        <a href="/how-it-works" class="nav-mobile-link">How It Works</a>
+        <a href="/for-individuals" class="nav-mobile-link">Individuals</a>
+        <a href="/for-businesses" class="nav-mobile-link">For Business</a>
+        <a href="/trust-safety" class="nav-mobile-link">Trust &amp; Safety</a>
+        <a href="/admin/verification-review" class="nav-mobile-link">Admin</a>
+        <div class="nav-mobile-divider"></div>
+        <a href="/auth/login" class="btn btn-ghost btn-full" style="margin-bottom:8px">Sign In</a>
+        <a href="/auth/signup" class="btn btn-primary btn-full">Get Started</a>
       </div>
     </div>
   </nav>
@@ -95,96 +114,16 @@
           </div>
         </div>
 
-        <!-- Right: 3D Holographic Identity Shield & Orbit -->
+        <!-- Right: Hero Graphic Illustration -->
         <div class="hero-right animate-fadeIn delay-2">
-          <div class="shield-orbit-stage">
-            
-            <!-- Glowing Blue Aura Background -->
-            <div class="shield-glow-aura"></div>
-
-            <!-- Orbital Rings -->
-            <div class="orbit-ring orbit-ring-1"></div>
-            <div class="orbit-ring orbit-ring-2"></div>
-
-            <!-- Central 3D Shield -->
-            <div class="hero-3d-shield">
-              <!-- Shield SVG Outer Shape with gradient fill -->
-              <svg class="shield-outer-svg" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="shieldGrad" x1="20" y1="0" x2="180" y2="240" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#3b82f6" />
-                    <stop offset="50%" stop-color="#1d4ed8" />
-                    <stop offset="100%" stop-color="#1e3a8a" />
-                  </linearGradient>
-                  <linearGradient id="shieldBorder" x1="0" y1="0" x2="200" y2="240" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.9" />
-                    <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.3" />
-                  </linearGradient>
-                </defs>
-                <path d="M100 8L180 44V120C180 178 142 220 100 234C58 220 20 178 20 120V44L100 8Z" 
-                      fill="url(#shieldGrad)" 
-                      stroke="url(#shieldBorder)" 
-                      stroke-width="3" />
-              </svg>
-
-              <!-- Central White Frosted User Badge inside Shield -->
-              <div class="shield-inner-badge">
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
-              </div>
-            </div>
-
-            <!-- Floating Frosted Badges around orbit -->
-            <!-- 1. Fingerprint (Top Left) -->
-            <div class="floating-badge floating-badge-1" title="Biometric Confirmation">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"></path>
-                <path d="M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2"></path>
-                <path d="M17.29 21.02c.12-.6.18-1.23.18-1.87 0-2.85-.73-5.5-2.03-7.79"></path>
-                <path d="M12 10a2 2 0 0 0-2 2c0 3 1.5 6 3 8.5"></path>
-                <path d="M8.65 22c.21-.66.45-1.32.75-2"></path>
-                <path d="M14 13.12c0 2.38 0 4.38-1.5 6.88"></path>
-              </svg>
-            </div>
-
-            <!-- 2. Document (Top Right) -->
-            <div class="floating-badge floating-badge-2" title="Official Documents Verified">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-            </div>
-
-            <!-- 3. Shield Badge (Bottom Left) -->
-            <div class="floating-badge floating-badge-3" title="Cryptographic Shield">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-
-            <!-- 4. Check Shield Badge (Bottom Right) -->
-            <div class="floating-badge floating-badge-4" title="Identity Confirmed">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                <polyline points="9 12 11 14 15 10"></polyline>
-              </svg>
-            </div>
-
+          <div class="hero-image-wrapper">
+            <img 
+              src="/assets/1.png" 
+              alt="HVID Identity Confirmation Infrastructure" 
+              class="hero-illustration-img"
+              onerror="if(this.src.indexOf('/static/assets/1.png') === -1) { this.src='/static/assets/1.png'; } else if(this.src.indexOf('../assets/1.png') === -1) { this.src='../assets/1.png'; }"
+            />
           </div>
-
-          <!-- Vertical Pillar Slogan -->
-          <div class="hero-pillar-text">
-            <span>REAL PEOPLE</span>
-            <span class="dash">—</span>
-            <span>REAL IDENTITIES</span>
-            <span class="dash">—</span>
-            <span>MORE TRUST</span>
-          </div>
-
         </div>
 
       </div>
@@ -251,58 +190,79 @@
     </div>
   </section>
 
-  <!-- ── Section 2: Safe Verification Without Overreach ── -->
-  <section class="section" id="scope">
+  <!-- ── Section 2: What We Don't Do ── -->
+  <section class="section minimal-scope-section" id="scope">
     <div class="container">
-      <div class="split-layout">
+      
+      <!-- Centered Header -->
+      <div class="minimal-scope-header">
+        <div class="section-label">PRIVACY-FIRST VERIFICATION</div>
+        <h2 class="section-title">We verify identity, nothing more</h2>
+        <p class="section-sub">
+          HVID doesn't rate character, broadcast accusations, or make social judgments.<br/>
+          We confirm who you are—not who we think you should be.
+        </p>
+      </div>
+
+      <!-- Three Simple Cards -->
+      <div class="minimal-scope-grid">
         
-        <!-- Left: Copy -->
-        <div>
-          <div class="section-label">WHAT HVID DOES NOT DO</div>
-          <h2 class="section-title">Safe verification without overreach</h2>
-          <p class="section-sub">
-            HVID is designed to provide identity-level truth, not assumptions, judgments or public claims.
+        <div class="minimal-scope-card">
+          <div class="minimal-scope-icon minimal-scope-icon-blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <h3 class="minimal-scope-title">No tracking or profiling</h3>
+          <p class="minimal-scope-desc">
+            We don't monitor your behavior, track your activity, or build profiles about you.
           </p>
-          <div class="accent-bar"></div>
         </div>
 
-        <!-- Right: 3 Negative Cards -->
-        <div class="negative-list">
-          <div class="negative-card">
-            <div class="negative-card-content">
-              <div class="negative-icon">✕</div>
-              <div>
-                <div class="negative-card-title">No judgments or conclusions</div>
-                <div class="negative-card-desc">HVID does not make assumptions about a person's intentions, behavior or character.</div>
-              </div>
-            </div>
-            <div class="negative-arrow">→</div>
+        <div class="minimal-scope-card">
+          <div class="minimal-scope-icon minimal-scope-icon-purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
           </div>
+          <h3 class="minimal-scope-title">No public exposure</h3>
+          <p class="minimal-scope-desc">
+            Your verification stays private. We never publish records, create lists, or expose data.
+          </p>
+        </div>
 
-          <div class="negative-card">
-            <div class="negative-card-content">
-              <div class="negative-icon">✕</div>
-              <div>
-                <div class="negative-card-title">No public accusations</div>
-                <div class="negative-card-desc">HVID does not link an identity to more than one person or make it publicly known.</div>
-              </div>
-            </div>
-            <div class="negative-arrow">→</div>
+        <div class="minimal-scope-card">
+          <div class="minimal-scope-icon minimal-scope-icon-teal">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
           </div>
-
-          <div class="negative-card">
-            <div class="negative-card-content">
-              <div class="negative-icon">✕</div>
-              <div>
-                <div class="negative-card-title">No trust scores</div>
-                <div class="negative-card-desc">HVID does not assign scores or ratings to any identity, individual or account.</div>
-              </div>
-            </div>
-            <div class="negative-arrow">→</div>
-          </div>
+          <h3 class="minimal-scope-title">No scores or ratings</h3>
+          <p class="minimal-scope-desc">
+            We don't judge trustworthiness. No social credit. No algorithms deciding your worth.
+          </p>
         </div>
 
       </div>
+
+      <!-- Elegant Bottom Statement -->
+      <div class="minimal-scope-statement">
+        <div class="minimal-scope-statement-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <p class="minimal-scope-statement-text">
+          Built for humans, not algorithms. HVID respects your right to exist online without being constantly judged, scored, or surveilled.
+        </p>
+      </div>
+
     </div>
   </section>
 
@@ -354,7 +314,7 @@
 
   <!-- ── Section 4: Bottom CTA Banner ── -->
   <div class="container cta-banner-wrap">
-    <div class="cta-banner">
+    <div class="cta-banner" style="background-image: url('/assets/2.png'); background-size: cover; background-position: center right; background-repeat: no-repeat;">
       <div class="cta-banner-left">
         <div class="cta-shield-graphic">
           <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -425,7 +385,7 @@
           <div class="footer-links">
             <a href="/trust-safety" class="footer-link">About HVID</a>
             <a href="/trust-safety" class="footer-link">Contact</a>
-            <a href="auth/login.html" class="footer-link">Sign In</a>
+            <a href="/auth/login" class="footer-link">Sign In</a>
           </div>
         </div>
       </div>

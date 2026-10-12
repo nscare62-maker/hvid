@@ -364,7 +364,7 @@ window.VERIFICATION_LEVELS = VERIFICATION_LEVELS;
         
         // Show success message
         if (window.HVID?.toast) {
-          window.HVID.toast('✓ Verification code sent! Check your phone.', 'success');
+          window.HVID.toast('Verification code sent! Check your phone.', 'success');
         }
         
         // Focus OTP input
@@ -447,7 +447,7 @@ window.VERIFICATION_LEVELS = VERIFICATION_LEVELS;
       
       // Show success message
       if (window.HVID?.toast) {
-        window.HVID.toast('✓ Login successful! Redirecting...', 'success');
+        window.HVID.toast('Login successful! Redirecting...', 'success');
       }
       
       // Redirect to dashboard
