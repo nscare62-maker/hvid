@@ -83,11 +83,11 @@ const IdentityTypeUI = (() => {
       .itype-card.selected { outline: 2px solid; outline-offset: 2px; }
       .itype-card-icon   { font-size: 28px; margin-bottom: 10px; }
       .itype-card-title  { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
-      .itype-card-desc   { font-size: 12px; color: rgba(255,255,255,.5); line-height: 1.5; }
+      .itype-card-desc   { font-size: 12px; color: var(--color-text-secondary, #475569); line-height: 1.5; }
       .itype-card-guidance {
         margin-top: 10px; font-size: 11px; font-weight: 600;
         padding: 5px 9px; border-radius: 8px;
-        background: rgba(255,255,255,.04);
+        background: rgba(0,0,0,.04);
       }
       .itype-check {
         position: absolute; top: 14px; right: 14px;
@@ -119,7 +119,7 @@ const IdentityTypeUI = (() => {
     el.style.cssText = `background:${cfg.bg};border-color:${cfg.border};` +
       (isSelected ? `box-shadow:0 0 0 2px ${cfg.color}22;outline-color:${cfg.color}` : '');
     el.innerHTML = `
-      <div class="itype-check" style="border-color:${isSelected ? cfg.color : 'rgba(255,255,255,.15)'};
+      <div class="itype-check" style="border-color:${isSelected ? cfg.color : 'var(--color-border, #cbd5e1)'};
         background:${isSelected ? cfg.color : 'transparent'};
         color:${isSelected ? '#0f0f0f' : 'transparent'}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
       <div class="itype-card-icon">${cfg.icon}</div>
@@ -148,7 +148,7 @@ const IdentityTypeUI = (() => {
         <span style="font-size:20px">${cfg.icon}</span>
         <div>
           <div style="font-size:13px;font-weight:700;color:${cfg.color}">${cfg.title}</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px">${cfg.guidance}</div>
+          <div style="font-size:11px;color:var(--color-text-muted, #64748b);margin-top:2px">${cfg.guidance}</div>
         </div>
       </div>
       ${ctaHtml}`;
@@ -160,9 +160,9 @@ const IdentityTypeUI = (() => {
     const cfg = resolve(type);
     return `
       <div style="display:flex;align-items:center;gap:8px;padding:12px 0;
-            border-top:1px solid rgba(255,255,255,.05)">
+            border-top:1px solid var(--color-border, #e2e8f0)">
         <span class="itype-badge ${cfg.badgeCls}">${cfg.icon} ${cfg.short}</span>
-        <span style="font-size:12px;color:rgba(255,255,255,.4)">${cfg.desc}</span>
+        <span style="font-size:12px;color:var(--color-text-secondary, #475569)">${cfg.desc}</span>
       </div>`;
   }
 

@@ -430,9 +430,9 @@ const MatchUI = (() => {
         const m   = TYPE_META[a.type] || { icon: '🔗', prefix: '' };
         const val = escHtml(`${m.prefix}${a.value}`);
         return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;
-                            border-bottom:1px solid rgba(255,255,255,.04)">
+                            border-bottom:1px solid var(--color-border, #e2e8f0)">
                   <span style="font-size:16px;flex-shrink:0">${m.icon}</span>
-                  <span style="font-size:13px;font-weight:600;color:rgba(255,255,255,.8)">${val}</span>
+                  <span style="font-size:13px;font-weight:600;color:var(--color-text-primary, #0b192c)">${val}</span>
                   <span style="margin-left:auto;font-size:10px;font-weight:700;
                                 color:#34d399;background:rgba(52,211,153,.08);
                                 border:1px solid rgba(52,211,153,.18);
@@ -441,12 +441,12 @@ const MatchUI = (() => {
       }).join('');
 
       slot.innerHTML = `
-        <div style="padding:4px 24px 12px;border-top:1px solid rgba(255,255,255,.04)">
-          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.3);
+        <div style="padding:4px 24px 12px;border-top:1px solid var(--color-border, #e2e8f0)">
+          <div style="font-size:10px;font-weight:700;color:var(--color-text-muted, #64748b);
                       text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">
             Verified Accounts
           </div>
-          <div style="border-top:1px solid rgba(255,255,255,.04)">${rows}</div>
+          <div style="border-top:1px solid var(--color-border, #e2e8f0)">${rows}</div>
         </div>`;
     } catch (_) {
       // Silent fail — never block the result page on a profile fetch error
@@ -478,7 +478,7 @@ const MatchUI = (() => {
 
     if (claims.length < 2) {
       resultSlot.style.display = 'block';
-      resultSlot.innerHTML = `<div style="text-align:center; padding:20px; font-size:13px; color:rgba(255,255,255,.3); border:1px dashed rgba(255,255,255,.1); border-radius:10px">
+      resultSlot.innerHTML = `<div style="text-align:center; padding:20px; font-size:13px; color:var(--color-text-muted, #64748b); border:1px dashed var(--color-border, #cbd5e1); border-radius:10px">
                                 Add at least 2 details to verify identity
                               </div>`;
       return;
@@ -517,7 +517,7 @@ const MatchUI = (() => {
       LOW:     { color: '#34d399', bg: 'rgba(52,211,153,.08)',  border: 'rgba(52,211,153,.2)',   icon: '🛡️', label: 'Low Risk' },
       MEDIUM:  { color: '#fbbf24', bg: 'rgba(251,191,36,.08)',  border: 'rgba(251,191,36,.2)',   icon: '⚠️', label: 'Medium Risk' },
       HIGH:    { color: '#f87171', bg: 'rgba(248,113,113,.08)', border: 'rgba(248,113,113,.2)',  icon: '🚨', label: 'High Risk' },
-      UNKNOWN: { color: 'rgba(255,255,255,.4)', bg: 'rgba(255,255,255,.04)', border: 'rgba(255,255,255,.1)', icon: '❓', label: 'Unknown' },
+      UNKNOWN: { color: 'var(--color-text-muted, #64748b)', bg: 'var(--color-surface-2, #f1f5f9)', border: 'var(--color-border, #e2e8f0)', icon: '❓', label: 'Unknown' },
     };
 
     const risk = riskMap[data.risk_level] || riskMap.UNKNOWN;
@@ -525,7 +525,7 @@ const MatchUI = (() => {
     const cert = data.certainty || 'UNCERTAIN';
 
     const explanationHtml = (data.explanation || [])
-      .map(e => `<div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px">
+      .map(e => `<div style="display:flex;gap:8px;font-size:12px;color:var(--color-text-secondary, #475569);margin-bottom:6px">
                    <span style="color:${risk.color}">•</span> ${escHtml(e)}
                  </div>`)
       .join('');
@@ -544,7 +544,7 @@ const MatchUI = (() => {
         </div>
 
         <div style="display:flex; align-items:flex-start; gap:16px; margin-bottom:24px">
-          <div style="width:52px; height:52px; border-radius:14px; background:rgba(0,0,0,.2); border:1px solid ${risk.border}; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0">
+          <div style="width:52px; height:52px; border-radius:14px; background:rgba(0,0,0,.06); border:1px solid ${risk.border}; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0">
             ${risk.icon}
           </div>
           <div style="flex:1">
@@ -558,20 +558,20 @@ const MatchUI = (() => {
         </div>
 
         <!-- Trust Note -->
-        <p style="font-size:11px; color:rgba(255,255,255,.3); margin-bottom:24px; font-weight:500; padding-left:2px">
+        <p style="font-size:11px; color:var(--color-text-muted, #64748b); margin-bottom:24px; font-weight:500; padding-left:2px">
           🛡️ This check helps prevent scams and impersonation. Signals are advisory.
         </p>
 
         <!-- Explanations -->
-        <div style="border-top:1px solid rgba(255,255,255,.06); padding-top:16px; margin-bottom:24px">
-          <div style="font-size:10px; font-weight:700; color:rgba(255,255,255,.3); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px">
+        <div style="border-top:1px solid var(--color-border, #e2e8f0); padding-top:16px; margin-bottom:24px">
+          <div style="font-size:10px; font-weight:700; color:var(--color-text-muted, #64748b); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px">
             Trust Justification
           </div>
           ${explanationHtml}
         </div>
 
         <!-- Viral Hook (Copy Result) -->
-        <button id="copyResultBtn" class="btn btn-ghost btn-sm" style="width:100%; border-color:rgba(255,255,255,.1)" onclick="copyResult('${escHtml(data.summary)}', '${escHtml(actionText)}')">
+        <button id="copyResultBtn" class="btn btn-ghost btn-sm" style="width:100%; border-color:var(--color-border, #e2e8f0); color:var(--color-text-secondary, #475569)" onclick="copyResult('${escHtml(data.summary)}', '${escHtml(actionText)}')">
           📋 Copy result to clipboard
         </button>
 
@@ -602,7 +602,7 @@ const MatchUI = (() => {
       const resultSlot = document.getElementById('multiCheckResultSlot');
       if (list && list.querySelectorAll('.claim-row').length < 2) {
          resultSlot.style.display = 'block';
-         resultSlot.innerHTML = `<div style="text-align:center; padding:20px; font-size:13px; color:rgba(255,255,255,.3); border:1px dashed rgba(255,255,255,.1); border-radius:10px">
+         resultSlot.innerHTML = `<div style="text-align:center; padding:20px; font-size:13px; color:var(--color-text-muted, #64748b); border:1px dashed var(--color-border, #cbd5e1); border-radius:10px">
                                   Add at least 2 details to verify identity
                                 </div>`;
       }
@@ -618,14 +618,14 @@ const MatchUI = (() => {
     row.style.display = 'flex';
     row.style.gap = '8px';
     row.innerHTML = `
-      <select class="claim-type-select" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--color-text-primary); padding:8px 12px; font-size:13px; font-family:inherit; cursor:pointer; outline:none">
+      <select class="claim-type-select" style="background:var(--color-surface, #ffffff); border:1px solid var(--color-border, #cbd5e1); border-radius:8px; color:var(--color-text-primary); padding:8px 12px; font-size:13px; font-family:inherit; cursor:pointer; outline:none">
         <option value="instagram">Instagram</option>
         <option value="phone">Phone</option>
         <option value="email">Email</option>
         <option value="website">Website</option>
       </select>
-      <input type="text" class="claim-value-input" placeholder="Enter value" style="flex:1; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--color-text-primary); padding:8px 14px; font-size:13px; outline:none" />
-      <button class="remove-claim-btn" style="background:none; border:none; color:rgba(255,255,255,.2); cursor:pointer; font-size:18px; padding:0 8px" onclick="this.parentElement.remove()">×</button>
+      <input type="text" class="claim-value-input" placeholder="Enter value" style="flex:1; background:var(--color-surface, #ffffff); border:1px solid var(--color-border, #cbd5e1); border-radius:8px; color:var(--color-text-primary); padding:8px 14px; font-size:13px; outline:none" />
+      <button class="remove-claim-btn" style="background:none; border:none; color:var(--color-text-muted, #94a3b8); cursor:pointer; font-size:18px; padding:0 8px" onclick="this.parentElement.remove()">×</button>
     `;
     list.appendChild(row);
     
@@ -724,11 +724,11 @@ const MatchUI = (() => {
   function renderError(container, msg) {
     injectStyles();
     container.innerHTML = `
-      <div class="mo-card" style="background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.07)">
+      <div class="mo-card" style="background:var(--color-surface, #ffffff);border-color:var(--color-border, #e2e8f0)">
         <div class="mo-empty">
           <div class="mo-empty-icon" style="font-size:24px;opacity:.3">⚠</div>
           <div class="mo-empty-title" style="font-size:14px">${escHtml(msg)}</div>
-          <button onclick="window.location.reload()" class="mo-btn mo-btn-ghost" style="margin-top:12px;border:1px solid rgba(255,255,255,.1);background:transparent;cursor:pointer">
+          <button onclick="window.location.reload()" class="mo-btn mo-btn-ghost" style="margin-top:12px;border:1px solid var(--color-border, #e2e8f0);background:transparent;cursor:pointer">
             Try again
           </button>
         </div>

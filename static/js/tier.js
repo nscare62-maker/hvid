@@ -98,23 +98,23 @@ const TierUI = (() => {
         text-transform: uppercase; color: var(--color-text-muted, #9ca3af);
         margin-bottom: 6px;
       }
-      .tier-card-desc { font-size: 13px; color: var(--color-text-secondary, #d1d5db); line-height: 1.6; }
+      .tier-card-desc { font-size: 13px; color: var(--color-text-secondary, #475569); line-height: 1.6; }
 
       /* ── CTA panel ──────────────────────────────────────────── */
       .tier-cta {
         margin-top: 20px; padding: 16px;
-        background: rgba(255,255,255,.03);
-        border: 1px solid rgba(255,255,255,.07);
+        background: var(--color-surface-2, #f8fafc);
+        border: 1px solid var(--color-border, #e2e8f0);
         border-radius: 10px;
       }
       .tier-cta-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-      .tier-cta-desc  { font-size: 12px; color: var(--color-text-muted,#9ca3af); margin-bottom: 14px; line-height: 1.5; }
+      .tier-cta-desc  { font-size: 12px; color: var(--color-text-muted, #64748b); margin-bottom: 14px; line-height: 1.5; }
       .tier-cta-point {
         display: flex; align-items: center; gap: 8px;
-        font-size: 12px; color: var(--color-text-secondary,#d1d5db);
+        font-size: 12px; color: var(--color-text-secondary, #334155);
         margin-bottom: 6px;
       }
-      .tier-cta-point::before { content: '→'; opacity: .5; }
+      .tier-cta-point::before { content: '→'; opacity: .7; }
       .tier-cta-btn {
         display: inline-flex; align-items: center; gap: 6px;
         margin-top: 14px; padding: 9px 20px; border-radius: 8px;
@@ -147,7 +147,7 @@ const TierUI = (() => {
       .tier-feature {
         display: flex; align-items: center; gap: 10px;
         font-size: 13px; padding: 10px 14px; border-radius: 9px;
-        border: 1px solid rgba(255,255,255,.06);
+        border: 1px solid var(--color-border, #e2e8f0);
       }
       .tier-feature-icon { font-size: 14px; flex-shrink: 0; }
       .tier-feature-label { flex: 1; }
@@ -198,12 +198,12 @@ const TierUI = (() => {
       node.style.cssText = isActive
         ? `background:${step.bg};border-color:${step.color};color:${step.color};` +
           (isCurrent ? `box-shadow:0 0 0 3px ${step.bg}` : '')
-        : `background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.2)`;
+        : `background:var(--color-surface-2, #f1f5f9);border-color:var(--color-border, #cbd5e1);color:var(--color-text-muted, #94a3b8)`;
 
       const label = document.createElement('div');
       label.className = 'tier-step-label';
       label.textContent = step.label;
-      label.style.color = isActive ? step.color : 'rgba(255,255,255,.25)';
+      label.style.color = isActive ? step.color : 'var(--color-text-muted, #64748b)';
 
       stepEl.appendChild(node);
       stepEl.appendChild(label);
@@ -212,7 +212,7 @@ const TierUI = (() => {
       if (i < steps.length - 1) {
         const conn = document.createElement('div');
         conn.className = 'tier-connector';
-        conn.style.background = i < current ? steps[i+1].color : 'rgba(255,255,255,.1)';
+        conn.style.background = i < current ? steps[i+1].color : 'var(--color-border, #e2e8f0)';
         wrap.appendChild(conn);
       }
     });
@@ -233,7 +233,8 @@ const TierUI = (() => {
       const el = document.createElement('div');
       el.className = 'tier-feature';
       el.style.background = unlocked
-        ? 'rgba(255,255,255,.03)' : 'rgba(0,0,0,.15)';
+        ? 'rgba(16, 185, 129, 0.05)' : 'var(--color-surface, #ffffff)';
+      el.style.border = '1px solid var(--color-border, #e2e8f0)';
 
       const iconHtml = unlocked
         ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" style="display:inline-block"><polyline points="20 6 9 17 4 12"></polyline></svg>'
@@ -241,14 +242,14 @@ const TierUI = (() => {
 
       el.innerHTML = `
         <span class="tier-feature-icon">${iconHtml}</span>
-        <span class="tier-feature-label" style="color:${unlocked ? 'var(--color-text-primary,#fff)' : 'rgba(255,255,255,.35)'}">
+        <span class="tier-feature-label" style="color:${unlocked ? 'var(--color-text-primary, #0b192c)' : 'var(--color-text-secondary, #475569)'}">
           ${f.label}
         </span>
         ${!unlocked
           ? `<span class="tier-feature-tag" style="color:${reqTier.color};background:${reqTier.bg};border-color:${reqTier.border}">
                ${reqTier.label}
              </span>`
-          : `<span class="tier-feature-tag" style="color:#34d399;background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2)">
+          : `<span class="tier-feature-tag" style="color:#10b981;background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2)">
                Unlocked
              </span>`}
       `;

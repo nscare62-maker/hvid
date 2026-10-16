@@ -257,27 +257,30 @@ def kyc_status():
         elif not kyc:
             return jsonify({'error': 'No KYC submission found.'}), 404
 
-        return jsonify({
-            'kyc_id':        kyc.id if kyc else None,
-            'status':        'VERIFIED',
-            'document_type': kyc.document_type if kyc else None,
-            'reject_reason': kyc.reject_reason if kyc else None,
-            'createdAt':     kyc.created_at.isoformat() if kyc and kyc.created_at else None,
-            'updatedAt':     kyc.updated_at.isoformat() if kyc and kyc.updated_at else None,
-        }), 200
-
     if not kyc:
         return jsonify({'error': 'No KYC submission found.'}), 404
 
-    return jsonify({
-        'kyc_id':        kyc.id,
-        'status':        kyc.status,
-        'document_type': kyc.document_type,
-        'reject_reason': kyc.reject_reason,
-        'createdAt':     kyc.created_at.isoformat() if kyc.created_at else None,
-        'updatedAt':     kyc.updated_at.isoformat() if kyc.updated_at else None,
-    }), 200
+    personal_details = {}
+    if kyc and kyc.document_urls:
+        try:
+            meta = json.loads(kyc.document_urls)
+            personal_details = meta.get('personal_details') or {}
+        except Exception:
+            personal_details = {}
 
+    all_submissions = KYC.query.filter_by(identity_id=identity_id).all()
+    documents = {k.document_type: k.status for k in all_submissions if k.document_type}
+
+    return jsonify({
+        'kyc_id':           kyc.id if kyc else None,
+        'status':           'VERIFIED' if verified_identity else kyc.status,
+        'document_type':    kyc.document_type if kyc else None,
+        'documents':        documents,
+        'personal_details': personal_details,
+        'reject_reason':    kyc.reject_reason if kyc else None,
+        'createdAt':        kyc.created_at.isoformat() if kyc and kyc.created_at else None,
+        'updatedAt':        kyc.updated_at.isoformat() if kyc and kyc.updated_at else None,
+    }), 200
 
 # ── Legacy submit (keep for backward compat) ──────────────────────
 @bp.route('/submit', methods=['POST'])

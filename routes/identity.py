@@ -32,6 +32,7 @@ def get_identity(identity_id):
         'id':                 identity.id,
         'username':           identity.username,
         'email':              identity.email,
+        'phone_last4':        identity.phone_last4,
         'status':             identity.identity_state,
         'verificationLevel':  identity.verification_level,
         'identity_type':      identity.identity_type,

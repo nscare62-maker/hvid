@@ -25,7 +25,7 @@
       renderBadge(container, signals);
     } catch (err) {
       console.error('HVID Trust Badge Error:', err);
-      container.innerHTML = '<span style="font-size:11px; color:rgba(255,255,255,0.2)">Trust signals unavailable</span>';
+      container.innerHTML = '<span style="font-size:11px; color:var(--color-text-muted, #94a3b8)">Trust signals unavailable</span>';
     }
   }
 
@@ -34,10 +34,10 @@
       .hvid-badge-wrap { display: flex; gap: 8px; align-items: center; }
       .hvid-signal { 
         font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
-        padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05);
+        padding: 2px 8px; border-radius: 4px; border: 1px solid var(--color-border, #e2e8f0);
       }
       .hvid-VERIFIED { color: #10b981; background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); }
-      .hvid-UNVERIFIED { color: #94a3b8; background: rgba(148,163,184,0.05); }
+      .hvid-UNVERIFIED { color: var(--color-text-muted, #64748b); background: var(--color-surface-2, #f1f5f9); border-color: var(--color-border, #e2e8f0); }
       .hvid-LIMITED { color: #f59e0b; background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); }
       .hvid-SUSPENDED { color: #ef4444; background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.2); }
       .hvid-stability { color: #818cf8; font-weight: 600; opacity: 0.8; }

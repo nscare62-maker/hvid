@@ -226,15 +226,15 @@ const Growth = (() => {
         </div>
         <div class="growth-modal-footer">
           <button class="growth-cta-btn" id="growth-show-embed-btn"
-            style="background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-size:11px">
+            style="background:var(--color-surface-2, #f1f5f9);border:1px solid var(--color-border, #e2e8f0);color:var(--color-text-secondary, #475569);font-size:11px">
             &#60;/&#62; Get embed code
           </button>
         </div>
         <!-- Embed code (hidden by default) -->
         <div id="growth-embed-section" style="display:none;padding:0 24px 20px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.3);margin-bottom:8px">Embed on your website</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-muted, #64748b);margin-bottom:8px">Embed on your website</div>
           <div class="growth-embed-code" id="growth-embed-code-block"></div>
-          <button class="growth-copy-btn" id="growth-copy-embed-btn" style="padding:7px 14px;border:1px solid rgba(255,255,255,.08);border-radius:8px">Copy embed</button>
+          <button class="growth-copy-btn" id="growth-copy-embed-btn" style="padding:7px 14px;border:1px solid var(--color-border, #e2e8f0);color:var(--color-text-primary, #0b192c);border-radius:8px">Copy embed</button>
         </div>
       </div>`;
 

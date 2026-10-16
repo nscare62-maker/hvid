@@ -75,9 +75,9 @@
     </nav>
     <div class="sidebar-bottom">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar" id="sidebar-user-initial">R</div>
+        <div class="sidebar-user-avatar" id="sidebar-user-initial">—</div>
         <div style="flex:1;min-width:0">
-          <div class="sidebar-user-name" id="sidebar-user-name">Rahul Kumar</div>
+          <div class="sidebar-user-name" id="sidebar-user-name">User</div>
           <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
             <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981"></span>
             <span style="font-size:10px;color:#10b981;font-weight:700">Verified</span>
@@ -130,11 +130,11 @@
         <p class="page-subtitle">Complete KYC and biometric face verification to maintain Level 3 High Trust. One human, one persistent identity.</p>
       </div>
 
-      <!-- ── Mockup Screen 7 Checklist Card ── -->
+      <!-- ── Verification Checklist Card (Dynamic) ── -->
       <div class="card animate-fadeUp delay-1" style="margin-bottom:var(--space-6);padding:24px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
           <h2 style="font-size:18px;font-weight:700;color:var(--color-text-primary);margin:0">Verification</h2>
-          <span style="font-size:13px;font-weight:600;color:var(--color-text-muted)">5 of 5 completed</span>
+          <span id="verif-completed-count" style="font-size:13px;font-weight:600;color:var(--color-text-muted)">Evaluating…</span>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:12px">
@@ -144,9 +144,12 @@
               <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
               </div>
-              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Identity Verification</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Identity Verification</div>
+                <div id="verif-id-sub" style="font-size:12px;color:var(--color-text-muted)">Active HVID account</div>
+              </div>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+            <div id="verif-status-identity" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
               <span>Completed</span>
             </div>
@@ -158,9 +161,12 @@
               <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
               </div>
-              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Phone Verification</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Phone Verification</div>
+                <div id="verif-phone-sub" style="font-size:12px;color:var(--color-text-muted)">Verified via SMS OTP</div>
+              </div>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+            <div id="verif-status-phone" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
               <span>Completed</span>
             </div>
@@ -172,11 +178,13 @@
               <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
               </div>
-              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Email Verification</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Email Verification</div>
+                <div id="verif-email-sub" style="font-size:12px;color:var(--color-text-muted)">Primary recovery contact</div>
+              </div>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Connected</span>
+            <div id="verif-status-email">
+              <span style="font-size:12px;color:var(--color-text-muted)">Checking…</span>
             </div>
           </div>
 
@@ -186,11 +194,13 @@
               <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
               </div>
-              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Document Verification</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Document Verification</div>
+                <div id="verif-kyc-sub" style="font-size:12px;color:var(--color-text-muted)">Government ID / Passport (KYC)</div>
+              </div>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Completed</span>
+            <div id="verif-status-kyc">
+              <span style="font-size:12px;color:var(--color-text-muted)">Checking…</span>
             </div>
           </div>
 
@@ -200,11 +210,13 @@
               <div style="width:36px;height:36px;border-radius:10px;background:rgba(27,100,242,0.1);color:#1b64f2;display:flex;align-items:center;justify-content:center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
               </div>
-              <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Face Verification</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--color-text-primary)">Face Verification</div>
+                <div id="verif-face-sub" style="font-size:12px;color:var(--color-text-muted)">Biometric 3D liveness match</div>
+              </div>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Completed</span>
+            <div id="verif-status-face">
+              <span style="font-size:12px;color:var(--color-text-muted)">Checking…</span>
             </div>
           </div>
         </div>
@@ -220,12 +232,12 @@
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:var(--space-5)">
             Verification &amp; Trust
           </div>
-            <div style="margin:-8px 0 18px;padding:10px 12px;border:1px solid rgba(27,100,242,.18);border-radius:10px;background:rgba(27,100,242,.05);font-size:12px;color:rgba(255,255,255,.62)">
+            <div style="margin:-8px 0 18px;padding:10px 12px;border:1px solid rgba(27,100,242,.18);border-radius:10px;background:rgba(27,100,242,.05);font-size:12px;color:var(--color-text-secondary, #334155)">
               Level 3 High Trust is the highest verification level currently available. Level 4 is not defined.
             </div>
 
           <!-- KYC row -->
-          <div id="kyc-verification-section" style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-4) 0;border-bottom:1px solid rgba(255,255,255,.05);scroll-margin-top:80px">
+          <div id="kyc-verification-section" style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-4) 0;border-bottom:1px solid var(--color-border, #e2e8f0);scroll-margin-top:80px">
             <div>
               <div style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:3px">Document Verification (KYC)</div>
               <div style="font-size:12px;color:var(--color-text-muted)">Submit a government-issued ID to reach Verified tier</div>
@@ -829,7 +841,125 @@ async function submitProof() {
   }
 }
 
-// ── Trust section ─────────────────────────────────────────────
+// ── Trust section & dynamic verification checklist ─────────────
+function renderVerificationChecklist(data) {
+  const { iid, session, identityData, kycStatus, faceStatus } = data;
+  let doneCount = 0;
+
+  const doneBadgeHtml = `
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Completed</span>
+    </div>`;
+
+  const reviewBadgeHtml = (label) => `
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#f59e0b;background:rgba(245,158,11,0.1);padding:3px 10px;border-radius:99px;border:1px solid rgba(245,158,11,0.25)">
+      <span>${label || 'Under Review'}</span>
+    </div>`;
+
+  // 1. Identity Verification
+  const idEl = document.getElementById('verif-status-identity');
+  if (idEl) {
+    if (iid) {
+      doneCount++;
+      idEl.innerHTML = doneBadgeHtml;
+      const sub = document.getElementById('verif-id-sub');
+      if (sub) {
+        const dId = identityData?.id || iid;
+        sub.textContent = 'Active ID: ' + dId.slice(0, 8) + '…';
+      }
+    } else {
+      idEl.innerHTML = `<span style="font-size:12px;color:var(--color-text-muted)">Pending login</span>`;
+    }
+  }
+
+  // 2. Phone Verification
+  const phoneEl = document.getElementById('verif-status-phone');
+  const phoneLast4 = identityData?.phone_last4 || session?.phone_last4 || (session?.phone ? String(session.phone).slice(-4) : '');
+  if (phoneEl) {
+    doneCount++;
+    phoneEl.innerHTML = doneBadgeHtml;
+    const sub = document.getElementById('verif-phone-sub');
+    if (sub && phoneLast4) {
+      sub.textContent = 'Verified (•••• ' + phoneLast4 + ')';
+    }
+  }
+
+  // 3. Email Verification
+  const emailEl = document.getElementById('verif-status-email');
+  const userEmail = identityData?.email || session?.email || '';
+  if (emailEl) {
+    if (userEmail) {
+      doneCount++;
+      emailEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#10b981">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Connected</span>
+        </div>`;
+      const sub = document.getElementById('verif-email-sub');
+      if (sub) sub.textContent = userEmail;
+    } else {
+      emailEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--color-surface-3);color:var(--color-text-muted);border:1px solid var(--color-border)">Not connected</span>
+          <a href="/dashboard/identity" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#1b64f2;text-decoration:none;padding:4px 10px;border:1px solid rgba(27,100,242,0.25);border-radius:6px;background:rgba(27,100,242,0.06);transition:all .15s">Connect →</a>
+        </div>`;
+    }
+  }
+
+  // 4. Document Verification (KYC)
+  const kycEl = document.getElementById('verif-status-kyc');
+  if (kycEl) {
+    if (kycStatus === 'VERIFIED') {
+      doneCount++;
+      kycEl.innerHTML = doneBadgeHtml;
+    } else if (kycStatus === 'PENDING' || kycStatus === 'UNDER_REVIEW') {
+      kycEl.innerHTML = reviewBadgeHtml('Under Review');
+    } else if (kycStatus === 'REJECTED') {
+      kycEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.25)">Rejected</span>
+          <button type="button" onclick="selectProofMethod('id')" style="font-size:12px;font-weight:600;color:#1b64f2;background:rgba(27,100,242,0.06);border:1px solid rgba(27,100,242,0.25);border-radius:6px;padding:4px 10px;cursor:pointer">Retry KYC →</button>
+        </div>`;
+    } else {
+      kycEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--color-surface-3);color:var(--color-text-muted);border:1px solid var(--color-border)">Not started</span>
+          <button type="button" onclick="selectProofMethod('id')" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#ffffff;background:#1b64f2;border:none;border-radius:6px;padding:5px 12px;cursor:pointer">Start KYC →</button>
+        </div>`;
+    }
+  }
+
+  // 5. Face Verification
+  const faceEl = document.getElementById('verif-status-face');
+  if (faceEl) {
+    if (faceStatus === 'VERIFIED') {
+      doneCount++;
+      faceEl.innerHTML = doneBadgeHtml;
+    } else if (faceStatus === 'PENDING' || faceStatus === 'UNDER_REVIEW') {
+      faceEl.innerHTML = reviewBadgeHtml('Under Review');
+    } else if (kycStatus === 'VERIFIED') {
+      faceEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--color-surface-3);color:var(--color-text-muted);border:1px solid var(--color-border)">Not started</span>
+          <button type="button" onclick="simulateFaceCapture()" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#ffffff;background:#1b64f2;border:none;border-radius:6px;padding:5px 12px;cursor:pointer">Start Face →</button>
+        </div>`;
+    } else {
+      faceEl.innerHTML = `
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--color-text-muted)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Complete KYC first</span>
+        </div>`;
+    }
+  }
+
+  // Update total count
+  const countEl = document.getElementById('verif-completed-count');
+  if (countEl) {
+    countEl.textContent = `${doneCount} of 5 completed`;
+  }
+}
+
 async function loadTrustSection() {
   const iid = vf_iid();
   let tier  = 'BASIC';
@@ -852,7 +982,19 @@ async function loadTrustSection() {
     return `<span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;background:${bg};border:1px solid ${bd};color:${c}">${label||status}</span>`;
   }
 
+  const session = vf_sess();
+  let identityData = null;
+
   if (iid) {
+    try {
+      const res = await fetch(`/api/identity/${iid}`, {
+        headers: vf_token() ? { 'Authorization': 'Bearer ' + vf_token() } : {}
+      });
+      if (res.ok) {
+        identityData = await res.json();
+      }
+    } catch (_) {}
+
     // KYC status
     try {
       const r = await fetch(`/api/kyc/status?identityId=${iid}`);
@@ -884,6 +1026,9 @@ async function loadTrustSection() {
   // Render tier card
   const tierTarget = document.getElementById('tier-card-target');
   if (tierTarget && window.TierUI) TierUI.card(tier, tierTarget);
+
+  // Render top checklist card dynamically
+  renderVerificationChecklist({ iid, session, identityData, kycStatus, faceStatus });
 
   // Keep button state updates here. The actual KYC/face start actions are
   // handled by verification-flow.js to avoid duplicate click handlers on the

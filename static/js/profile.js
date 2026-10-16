@@ -38,7 +38,7 @@ function _sig(signal) {
 const TIER_LABELS = {
   PREMIUM:      { label: 'Premium',      color: '#fbbf24' },
   PROFESSIONAL: { label: 'Professional', color: '#818cf8' },
-  BASIC:        { label: 'Basic',        color: 'rgba(255,255,255,.4)' },
+  BASIC:        { label: 'Basic',        color: 'var(--color-text-muted, #64748b)' },
 };
 
 // ── Verification summary labels ────────────────────────────────
@@ -55,7 +55,7 @@ function esc(s) {
 }
 
 // ── Skeleton loading ───────────────────────────────────────────
-const SKEL = 'background:rgba(255,255,255,.06);border-radius:6px;animation:pSkelPulse 1.4s ease-in-out infinite';
+const SKEL = 'background:rgba(0,0,0,.06);border-radius:6px;animation:pSkelPulse 1.4s ease-in-out infinite';
 
 function showProfileSkeleton() {
   if (!document.getElementById('p-skel-css')) {
@@ -84,7 +84,7 @@ function showNotFound() {
       <div style="text-align:center;padding:80px 24px">
         <div style="font-size:48px;margin-bottom:16px">—</div>
         <div style="font-size:20px;font-weight:700;margin-bottom:10px">Identity not found</div>
-        <div style="font-size:14px;color:rgba(255,255,255,.4)">
+        <div style="font-size:14px;color:var(--color-text-secondary, #475569)">
           This HVID identity does not exist or is not publicly visible.
         </div>
       </div>`;
@@ -133,7 +133,7 @@ function renderProfile(identityId, data) {
            <div style="font-size:16px;font-weight:800;color:${ts.color};margin-bottom:5px">
              ${ts.icon} ${esc(ts.label)}
            </div>
-           <div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.6">
+           <div style="font-size:13px;color:var(--color-text-secondary, #475569);line-height:1.6">
              ${esc(ts.desc || '')}
            </div>
          </div>`;
@@ -246,10 +246,10 @@ function renderProfile(identityId, data) {
         
         return `
           <div style="display:flex;align-items:center;gap:12px;padding:12px 0;
-                      border-bottom:1px solid rgba(255,255,255,.05);${!isCore ? 'opacity:0.7' : ''}">
+                      border-bottom:1px solid var(--color-border, #e2e8f0);${!isCore ? 'opacity:0.7' : ''}">
             <span style="font-size:20px;flex-shrink:0">${meta.icon}</span>
             <div style="flex:1;min-width:0">
-              <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3);
+              <div style="font-size:11px;font-weight:700;color:var(--color-text-muted, #64748b);
                           text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">
                 ${esc(meta.label)}
               </div>
@@ -271,7 +271,7 @@ function renderProfile(identityId, data) {
              <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:14px;line-height:1.5">
                Verified assets are confirmed to be controlled by this identity.
              </p>
-             <div style="border-top:1px solid rgba(255,255,255,.05)">${core.map(a => renderAssetRow(a, true)).join('')}</div>
+             <div style="border-top:1px solid var(--color-border, #e2e8f0)">${core.map(a => renderAssetRow(a, true)).join('')}</div>
            </div>`
         : '';
 
@@ -281,7 +281,7 @@ function renderProfile(identityId, data) {
                Other Claimed Assets
                <span style="text-transform:none;font-weight:500;letter-spacing:0;font-size:10px;opacity:0.8">CUSTOM</span>
              </div>
-             <div style="border-top:1px solid rgba(255,255,255,.05)">${custom.map(a => renderAssetRow(a, false)).join('')}</div>
+             <div style="border-top:1px solid var(--color-border, #e2e8f0)">${custom.map(a => renderAssetRow(a, false)).join('')}</div>
            </div>`
         : '';
 

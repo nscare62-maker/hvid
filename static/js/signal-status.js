@@ -150,15 +150,15 @@
             <div style="font-size:13px;font-weight:700;color:${color};margin-bottom:5px">
               ${m.summary}
             </div>
-            <div style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.6">
+            <div style="font-size:12px;color:var(--color-text-secondary, #334155);line-height:1.6">
               ${m.guidance}
             </div>
             ${actionHtml}
           </div>
         </div>
         <div style="
-          margin-top:14px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05);
-          font-size:11px;color:rgba(255,255,255,.2)
+          margin-top:14px;padding-top:10px;border-top:1px solid var(--color-border, #e2e8f0);
+          font-size:11px;color:var(--color-text-muted, #64748b)
         ">
           Advisory only — not a verdict on your identity.
         </div>
@@ -188,12 +188,12 @@
     const copy  = direction === 'improving' ? TRANSITION_COPY.improving : TRANSITION_COPY.worsening;
     const color = direction === 'improving' ? '#34d399' : '#fbbf24';
     const entry = document.createElement('div');
-    entry.style.cssText = 'display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)';
+    entry.style.cssText = 'display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--color-border, #e2e8f0)';
     entry.innerHTML = `
       <div style="width:7px;height:7px;border-radius:50%;background:${color};margin-top:5px;flex-shrink:0"></div>
       <div>
-        <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.75)">${copy}</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px">Just now</div>
+        <div style="font-size:13px;font-weight:600;color:var(--color-text-primary, #0b192c)">${copy}</div>
+        <div style="font-size:11px;color:var(--color-text-muted, #94a3b8);margin-top:2px">Just now</div>
       </div>`;
     container.prepend(entry);
   }

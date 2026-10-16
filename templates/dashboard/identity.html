@@ -212,9 +212,9 @@
     </nav>
     <div class="sidebar-bottom">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar" id="sidebar-user-initial">R</div>
+        <div class="sidebar-user-avatar" id="sidebar-user-initial">—</div>
         <div style="flex:1;min-width:0">
-          <div class="sidebar-user-name" id="sidebar-user-name">Rahul Kumar</div>
+          <div class="sidebar-user-name" id="sidebar-user-name">User</div>
           <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
             <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981"></span>
             <span style="font-size:10px;color:#10b981;font-weight:700">Verified</span>
@@ -279,16 +279,15 @@
         <div>
           <!-- Profile Card -->
           <div class="id-profile-card">
-            <div class="id-avatar-large" id="identity-avatar">R</div>
-            <div class="id-profile-name" id="identity-display-name">Rahul Kumar</div>
-            <div class="id-profile-email" id="id-field-email">rahul.kumar@email.com</div>
+            <div class="id-avatar-large" id="identity-avatar">—</div>
+            <div class="id-profile-name" id="identity-display-name">—</div>
+            <div class="id-profile-email" id="id-field-email">—</div>
             <span class="id-profile-badge" id="identity-state-badge">
-              <svg class="hvid-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Verified</span>
+              <span>Unverified</span>
             </span>
             <div style="margin-top:12px;display:none">
               <span id="identity-hvid-id">HVID-XXXXXXX</span>
-              <span id="id-field-name">Rahul Kumar</span>
+              <span id="id-field-name">—</span>
               <span id="id-field-hvid">—</span>
               <button id="switch-account-btn"></button>
               <button id="edit-identity-btn"></button>
@@ -300,21 +299,21 @@
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
               <div>
                 <div style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:2px">Verification Level</div>
-                <div style="font-size:12px;color:var(--color-text-muted)" id="level-label-text">Level 3 — High Assurance</div>
+                <div style="font-size:12px;color:var(--color-text-muted)" id="level-label-text">Level 0 — Unverified</div>
               </div>
-              <span class="id-state id-state-VERIFIED" id="level-badge" style="background:#ecfdf5;color:#10b981;border:none">Level 3</span>
+              <span class="id-state id-state-UNVERIFIED" id="level-badge" style="background:#f1f5f9;color:var(--color-text-muted);border:none">Level 0</span>
             </div>
             <div class="veri-level-track" id="level-track">
               <div class="veri-level-pip" id="pip-0"></div>
               <div class="veri-level-pip" id="pip-1"></div>
               <div class="veri-level-pip" id="pip-2"></div>
-              <div class="veri-level-pip filled" id="pip-3"></div>
+              <div class="veri-level-pip" id="pip-3"></div>
             </div>
             <div style="display:flex;justify-content:space-between;margin-top:var(--space-2)">
               <span style="font-size:10px;color:var(--color-text-muted)">Unverified</span>
               <span style="font-size:10px;color:var(--color-text-muted)">Basic</span>
               <span style="font-size:10px;color:var(--color-text-muted)">Strong</span>
-              <span style="font-size:10px;color:#10b981;font-weight:700">High Assurance</span>
+              <span style="font-size:10px;color:var(--color-text-muted)" id="level-max-label">High Assurance</span>
             </div>
           </div>
         </div>
@@ -327,41 +326,41 @@
             <div class="id-info-row">
               <span class="id-info-label">Full Name</span>
               <div class="id-info-val-wrap">
-                <span>Rahul Kumar</span>
+                <span id="id-personal-name">Not provided</span>
                 <span class="id-info-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
               </div>
             </div>
             <div class="id-info-row">
               <span class="id-info-label">Date of Birth</span>
               <div class="id-info-val-wrap">
-                <span>12 Apr 1998</span>
+                <span id="id-personal-dob">Not provided</span>
                 <span class="id-info-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
               </div>
             </div>
             <div class="id-info-row">
               <span class="id-info-label">Gender</span>
               <div class="id-info-val-wrap">
-                <span>Male</span>
+                <span id="id-personal-gender">Not provided</span>
                 <span class="id-info-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
               </div>
             </div>
             <div class="id-info-row">
               <span class="id-info-label">Nationality</span>
               <div class="id-info-val-wrap">
-                <span>Indian</span>
+                <span id="id-personal-nationality">Not provided</span>
                 <span class="id-info-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
               </div>
             </div>
             <div class="id-info-row">
               <span class="id-info-label">Address</span>
               <div class="id-info-val-wrap">
-                <span style="max-width:280px;text-align:right">123, Green Park, Chennai, Tamil Nadu</span>
+                <span id="id-personal-address" style="max-width:280px;text-align:right">Not provided</span>
                 <span class="id-info-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
               </div>
             </div>
             <div class="id-info-row" style="display:none">
               <span id="id-field-since">—</span>
-              <span id="id-field-state">ACTIVE</span>
+              <span id="id-field-state">UNVERIFIED</span>
               <span id="id-field-last-verified">—</span>
             </div>
           </div>
@@ -376,10 +375,7 @@
                 </div>
                 <span>Aadhaar Card</span>
               </div>
-              <span class="id-doc-badge-verified">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span>Verified</span>
-              </span>
+              <span id="id-doc-badge-aadhaar" class="id-doc-badge-missing">+ Not Added</span>
             </div>
             <div class="id-doc-item">
               <div class="id-doc-left">
@@ -388,10 +384,7 @@
                 </div>
                 <span>PAN Card</span>
               </div>
-              <span class="id-doc-badge-verified">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span>Verified</span>
-              </span>
+              <span id="id-doc-badge-pan" class="id-doc-badge-missing">+ Not Added</span>
             </div>
             <div class="id-doc-item">
               <div class="id-doc-left">
@@ -400,7 +393,7 @@
                 </div>
                 <span>Passport</span>
               </div>
-              <span class="id-doc-badge-missing">+ Not Added</span>
+              <span id="id-doc-badge-passport" class="id-doc-badge-missing">+ Not Added</span>
             </div>
           </div>
         </div>
@@ -491,6 +484,73 @@
   g('id-field-since') && (g('id-field-since').textContent = fmt(session.createdAt || session.loginAt));
   g('id-field-state') && (g('id-field-state').textContent = state);
   g('id-field-last-verified') && (g('id-field-last-verified').textContent = fmt(session.lastVerifiedAt));
+
+  // Personal details lookup
+  let kycDetails = {};
+  if (identityId) {
+    try {
+      const localKey = 'hvid_kyc_personal_details_' + identityId;
+      kycDetails = JSON.parse(localStorage.getItem(localKey) || '{}');
+    } catch (_) {}
+
+    try {
+      const token = window.Auth ? Auth.getToken() : null;
+      const kycRes = await fetch(`/api/kyc/status?identityId=${encodeURIComponent(identityId)}`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      if (kycRes.ok) {
+        const kycData = await kycRes.json();
+        if (kycData.personal_details && Object.keys(kycData.personal_details).length > 0) {
+          kycDetails = { ...kycDetails, ...kycData.personal_details };
+        }
+
+        // Update document badges based on user's actual KYC submissions
+        const docs = kycData.documents || {};
+        const statusFor = type => docs[type] || (kycData.document_type === type ? kycData.status : null);
+
+        const updateDocBadge = (elId, docStatus) => {
+          const badgeEl = g(elId);
+          if (!badgeEl) return;
+          if (docStatus === 'VERIFIED') {
+            badgeEl.className = 'id-doc-badge-verified';
+            badgeEl.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Verified</span>';
+          } else if (docStatus === 'UNDER_REVIEW' || docStatus === 'PENDING') {
+            badgeEl.className = 'id-doc-badge-verified';
+            badgeEl.style.background = '#fef3c7';
+            badgeEl.style.color = '#d97706';
+            badgeEl.innerHTML = '<span>Under Review</span>';
+          } else if (docStatus === 'REJECTED') {
+            badgeEl.className = 'id-doc-badge-missing';
+            badgeEl.innerHTML = '<span>Rejected</span>';
+          } else {
+            badgeEl.className = 'id-doc-badge-missing';
+            badgeEl.textContent = '+ Not Added';
+          }
+        };
+
+        const aadhaarDoc = statusFor('NATIONAL_ID') || statusFor('RESIDENCE_PERMIT');
+        const panDoc     = statusFor('PAN');
+        const passDoc    = statusFor('PASSPORT');
+
+        updateDocBadge('id-doc-badge-aadhaar', aadhaarDoc);
+        updateDocBadge('id-doc-badge-pan', panDoc);
+        updateDocBadge('id-doc-badge-passport', passDoc);
+      }
+    } catch (_) {}
+  }
+
+  // Populate Personal Information Card
+  const pName = kycDetails.name || session.username || session.name || '';
+  const pDob = kycDetails.dob ? (isNaN(Date.parse(kycDetails.dob)) ? kycDetails.dob : fmt(kycDetails.dob)) : '';
+  const pGender = kycDetails.gender || '';
+  const pNationality = kycDetails.nationality || (kycDetails.name ? 'Indian' : '');
+  const pAddress = kycDetails.address || '';
+
+  if (g('id-personal-name')) g('id-personal-name').textContent = pName || 'Not provided';
+  if (g('id-personal-dob')) g('id-personal-dob').textContent = pDob || 'Not provided';
+  if (g('id-personal-gender')) g('id-personal-gender').textContent = pGender || 'Not provided';
+  if (g('id-personal-nationality')) g('id-personal-nationality').textContent = pNationality || 'Not provided';
+  if (g('id-personal-address')) g('id-personal-address').textContent = pAddress || 'Not provided';
 
   // State badge
   const stateBadge = g('identity-state-badge');

@@ -197,6 +197,41 @@
       padding: 2px 8px;
       border-radius: 99px;
     }
+    .db-verif-badge-pending {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #d97706;
+      background: #fef3c7;
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+    .db-verif-badge-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #1b64f2;
+      background: rgba(27, 100, 242, 0.08);
+      padding: 2px 8px;
+      border-radius: 99px;
+      text-decoration: none;
+      transition: background .15s ease;
+    }
+    .db-verif-badge-action:hover {
+      background: rgba(27, 100, 242, 0.16);
+    }
+    .db-verif-badge-locked {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
     .db-activity-card {
       background: #ffffff;
       border: 1px solid var(--color-border);
@@ -345,9 +380,9 @@
     </nav>
     <div class="sidebar-bottom">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar" id="sidebar-user-initial">R</div>
+        <div class="sidebar-user-avatar" id="sidebar-user-initial">—</div>
         <div style="flex:1;min-width:0">
-          <div class="sidebar-user-name" id="sidebar-user-name">Rahul Kumar</div>
+          <div class="sidebar-user-name" id="sidebar-user-name">User</div>
           <div style="display:flex;align-items:center;gap:4px;margin-top:2px">
             <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981"></span>
             <span style="font-size:10px;color:#10b981;font-weight:700">Verified</span>
@@ -389,7 +424,7 @@
           <div style="display:flex;align-items:center;gap:8px;padding-left:12px;border-left:1px solid var(--color-border)">
             <div style="width:32px;height:32px;border-radius:50%;background:#1b64f2;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">R</div>
             <div style="display:none;flex-direction:column;line-height:1.2" class="desktop-user-hint">
-              <span style="font-size:12px;font-weight:700;color:var(--color-text-primary)">Rahul Kumar</span>
+              <span style="font-size:12px;font-weight:700;color:var(--color-text-primary)">User</span>
               <span class="topbar-verified-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Verified</span>
             </div>
           </div>
@@ -403,7 +438,7 @@
       <div class="db-greeting-banner animate-fadeUp">
         <div>
           <h1 class="db-greeting-title">
-            Good Morning, <span id="db-display-name">Rahul Kumar</span>
+            Good Morning, <span id="db-display-name">User</span>
           </h1>
           <p class="db-greeting-sub">Your identity is protected and verified.</p>
         </div>
@@ -519,44 +554,10 @@
         <div class="db-metric-card">
           <div class="db-metric-card-head">
             <span class="db-metric-card-title">Verification Status</span>
-            <span style="font-size:11px;color:var(--color-text-muted)">5 of 5 completed</span>
+            <span id="db-verif-count" style="font-size:11px;color:var(--color-text-muted)">Evaluating…</span>
           </div>
           <div class="db-verif-rows-list" id="db-verif-custom-list">
-            <div class="db-verif-row-item">
-              <div class="db-verif-item-left">
-                <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                <span>Identity Verification</span>
-              </div>
-              <span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>
-            </div>
-            <div class="db-verif-row-item">
-              <div class="db-verif-item-left">
-                <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                <span>Phone Verification</span>
-              </div>
-              <span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>
-            </div>
-            <div class="db-verif-row-item">
-              <div class="db-verif-item-left">
-                <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                <span>Email Verification</span>
-              </div>
-              <span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>
-            </div>
-            <div class="db-verif-row-item">
-              <div class="db-verif-item-left">
-                <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><rect x="2" y="4" width="20" height="16" rx="3"></rect><circle cx="8" cy="11" r="3"></circle><path d="M14 9h4"></path></svg>
-                <span>Document Verification</span>
-              </div>
-              <span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>
-            </div>
-            <div class="db-verif-row-item">
-              <div class="db-verif-item-left">
-                <svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                <span>Face Verification</span>
-              </div>
-              <span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>
-            </div>
+            <div style="font-size:12px;color:var(--color-text-muted);padding:8px 0">Loading verification details…</div>
           </div>
           <!-- Dynamic hook for owner-dashboard.js -->
           <div id="db-verif-list" style="display:none"></div>

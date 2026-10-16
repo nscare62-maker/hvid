@@ -82,14 +82,14 @@
         animation: siHintIn .2s ease;
       }
       @keyframes siHintIn { from { opacity:0; transform:translateY(4px) } to { opacity:1; transform:translateY(0) } }
-      .si-hint-info    { color: rgba(255,255,255,.55); background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.08); }
+      .si-hint-info    { color: var(--color-text-secondary, #475569); background: var(--color-surface-2, #f1f5f9); border-color: var(--color-border, #e2e8f0); }
       .si-hint-partial { color: #fbbf24;               background: rgba(251,191,36,.07);  border-color: rgba(251,191,36,.2);  }
       .si-hint-loading { color: #818cf8;               background: rgba(129,140,248,.07); border-color: rgba(129,140,248,.18); }
       .si-hint-error   { color: #f87171;               background: rgba(248,113,113,.06); border-color: rgba(248,113,113,.18); }
       .si-hint-partial { color: #fbbf24;               background: rgba(251,191,36,.07);  border-color: rgba(251,191,36,.2);  }
       .si-hint-confidence {
         display: inline-block; margin-top: 6px;
-        font-size: 11px; color: rgba(255,255,255,.4);
+        font-size: 11px; color: var(--color-text-muted, #64748b);
         padding: 2px 0;
       }
 

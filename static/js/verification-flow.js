@@ -196,7 +196,7 @@
         <div style="display:flex;align-items:center;gap:10px">
           <span style="font-size:22px">${ui.icon}</span>
           <div>
-            <div style="font-size:13px;font-weight:700;color:#e2e8f0">${label}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--color-text-primary, #0b192c)">${label}</div>
             <div style="font-size:12px;color:${ui.color};margin-top:2px">${ui.label}</div>
           </div>
         </div>
@@ -231,15 +231,15 @@
 
         <!-- KYC card -->
         <div style="
-          background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+          background:var(--color-surface, #ffffff);border:1px solid var(--color-border, #e2e8f0);
           border-radius:14px;padding:18px 20px
         ">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
             <div>
-              <div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:4px">
+              <div style="font-size:14px;font-weight:700;color:var(--color-text-primary, #0b192c);margin-bottom:4px">
                 KYC Document Verification
               </div>
-              <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.5">
+              <div style="font-size:12px;color:var(--color-text-secondary, #475569);line-height:1.5">
                 Upload a government-issued ID via our secure provider.<br>
                 Required for Professional tier.
               </div>
@@ -250,33 +250,33 @@
               background:rgba(129,140,248,.1);color:#818cf8;transition:opacity .15s;
             ">Start KYC Verification</button>
           </div>
-          <div id="vf-status-kyc" style="border-top:1px solid rgba(255,255,255,.06);padding-top:12px;font-size:12px;color:rgba(255,255,255,.35)">
+          <div id="vf-status-kyc" style="border-top:1px solid var(--color-border, #e2e8f0);padding-top:12px;font-size:12px;color:var(--color-text-muted, #64748b)">
             No KYC verification on record.
           </div>
         </div>
 
         <!-- Face card -->
         <div style="
-          background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+          background:var(--color-surface, #ffffff);border:1px solid var(--color-border, #e2e8f0);
           border-radius:14px;padding:18px 20px
         ">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
             <div>
-              <div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:4px">
+              <div style="font-size:14px;font-weight:700;color:var(--color-text-primary, #0b192c);margin-bottom:4px">
                 Face Biometric Verification
               </div>
-              <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.5">
+              <div style="font-size:12px;color:var(--color-text-secondary, #475569);line-height:1.5">
                 One-time liveness check via secure provider. KYC required first.<br>
                 Required for Premium tier.
               </div>
             </div>
             <button id="face-action-btn" onclick="window.VerifFlow.start('face')" style="
               font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;
-              padding:9px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
-              background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:opacity .15s;
+              padding:9px 18px;border-radius:10px;border:1px solid var(--color-border, #e2e8f0);
+              background:var(--color-surface-2, #f1f5f9);color:var(--color-text-muted, #94a3b8);transition:opacity .15s;
             " disabled>Start Face Verification</button>
           </div>
-          <div id="vf-status-face" style="border-top:1px solid rgba(255,255,255,.06);padding-top:12px;font-size:12px;color:rgba(255,255,255,.35)">
+          <div id="vf-status-face" style="border-top:1px solid var(--color-border, #e2e8f0);padding-top:12px;font-size:12px;color:var(--color-text-muted, #64748b)">
             Complete KYC first to unlock face verification.
           </div>
         </div>

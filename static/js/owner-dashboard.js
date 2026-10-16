@@ -139,8 +139,24 @@
     } catch { return []; }
   }
 
+  // ── API: fetch KYC status ────────────────────────────────────
+  async function fetchKycStatus(identityId) {
+    try {
+      const r = await fetch(`/api/kyc/status?identityId=${identityId}`);
+      return r.ok ? await r.json() : null;
+    } catch { return null; }
+  }
+
+  // ── API: fetch Face status ───────────────────────────────────
+  async function fetchFaceStatus(identityId) {
+    try {
+      const r = await fetch(`/api/face/status?identityId=${identityId}`);
+      return r.ok ? await r.json() : null;
+    } catch { return null; }
+  }
+
   // ── Skeleton loading state ───────────────────────────────────
-  const SKEL_STYLE = 'background:rgba(255,255,255,.06);border-radius:6px;height:14px;margin:6px 0;animation:skelPulse 1.4s ease-in-out infinite';
+  const SKEL_STYLE = 'background:rgba(0,0,0,.06);border-radius:6px;height:14px;margin:6px 0;animation:skelPulse 1.4s ease-in-out infinite';
   function skelHtml(lines = 2) {
     return Array.from({length: lines}, (_, i) =>
       `<div style="${SKEL_STYLE};width:${i===0?'70%':'45%'}"></div>`
@@ -318,25 +334,116 @@
   }
 
   // ── S5: Verification Checklist ──────
-  function renderVerifStatus(verificationLevel) {
-    const el = g('db-verif-list');
-    if (!el) return;
+  function renderVerifStatus(verificationLevel, identity, session, kyc, face) {
+    const customEl = g('db-verif-custom-list');
+    const legacyEl = g('db-verif-list');
+    const countEl  = g('db-verif-count');
+    const targetEl = customEl || legacyEl;
+    if (!targetEl) return;
+
     const level = verificationLevel ?? 0;
-    const items = [
-      { label: 'Phone verified',        done: level >= 1 },
-      { label: 'KYC documents',         done: level >= 2 },
-      { label: 'Face verification',     done: level >= 3 },
-    ];
-    el.innerHTML = items.map(it => `
-      <div class="profile-verif-item">
-        <span class="profile-verif-check" style="${it.done ? 'background:#ecfdf5;border-color:#d1fae5;color:#10b981' : 'background:#f1f5f9;border-color:#e2e8f0;color:#94a3b8'}">
-          ${it.done ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>' : '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>'}
-        </span>
-        <span style="color:${it.done ? 'var(--color-text-primary)' : 'var(--color-text-muted)'};font-size:13px;font-weight:${it.done ? '600' : '400'}">
-          ${esc(it.label)}
-        </span>
-        ${it.done ? '' : `<a href="/dashboard/verification" style="font-size:11px;color:#1b64f2;font-weight:600;text-decoration:none;margin-left:auto">Add →</a>`}
+    const email = identity?.email || session?.email || '';
+    const phoneLast4 = identity?.phone_last4 || session?.phone_last4 || (session?.phone ? String(session.phone).slice(-4) : '');
+    const kycStatus = kyc?.status || (level >= 2 ? 'VERIFIED' : 'UNKNOWN');
+    const faceStatus = face?.status || (face?.verified || level >= 3 ? 'VERIFIED' : 'NOT_STARTED');
+
+    let doneCount = 0;
+    const items = [];
+
+    // 1. Identity Verification
+    doneCount++;
+    items.push({
+      icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>',
+      label: 'Identity Verification',
+      badge: '<span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>'
+    });
+
+    // 2. Phone Verification
+    doneCount++;
+    items.push({
+      icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>',
+      label: phoneLast4 ? `Phone Verification (•••• ${esc(phoneLast4)})` : 'Phone Verification',
+      badge: '<span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>'
+    });
+
+    // 3. Email Verification
+    if (email) {
+      doneCount++;
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>',
+        label: 'Email Verification',
+        badge: '<span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Connected</span>'
+      });
+    } else {
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>',
+        label: 'Email Verification',
+        badge: '<a href="/dashboard/identity" class="db-verif-badge-action">Connect →</a>'
+      });
+    }
+
+    // 4. Document Verification (KYC)
+    if (kycStatus === 'VERIFIED') {
+      doneCount++;
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><rect x="2" y="4" width="20" height="16" rx="3"></rect><circle cx="8" cy="11" r="3"></circle><path d="M14 9h4"></path></svg>',
+        label: 'Document Verification',
+        badge: '<span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>'
+      });
+    } else if (kycStatus === 'PENDING' || kycStatus === 'UNDER_REVIEW') {
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><rect x="2" y="4" width="20" height="16" rx="3"></rect><circle cx="8" cy="11" r="3"></circle><path d="M14 9h4"></path></svg>',
+        label: 'Document Verification',
+        badge: '<span class="db-verif-badge-pending">Under Review</span>'
+      });
+    } else {
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><rect x="2" y="4" width="20" height="16" rx="3"></rect><circle cx="8" cy="11" r="3"></circle><path d="M14 9h4"></path></svg>',
+        label: 'Document Verification',
+        badge: '<a href="/dashboard/verification" class="db-verif-badge-action">Start KYC →</a>'
+      });
+    }
+
+    // 5. Face Verification
+    if (faceStatus === 'VERIFIED') {
+      doneCount++;
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>',
+        label: 'Face Verification',
+        badge: '<span class="db-verif-badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>'
+      });
+    } else if (faceStatus === 'PENDING' || faceStatus === 'UNDER_REVIEW') {
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>',
+        label: 'Face Verification',
+        badge: '<span class="db-verif-badge-pending">Under Review</span>'
+      });
+    } else if (kycStatus === 'VERIFIED') {
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>',
+        label: 'Face Verification',
+        badge: '<a href="/face-capture" class="db-verif-badge-action">Start Face →</a>'
+      });
+    } else {
+      items.push({
+        icon: '<svg class="hvid-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b64f2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>',
+        label: 'Face Verification',
+        badge: '<span class="db-verif-badge-locked">KYC required</span>'
+      });
+    }
+
+    targetEl.innerHTML = items.map(it => `
+      <div class="db-verif-row-item">
+        <div class="db-verif-item-left">
+          ${it.icon}
+          <span>${it.label}</span>
+        </div>
+        ${it.badge}
       </div>`).join('');
+
+    if (countEl) {
+      countEl.textContent = `${doneCount} of 5 completed`;
+    }
   }
 
   // ── S6: Match Activity ──────────────────
@@ -509,16 +616,21 @@
   async function refreshState(identityId, session) {
     if (!identityId) return;
     try {
-      const [idResult, secResult] = await Promise.allSettled([
+      const [idResult, secResult, kycResult, faceResult] = await Promise.allSettled([
         fetchIdentity(identityId),
         fetchSecurity(identityId),
+        fetchKycStatus(identityId),
+        fetchFaceStatus(identityId),
       ]);
-      const identity = idResult.status  === 'fulfilled' ? idResult.value  : null;
-      const security = secResult.status === 'fulfilled' ? secResult.value : null;
+      const identity = idResult.status   === 'fulfilled' ? idResult.value   : null;
+      const security = secResult.status  === 'fulfilled' ? secResult.value  : null;
+      const kyc      = kycResult.status  === 'fulfilled' ? kycResult.value  : null;
+      const face     = faceResult.status === 'fulfilled' ? faceResult.value : null;
       const verLevel = identity?.verificationLevel ?? session?.verificationLevel ?? 0;
       renderStatusCard(session, security, identity);
       renderSecurityCard(security);
       renderTrustInsights(verLevel, security);
+      renderVerifStatus(verLevel, identity, session, kyc, face);
     } catch (err) { console.warn('[HVID] refreshState failed:', err?.message); }
   }
 
@@ -618,18 +730,22 @@
     const identityId = session?.identityId || session?.hvid || '';
     showSkeletons();
 
-    let identity = null, security = null, history = null, assets = [];
+    let identity = null, security = null, history = null, assets = [], kyc = null, face = null;
     if (identityId) {
-      const [idR, secR, histR, assetR] = await Promise.allSettled([
+      const [idR, secR, histR, assetR, kycR, faceR] = await Promise.allSettled([
         fetchIdentity(identityId),
         fetchSecurity(identityId),
         fetchHistory(identityId),
         fetchAssets(identityId),
+        fetchKycStatus(identityId),
+        fetchFaceStatus(identityId),
       ]);
       identity = idR.status  === 'fulfilled' ? idR.value  : null;
       security = secR.status === 'fulfilled' ? secR.value : null;
       history  = histR.status=== 'fulfilled' ? histR.value: null;
       assets   = assetR.status === 'fulfilled' ? assetR.value : [];
+      kyc      = kycR.status   === 'fulfilled' ? kycR.value   : null;
+      face     = faceR.status  === 'fulfilled' ? faceR.value  : null;
     } else { showDashboardError(); }
 
     const verLevel = identity?.verificationLevel ?? session?.verificationLevel ?? 0;
@@ -637,7 +753,7 @@
     renderStatusCard(session, security, identity);
     renderSecurityCard(security);
     renderTimeline(history);
-    renderVerifStatus(verLevel);
+    renderVerifStatus(verLevel, identity, session, kyc, face);
     renderMatchActivity(history);
     renderTrustInsights(verLevel, security);
     renderGuidance(assets, verLevel);
